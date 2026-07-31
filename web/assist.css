@@ -1,0 +1,168 @@
+/* Agent assist page. Inherits the variables and topbar from styles.css;
+   everything below is specific to the live-call layout. */
+
+.assist-layout {
+  flex: 1; display: grid; grid-template-columns: minmax(0, 1fr) 400px 290px;
+  gap: 16px; padding: 16px; min-height: 0;
+}
+@media (max-width: 1380px) { .assist-layout { grid-template-columns: minmax(0, 1fr) 400px; } .bank-rail { display: none; } }
+@media (max-width: 900px)  { .assist-layout { grid-template-columns: 1fr; } .assist-rail, .bank-rail { display: none; } }
+
+.call, .assist-rail, .bank-rail {
+  display: flex; flex-direction: column; min-height: 0;
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: var(--radius); overflow: hidden;
+  box-shadow: 0 2px 18px rgba(30, 10, 25, .06);
+}
+
+/* ------------------------------------------------------------- call panel */
+
+.call-head {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 12px 16px; border-bottom: 1px solid var(--line);
+}
+.call-who { display: flex; align-items: center; gap: 10px; }
+.call-name { font-weight: 700; font-size: 14px; }
+.call-meta { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+.live-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--line); flex-shrink: 0; }
+.live-dot.on { background: #D93025; box-shadow: 0 0 0 0 rgba(217, 48, 37, .6); animation: pulse 1.6s infinite; }
+@keyframes pulse {
+  70%  { box-shadow: 0 0 0 9px rgba(217, 48, 37, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(217, 48, 37, 0); }
+}
+
+.btn.listen { display: flex; align-items: center; gap: 7px; background: transparent; color: var(--burgundy); }
+.btn.listen.on { background: #D93025; border-color: #D93025; color: #fff; }
+
+.caveat {
+  padding: 8px 16px; font-size: 11px; line-height: 1.5; color: #8A6D1F;
+  background: #FDF6E3; border-bottom: 1px solid var(--line);
+}
+
+.transcript { flex: 1; overflow-y: auto; padding: 14px 16px; min-height: 0; }
+.transcript .empty, .cards .empty, .bank-body .empty { color: var(--muted); font-size: 13px; padding: 8px 0; }
+
+.turn { display: flex; gap: 10px; margin-bottom: 12px; align-items: flex-start; }
+.turn .who {
+  font: inherit; font-size: 10px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase;
+  cursor: pointer; border: 1px solid var(--line); background: var(--canvas); color: var(--muted);
+  border-radius: 5px; padding: 3px 6px; flex-shrink: 0; width: 74px; text-align: center;
+}
+.turn.customer .who { background: #FDECEF; border-color: #F3C6D2; color: var(--burgundy); }
+.turn.agent    .who { background: #E8F0FE; border-color: #C6D8F5; color: #1A56B8; }
+.turn.unknown  .who { opacity: .5; cursor: default; }
+.turn .said { font-size: 14px; line-height: 1.55; padding-top: 1px; }
+.turn.agent .said { color: var(--muted); }
+
+.interim { padding: 0 16px; font-size: 13px; color: var(--muted); font-style: italic; min-height: 20px; }
+
+.type-turn { display: flex; gap: 8px; padding: 12px 16px; border-top: 1px solid var(--line); }
+.type-turn input {
+  flex: 1; font: inherit; font-size: 13px; padding: 8px 11px;
+  border: 1px solid var(--line); border-radius: 9px; background: var(--canvas); color: var(--ink);
+}
+.type-turn input:focus { outline: none; border-color: var(--burgundy); background: var(--surface); }
+
+/* ------------------------------------------------------------------ rails */
+
+.rail-head {
+  display: flex; align-items: baseline; justify-content: space-between;
+  padding: 12px 16px; border-bottom: 1px solid var(--line);
+}
+.rail-head h2 { margin: 0; font-size: 13px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; }
+.rail-sub { font-size: 11px; color: var(--muted); }
+
+.cards { flex: 1; overflow-y: auto; padding: 12px; min-height: 0; }
+
+.group { margin-bottom: 14px; }
+.group-head {
+  font-size: 11px; color: var(--muted); line-height: 1.5; margin-bottom: 7px;
+  display: flex; gap: 7px; align-items: flex-start;
+}
+.group-n {
+  background: var(--canvas); border: 1px solid var(--line); border-radius: 4px;
+  padding: 1px 5px; font-weight: 700; color: var(--ink); flex-shrink: 0;
+}
+
+.card {
+  border: 1px solid var(--line); border-left: 3px solid var(--muted);
+  border-radius: 9px; padding: 9px 11px; margin-bottom: 7px; background: var(--surface);
+  animation: rise .18s ease-out;
+}
+@keyframes rise { from { opacity: 0; transform: translateY(5px); } }
+
+.card-top { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+.card-top .ic { font-size: 11px; }
+.card-top .kind { font-size: 9px; font-weight: 800; letter-spacing: .09em; text-transform: uppercase; color: var(--muted); }
+.card-title { font-size: 13px; font-weight: 700; line-height: 1.4; }
+.card-body { font-size: 12.5px; line-height: 1.5; color: var(--muted); margin-top: 3px; }
+
+.card.answer { border-left-color: #1A56B8; }
+.card.answer .ic, .card.answer .kind { color: #1A56B8; }
+.card.action { border-left-color: var(--burgundy); }
+.card.action .ic, .card.action .kind { color: var(--burgundy); }
+.card.offer  { border-left-color: #137333; background: #F3FAF4; }
+.card.offer  .ic, .card.offer .kind { color: #137333; }
+.card.risk   { border-left-color: #D93025; background: #FEF6F5; }
+.card.risk   .ic, .card.risk .kind { color: #D93025; }
+.card.do     { border-left-color: #B8860B; background: #FFFCF2; }
+.card.do     .ic, .card.do .kind { color: #B8860B; }
+
+.card-call {
+  display: block; font-size: 10.5px; color: var(--muted); margin: 5px 0 7px;
+  word-break: break-all; line-height: 1.45;
+}
+.do-btn {
+  font: inherit; font-size: 12px; font-weight: 700; cursor: pointer;
+  padding: 6px 13px; border-radius: 7px; border: 1px solid #B8860B;
+  background: #B8860B; color: #fff;
+}
+.do-btn:hover { filter: brightness(1.1); }
+.do-btn:disabled { opacity: .6; cursor: default; }
+.card.ran { opacity: .78; }
+.do-out { font-size: 11px; color: var(--muted); margin-top: 6px; line-height: 1.5; }
+
+.card.tool {
+  border-left-color: var(--line); background: var(--canvas);
+  display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 6px 9px;
+}
+.card.tool code { font-size: 10.5px; color: var(--muted); word-break: break-all; }
+.card.tool .spin { font-size: 10px; color: var(--muted); flex-shrink: 0; }
+.card.tool.pending .spin { color: #B8860B; }
+
+/* ------------------------------------------------------------ bank systems */
+
+.bank-body { flex: 1; overflow-y: auto; padding: 10px 12px; min-height: 0; }
+.bank-body h3 {
+  font-size: 10px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--muted); margin: 14px 0 6px;
+}
+.brow { display: flex; justify-content: space-between; gap: 8px; padding: 7px 0; border-bottom: 1px solid var(--line); }
+.bl { font-size: 12px; font-weight: 600; }
+.br { font-size: 10.5px; color: var(--muted); margin-top: 1px; }
+.bv { font-size: 12px; font-weight: 700; text-align: right; }
+.bs { display: block; font-size: 9.5px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: #137333; margin-top: 2px; }
+.bs.warn { color: #B8860B; }
+.bs.bad { color: #D93025; }
+.arow { padding: 6px 0; border-bottom: 1px solid var(--line); font-size: 11px; line-height: 1.5; }
+.arow b { display: block; font-size: 11.5px; }
+.arow span { color: var(--muted); }
+
+/* ------------------------------------------------------------------ modal */
+
+.wrap-grid { display: flex; gap: 7px; flex-wrap: wrap; margin-bottom: 16px; }
+.wrap-tag {
+  font-size: 11px; font-weight: 700; padding: 5px 11px; border-radius: 20px;
+  background: var(--burgundy); color: #fff;
+}
+.wrap-tag.alt { background: var(--canvas); color: var(--muted); border: 1px solid var(--line); }
+#wrap-body h4 {
+  font-size: 10px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--muted); margin: 16px 0 6px;
+}
+#wrap-body p { margin: 0; font-size: 13.5px; line-height: 1.6; }
+#wrap-body p.crm { background: var(--canvas); border: 1px solid var(--line); border-radius: 9px; padding: 11px 13px; font-size: 13px; }
+#wrap-body ul { margin: 0; padding-left: 20px; font-size: 13px; line-height: 1.7; }
+#wrap-body code { font-size: 11.5px; }
+.wrap-foot { margin-top: 18px !important; font-size: 11.5px !important; color: var(--muted); font-style: italic; }

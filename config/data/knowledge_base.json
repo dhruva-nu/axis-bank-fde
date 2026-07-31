@@ -1,0 +1,156 @@
+{
+  "_comment": "The agent's factual grounding: charges, rates, TATs, policies, documents. Add an entry and the agent can answer that question. Keyword-matched by search_knowledge_base.",
+
+  "articles": [
+    {
+      "id": "KB-CARD-BLOCK",
+      "title": "Blocking a lost or stolen card",
+      "tags": ["block", "lost", "stolen", "card", "hotlist", "fraud", "misplaced"],
+      "body": "A lost/stolen card is hotlisted instantly and permanently — it cannot be unblocked. A replacement card is issued free of charge and delivered in 5–7 working days to the registered address. A temporary block (card misplaced at home) is reversible by the customer at any time. Under RBI's limited-liability rules, if the customer reports an unauthorised transaction within 3 working days their liability is zero."
+    },
+    {
+      "id": "KB-CARD-REPLACE",
+      "title": "Card replacement and reissue charges",
+      "tags": ["replacement", "reissue", "new card", "charges", "delivery", "damaged"],
+      "body": "Debit card replacement: ₹200 + GST (waived for Burgundy and Priority customers, and waived in all lost/stolen/fraud cases). Credit card replacement: ₹100 + GST, waived for Magnus, Reserve and Burgundy Private. Delivery 5–7 working days by courier with tracking. Emergency card issuance abroad: ₹5,000 + GST."
+    },
+    {
+      "id": "KB-DISPUTE",
+      "title": "Disputing a transaction / chargeback",
+      "tags": ["dispute", "chargeback", "unauthorised", "unauthorized", "fraud", "not mine", "wrong charge", "double charge"],
+      "body": "Raise a dispute within 60 days of the transaction date. Provisional credit is issued within 7 working days for eligible card disputes above ₹5,000. Full investigation TAT is 45 days domestic, 90 days international (network rules). A dispute cannot be raised on a transaction already reversed or on a cash withdrawal you confirm you made. Merchant-service disputes (goods not received / not as described) need an invoice and proof of contact with the merchant."
+    },
+    {
+      "id": "KB-FAILED-TXN",
+      "title": "Failed transaction where money was debited",
+      "tags": ["failed", "debited", "not credited", "upi failed", "atm not dispensed", "reversal", "stuck", "pending"],
+      "body": "Per RBI's Harmonisation of TAT circular: failed UPI / IMPS transactions auto-reverse within T+1 day. ATM cash not dispensed reverses within T+5 days. Card (POS/e-com) failures reverse within T+5 days. If the reversal misses the TAT the bank pays the customer ₹100 per day of delay, credited automatically. Customers do not need to raise a complaint before the TAT expires, but a complaint can be logged to track it."
+    },
+    {
+      "id": "KB-AMB",
+      "title": "Average Monthly Balance (AMB) and non-maintenance charges",
+      "tags": ["amb", "minimum balance", "average monthly balance", "non-maintenance", "penalty", "charge", "waiver"],
+      "body": "AMB requirement: Easy Access ₹12,000 (metro/urban), Prime ₹25,000, Burgundy ₹2,00,000 or a total relationship value of ₹10 lakh. Non-maintenance charge is 6% of the shortfall, capped at ₹600 + GST per month. Waived for: salary accounts with credit in the last 3 months, senior citizens, Pension and basic savings (BSBDA) accounts. A one-time goodwill waiver may be granted once per financial year at the bank's discretion."
+    },
+    {
+      "id": "KB-CHEQUE",
+      "title": "Cheque book issuance and stop payment",
+      "tags": ["cheque", "check book", "chequebook", "stop payment", "leaves"],
+      "body": "First cheque book of 25 leaves each financial year is free on Prime and above; additional books ₹100 + GST per 25 leaves. Delivery in 5–7 working days to the registered address. Stop payment: ₹100 + GST per instrument, ₹500 + GST for a range/series; free through Internet Banking and this assistant. A stop payment cannot be placed on a cheque already presented and cleared."
+    },
+    {
+      "id": "KB-FD-RATES",
+      "title": "Fixed and Recurring Deposit interest rates",
+      "tags": ["fd", "fixed deposit", "rd", "recurring deposit", "interest rate", "rates", "tenure", "senior citizen"],
+      "body": "Fixed Deposit rates (general public, w.e.f. 01 Jul 2026): 7 days–45 days 3.50%; 46–90 days 4.25%; 3–6 months 5.75%; 6–9 months 6.25%; 9–12 months 6.75%; 1 year–15 months 7.10%; 15 months–2 years 7.25%; 2–3 years 7.25%; 3–5 years 7.10%; 5–10 years 7.00%. Senior citizens get +0.50%. Tax Saver FD (5-year lock-in) 7.10%. Recurring Deposit rates match the equivalent FD tenure. Premature closure: 1% penalty on the applicable rate for the period held; no penalty on Tax Saver (not permitted) or on deposits below ₹5 lakh closed after 6 months on Burgundy."
+    },
+    {
+      "id": "KB-LOAN-RATES",
+      "title": "Loan interest rates and processing fees",
+      "tags": ["loan", "interest rate", "home loan", "personal loan", "car loan", "processing fee", "emi"],
+      "body": "Home Loan from 8.35% p.a. floating (Repo + spread), processing fee 0.50% of loan amount or ₹10,000 whichever is lower. Personal Loan 10.49%–21% p.a. fixed, processing fee up to 2%. Car Loan from 8.90%. Loan Against Property from 9.40%. Education Loan from 8.70%. Foreclosure: floating-rate home loans to individuals carry NIL foreclosure charges (RBI rule); personal loans 2%–4% of outstanding after 12 EMIs, nil before that is not permitted."
+    },
+    {
+      "id": "KB-EMI-BOUNCE",
+      "title": "EMI bounce / cheque return charges",
+      "tags": ["emi bounce", "bounce", "ecs return", "nach return", "insufficient funds", "overdue", "late payment"],
+      "body": "EMI bounce charge: ₹500 + GST per instance. Penal interest on the overdue amount: 2% per month over the contracted rate, charged for the days of delay. A bounce is reported to CIBIL if the EMI stays unpaid past 30 days. Paying the overdue amount plus charges immediately stops further penal interest; the bank can waive the bounce charge once per loan as a goodwill gesture where the account is otherwise regular."
+    },
+    {
+      "id": "KB-CREDIT-CARD-BILL",
+      "title": "Credit card billing, minimum due and interest",
+      "tags": ["credit card", "bill", "due date", "minimum due", "interest", "late fee", "revolving", "emi conversion"],
+      "body": "Statement is generated on a fixed date each month with a 20-day interest-free credit period. Minimum Amount Due is 5% of the total outstanding. Paying only the minimum due stops the late fee but interest of 3.6% per month (52.86% p.a.) applies on the full outstanding from the transaction date, and the interest-free period is lost until the balance is cleared. Late payment fee: ₹100 up to ₹500 outstanding, scaling to ₹1,300 above ₹50,000. Any transaction above ₹2,500 can be converted to EMI within 30 days of the transaction date."
+    },
+    {
+      "id": "KB-EMI-CONVERSION",
+      "title": "Converting a credit card transaction to EMI",
+      "tags": ["emi conversion", "convert to emi", "instalment", "installment", "big purchase"],
+      "body": "Eligible: any single transaction of ₹2,500 or more, within 30 days of the transaction date, on a card in good standing. Tenures: 3, 6, 9, 12, 18 or 24 months. Interest 13%–16% p.a. depending on tenure. Processing fee 1% of the transaction amount, minimum ₹199. Foreclosure of the EMI plan: 3% of the outstanding principal. The converted amount is blocked against the credit limit and released as EMIs are paid."
+    },
+    {
+      "id": "KB-INTL-USAGE",
+      "title": "International usage on cards",
+      "tags": ["international", "abroad", "foreign", "overseas", "travel", "forex markup"],
+      "body": "International usage must be explicitly enabled and can be switched on and off instantly. Forex markup: 3.5% on most cards, 2% on Magnus, 1.5% on Reserve, nil on Burgundy Private and forex cards. Always inform the bank of travel dates so risk rules do not decline genuine transactions. Dynamic Currency Conversion at a foreign merchant is more expensive than paying in local currency — advise customers to always choose local currency."
+    },
+    {
+      "id": "KB-KYC",
+      "title": "KYC and re-KYC",
+      "tags": ["kyc", "re-kyc", "documents", "aadhaar", "pan", "address proof", "account frozen"],
+      "body": "Re-KYC is due every 10 years for low-risk, 8 years for medium-risk and 2 years for high-risk customers. It can be completed via Video KYC on the mobile app in about 10 minutes, or at any branch with PAN and Aadhaar. If re-KYC is not completed by the due date, debits on the account are restricted until it is done — credits continue. Accepted address proofs: Aadhaar, passport, driving licence, voter ID, NREGA card, utility bill under 2 months old."
+    },
+    {
+      "id": "KB-NOMINEE",
+      "title": "Nomination in accounts and deposits",
+      "tags": ["nominee", "nomination", "beneficiary", "death claim"],
+      "body": "One nominee is permitted per deposit account; up to four with percentage allocation for lockers and certain deposits. Nomination can be registered, changed or cancelled free of charge, online or at a branch, and needs the nominee's name, date of birth, relationship and address. There is no limit to how many times it can be changed. Registering a nominee materially speeds up settlement of a death claim — from months to 15 days."
+    },
+    {
+      "id": "KB-UPI-LIMITS",
+      "title": "UPI limits and deregistration",
+      "tags": ["upi", "limit", "daily limit", "deregister", "vpa", "handle", "autopay mandate"],
+      "body": "UPI daily limit ₹1,00,000 across all handles; ₹5,00,000 for verified merchant categories such as insurance, education, capital markets and hospitals; ₹5,00,000 per transaction for UPI-based IPO and RBI Retail Direct. Maximum 20 transactions per day per person for P2P. A new beneficiary has a ₹5,000 cap for the first 24 hours. UPI can be deregistered instantly; all associated autopay mandates are cancelled with it and must be re-created afterwards."
+    },
+    {
+      "id": "KB-TRANSFER-LIMITS",
+      "title": "Fund transfer channels, limits and charges",
+      "tags": ["neft", "rtgs", "imps", "transfer", "limit", "charges", "beneficiary", "cooling period"],
+      "body": "NEFT: no minimum, no maximum, settles in half-hourly batches 24x7, free on Internet and Mobile Banking. RTGS: minimum ₹2,00,000, no maximum, real-time 24x7, free online. IMPS: up to ₹5,00,000, instant 24x7, ₹5 + GST above ₹1,000. New beneficiary cooling period: 30 minutes, during which a maximum of ₹5,000 can be sent. Per-beneficiary limits are set by the customer and can be changed with OTP."
+    },
+    {
+      "id": "KB-COMPLAINT-ESCALATION",
+      "title": "Complaint escalation matrix",
+      "tags": ["complaint", "escalate", "nodal officer", "ombudsman", "grievance", "not resolved", "principal nodal"],
+      "body": "Level 1: branch or this assistant, resolution in 7 working days. Level 2: Circle Nodal Officer, if unresolved after Level 1 or you are dissatisfied — 7 working days. Level 3: Principal Nodal Officer, pno@axisbank.com — 7 working days. Level 4: RBI Integrated Ombudsman at cms.rbi.org.in or 14448, available if the bank has not responded within 30 days of the complaint or the response is unsatisfactory. Every complaint gets a tracking number valid across all levels."
+    },
+    {
+      "id": "KB-FASTAG",
+      "title": "FASTag balance, recharge and closure",
+      "tags": ["fastag", "toll", "recharge", "vehicle", "blacklist"],
+      "body": "FASTag balance must stay above ₹100 for a car; a tag with insufficient balance is blacklisted at the toll plaza and the customer is charged double the toll in cash. Recharge is instant via UPI, net banking or the linked account. Auto-recharge can be set to trigger below a chosen threshold. Tag closure and refund of the security deposit takes 30 days after surrender and requires the tag to be physically removed and destroyed."
+    },
+    {
+      "id": "KB-REWARDS",
+      "title": "EDGE Reward points",
+      "tags": ["rewards", "points", "edge", "redeem", "expiry", "cashback", "miles"],
+      "body": "EDGE Reward points do not expire on most cards but expire 3 years after earning on Magnus and Reserve. Redemption: 1 point = ₹0.20 for statement credit and vouchers, up to 1 point = ₹1.00 when transferred to airline and hotel partners on Magnus and Reserve. Minimum redemption 500 points. Points earned on a transaction that is later refunded or disputed are clawed back. Points do not accrue on rent, wallet loads, fuel above ₹4,000, government payments or EMI conversions."
+    },
+    {
+      "id": "KB-STATEMENT",
+      "title": "Account statements and certificates",
+      "tags": ["statement", "download", "email", "interest certificate", "tds", "form 16a", "balance certificate"],
+      "body": "e-Statements for the last 5 years are free and delivered to the registered email instantly, password-protected with PAN in lowercase plus date of birth as DDMM. Physical statement at a branch: ₹100 + GST per year requested. Interest certificate, provisional and final home-loan certificates and Form 16A are generated instantly and free. A balance certificate or banker's certificate for visa purposes is ₹150 + GST and takes 2 working days."
+    },
+    {
+      "id": "KB-DORMANT",
+      "title": "Dormant and inoperative accounts",
+      "tags": ["dormant", "inactive", "inoperative", "reactivate", "frozen", "unclaimed"],
+      "body": "An account with no customer-induced transaction for 12 months is classified inactive, and for 24 months is classified inoperative/dormant. No charge is levied for reactivation. Reactivation needs fresh KYC and one customer-induced transaction, and can be done by video KYC or at any branch — same-day. Balances in accounts inoperative for 10 years are transferred to the RBI's Depositor Education and Awareness fund and can still be claimed by the customer at any time."
+    }
+  ],
+
+  "branches": [
+    { "name": "Whitefield", "city": "Bengaluru", "address": "Ground Floor, Prestige Shantiniketan, Whitefield Main Road, Bengaluru 560048", "ifsc": "UTIB0001234", "timings": "9:30 AM – 4:30 PM, Mon–Sat (2nd & 4th Sat closed)", "atm": true, "cash_deposit_machine": true, "locker": true, "phone": "080-4455-1234" },
+    { "name": "Indiranagar", "city": "Bengaluru", "address": "100 Feet Road, HAL 2nd Stage, Indiranagar, Bengaluru 560038", "ifsc": "UTIB0000821", "timings": "9:30 AM – 4:30 PM, Mon–Sat (2nd & 4th Sat closed)", "atm": true, "cash_deposit_machine": true, "locker": false, "phone": "080-4455-0821" },
+    { "name": "Koramangala", "city": "Bengaluru", "address": "80 Feet Road, 4th Block Koramangala, Bengaluru 560034", "ifsc": "UTIB0000399", "timings": "9:30 AM – 4:30 PM, Mon–Sat (2nd & 4th Sat closed)", "atm": true, "cash_deposit_machine": false, "locker": true, "phone": "080-4455-0399" },
+    { "name": "Adyar", "city": "Chennai", "address": "Sardar Patel Road, Adyar, Chennai 600020", "ifsc": "UTIB0000456", "timings": "9:30 AM – 4:30 PM, Mon–Sat (2nd & 4th Sat closed)", "atm": true, "cash_deposit_machine": true, "locker": true, "phone": "044-4455-0456" },
+    { "name": "Lower Parel", "city": "Mumbai", "address": "Peninsula Corporate Park, Ganpatrao Kadam Marg, Lower Parel, Mumbai 400013", "ifsc": "UTIB0000004", "timings": "9:30 AM – 4:30 PM, Mon–Sat (2nd & 4th Sat closed)", "atm": true, "cash_deposit_machine": true, "locker": true, "phone": "022-4455-0004" },
+    { "name": "Connaught Place", "city": "New Delhi", "address": "Statesman House, Barakhamba Road, Connaught Place, New Delhi 110001", "ifsc": "UTIB0000012", "timings": "9:30 AM – 4:30 PM, Mon–Sat (2nd & 4th Sat closed)", "atm": true, "cash_deposit_machine": true, "locker": true, "phone": "011-4455-0012" }
+  ],
+
+  "complaint_categories": {
+    "Card - unauthorised transaction": { "tat_days": 45, "priority": "High" },
+    "Card - not delivered": { "tat_days": 7, "priority": "Medium" },
+    "Card - wrong charge / fee": { "tat_days": 10, "priority": "Medium" },
+    "Account - failed transaction not reversed": { "tat_days": 5, "priority": "High" },
+    "Account - incorrect charges": { "tat_days": 10, "priority": "Medium" },
+    "Account - statement / certificate": { "tat_days": 3, "priority": "Low" },
+    "Loan - EMI / bounce": { "tat_days": 7, "priority": "Medium" },
+    "Loan - foreclosure / documents": { "tat_days": 15, "priority": "Medium" },
+    "Deposit - interest / maturity": { "tat_days": 7, "priority": "Medium" },
+    "Service - branch / staff": { "tat_days": 7, "priority": "Medium" },
+    "Digital - net banking / app": { "tat_days": 5, "priority": "Medium" },
+    "Other": { "tat_days": 7, "priority": "Medium" }
+  }
+}

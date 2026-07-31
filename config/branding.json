@@ -1,0 +1,95 @@
+{
+  "_comment": "EVERYTHING VISUAL LIVES HERE. Edit + click Reload in the UI (or refresh the page). No restart needed.",
+
+  "product_name": "Axis Bank Assistant",
+  "product_short_name": "Assistant",
+  "product_tagline": "Instant help with your accounts, cards and loans",
+  "bank_name": "Axis Bank",
+  "logo_text": "AXIS BANK",
+  "logo_mark": "A",
+
+  "theme": {
+    "burgundy": "#97144D",
+    "burgundy_dark": "#7A1040",
+    "burgundy_light": "#C51E63",
+    "gold": "#AE275F",
+    "ink": "#1B1B1F",
+    "muted": "#6B6B76",
+    "line": "#E6E2E6",
+    "surface": "#FFFFFF",
+    "canvas": "#F6F3F5",
+    "bot_bubble": "#FFFFFF",
+    "user_bubble": "#97144D",
+    "user_bubble_text": "#FFFFFF",
+    "radius": "16px",
+    "font": "'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif"
+  },
+
+  "greeting": "Hi {first_name} — I'm your Axis Bank Assistant. I can check balances, block cards, raise disputes, pay bills, handle loans and FDs, and log complaints, all right here. What can I help you with?",
+
+  "quick_chips": [
+    { "label": "Account balance", "text": "What's my account balance?" },
+    { "label": "Block my card", "text": "I lost my debit card, please block it" },
+    { "label": "Dispute a charge", "text": "There's a transaction I don't recognise, I want to dispute it" },
+    { "label": "Mini statement", "text": "Show me my last 10 transactions" },
+    { "label": "Credit card bill", "text": "How much is my credit card bill and when is it due?" },
+    { "label": "Failed UPI", "text": "My UPI payment failed but money was debited" },
+    { "label": "Loan EMI", "text": "When is my next home loan EMI due?" },
+    { "label": "Book an FD", "text": "I want to book a fixed deposit" },
+    { "label": "Cheque book", "text": "Please send me a new cheque book" },
+    { "label": "Nearest branch", "text": "Find me the nearest branch in Bangalore" },
+    { "label": "Raise a complaint", "text": "I want to raise a complaint" },
+    { "label": "Talk to an agent", "text": "I want to speak to a human agent" }
+  ],
+
+  "_voice_comment": "Mic is the browser's (free). The VOICE is Gemini TTS server-side — natural, same on every machine, ~$0.015/min. Set engine to 'browser' for the free-but-robotic local voice.",
+  "voice": {
+    "enabled": true,
+    "engine": "gemini",
+    "provider": "gemini",
+    "_provider_note": "'gemini' = lovely voice, but measured 4-11s per sentence. 'cloud' = Google Cloud TTS Chirp3-HD, ~300ms, needs the Cloud Text-to-Speech API enabled on a GCP project and GOOGLE_TTS_API_KEY in .env. See README.",
+    "gemini": {
+      "model": "gemini-2.5-flash-preview-tts",
+      "voice_name": "Kore",
+      "style": "Say in a warm, calm, reassuring tone, like an experienced Indian bank agent: "
+    },
+    "cloud": {
+      "voice_name": "en-IN-Chirp3-HD-Achernar",
+      "language_code": "en-IN",
+      "speaking_rate": 1.0,
+      "api_key_env": "GOOGLE_TTS_API_KEY"
+    },
+    "lang": "en-IN",
+    "languages": [
+      { "code": "en-IN", "label": "English (India)" },
+      { "code": "hi-IN", "label": "हिन्दी" },
+      { "code": "ta-IN", "label": "தமிழ்" },
+      { "code": "te-IN", "label": "తెలుగు" },
+      { "code": "kn-IN", "label": "ಕನ್ನಡ" },
+      { "code": "mr-IN", "label": "मराठी" },
+      { "code": "bn-IN", "label": "বাংলা" },
+      { "code": "en-US", "label": "English (US)" }
+    ],
+    "rate": 1.12,
+    "pitch": 1,
+    "volume": 1,
+    "speak_replies": true,
+    "auto_send": true,
+    "hands_free": true,
+    "hands_free_after_typing": false,
+    "voice_hint": "",
+    "say": {
+      "Axis": "Axis",
+      "NRI": "N R I"
+    }
+  },
+
+  "_assist_comment": "Page 2 (/assist) — a human agent on a live call, with the AI on their screen instead of on the phone. The assist agent holds only the read-only tools; anything that writes becomes a button a person has to click. Set 'instruction' to override the whole assist prompt (see assistant/assist.py for the default).",
+  "assist": {
+    "classifier_model": "gemini-2.5-flash-lite",
+    "instruction": ""
+  },
+
+  "disclaimer": "Demo environment. All customer data, accounts and transactions are simulated.",
+  "show_dev_panel": true
+}

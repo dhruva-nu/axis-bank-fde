@@ -1,0 +1,343 @@
+{
+  "_comment": "MOCK CORE BANKING. Edit anything here, hit Reload in the UI, and the agent sees it instantly. Add a customer to the list and it appears in the profile switcher.",
+  "_today": "2026-07-28",
+
+  "customers": [
+    {
+      "id": "CUST001",
+      "name": "Rohan Mehta",
+      "first_name": "Rohan",
+      "cif": "9012345678",
+      "mobile": "+91-98200-11223",
+      "email": "rohan.mehta@example.com",
+      "address": "1204, Prestige Shantiniketan, Whitefield, Bengaluru, Karnataka 560048",
+      "dob": "1988-11-04",
+      "pan": "AXKPM4821L",
+      "segment": "Burgundy",
+      "home_branch": "Whitefield, Bengaluru",
+      "relationship_since": "2016-04-12",
+      "kyc_status": "Verified",
+      "kyc_expiry": "2028-03-31",
+      "risk_flag": "none",
+      "preferred_language": "English",
+
+      "accounts": [
+        {
+          "account_no": "918010047742",
+          "type": "Savings - Burgundy",
+          "ifsc": "UTIB0001234",
+          "branch": "Whitefield, Bengaluru",
+          "balance": 284350.75,
+          "available_balance": 284350.75,
+          "lien_amount": 0,
+          "status": "Active",
+          "opened": "2016-04-12",
+          "nominee": "Priya Mehta (Spouse)",
+          "avg_monthly_balance_required": 200000,
+          "cheque_books_issued_this_year": 1
+        },
+        {
+          "account_no": "918010099310",
+          "type": "Savings - Easy Access",
+          "ifsc": "UTIB0001234",
+          "branch": "Whitefield, Bengaluru",
+          "balance": 18240.0,
+          "available_balance": 18240.0,
+          "lien_amount": 0,
+          "status": "Active",
+          "opened": "2021-08-03",
+          "nominee": "Not registered",
+          "avg_monthly_balance_required": 12000,
+          "cheque_books_issued_this_year": 0
+        }
+      ],
+
+      "cards": [
+        {
+          "card_id": "DC-4821",
+          "kind": "Debit",
+          "network": "Visa",
+          "product": "Burgundy Debit Card",
+          "last4": "4821",
+          "linked_account": "918010047742",
+          "status": "Active",
+          "expiry": "09/2029",
+          "issued": "2024-09-15",
+          "international_enabled": false,
+          "contactless_enabled": true,
+          "ecom_enabled": true,
+          "atm_enabled": true,
+          "limits": { "atm_daily": 100000, "pos_daily": 300000, "ecom_daily": 300000 },
+          "delivery": null
+        },
+        {
+          "card_id": "CC-7315",
+          "kind": "Credit",
+          "network": "Mastercard",
+          "product": "Axis Magnus Credit Card",
+          "last4": "7315",
+          "linked_account": null,
+          "status": "Active",
+          "expiry": "02/2028",
+          "issued": "2023-02-20",
+          "international_enabled": true,
+          "contactless_enabled": true,
+          "ecom_enabled": true,
+          "atm_enabled": true,
+          "limits": { "credit_limit": 850000, "cash_limit": 85000 },
+          "available_credit": 611420.0,
+          "total_outstanding": 238580.0,
+          "min_due": 11929.0,
+          "statement_date": "2026-07-18",
+          "due_date": "2026-08-07",
+          "last_payment": { "amount": 195000.0, "date": "2026-07-05" },
+          "autopay": { "enabled": false, "type": null, "account": null },
+          "delivery": null
+        },
+        {
+          "card_id": "CC-9902",
+          "kind": "Credit",
+          "network": "Visa",
+          "product": "Axis Flipkart Credit Card",
+          "last4": "9902",
+          "linked_account": null,
+          "status": "Dispatched",
+          "expiry": "07/2031",
+          "issued": "2026-07-21",
+          "international_enabled": false,
+          "contactless_enabled": true,
+          "ecom_enabled": true,
+          "atm_enabled": true,
+          "limits": { "credit_limit": 200000, "cash_limit": 20000 },
+          "available_credit": 200000.0,
+          "total_outstanding": 0.0,
+          "min_due": 0.0,
+          "statement_date": null,
+          "due_date": null,
+          "autopay": { "enabled": false, "type": null, "account": null },
+          "delivery": {
+            "courier": "Blue Dart",
+            "awb": "77419230845",
+            "status": "Out for delivery",
+            "expected": "2026-07-29",
+            "last_scan": "2026-07-28 08:14 — Bengaluru Whitefield Hub"
+          }
+        }
+      ],
+
+      "transactions": [
+        { "id": "TXN20260728A1", "date": "2026-07-28", "account": "918010047742", "description": "UPI/DR/619204773/SWIGGY", "channel": "UPI", "type": "debit", "amount": 742.0, "balance_after": 284350.75, "status": "Success", "merchant": "Swiggy" },
+        { "id": "TXN20260727B4", "date": "2026-07-27", "account": "918010047742", "description": "UPI/DR/619104221/AMAZON PAY", "channel": "UPI", "type": "debit", "amount": 12499.0, "balance_after": 285092.75, "status": "Failed - Debited", "merchant": "Amazon Pay", "rrn": "619104221773", "note": "Amount debited, beneficiary not credited" },
+        { "id": "TXN20260726C2", "date": "2026-07-26", "account": "918010047742", "description": "ATM WDL AXIS BANK WHITEFIELD", "channel": "ATM", "type": "debit", "amount": 10000.0, "balance_after": 297591.75, "status": "Success" },
+        { "id": "TXN20260725D9", "date": "2026-07-25", "account": "918010047742", "description": "NEFT/CR/SALARY/TECHNOVA SOLUTIONS", "channel": "NEFT", "type": "credit", "amount": 285000.0, "balance_after": 307591.75, "status": "Success" },
+        { "id": "TXN20260724E7", "date": "2026-07-24", "account": "918010047742", "description": "ACH/DR/HDFC LIFE PREMIUM", "channel": "ACH", "type": "debit", "amount": 24000.0, "balance_after": 22591.75, "status": "Success" },
+        { "id": "TXN20260722F3", "date": "2026-07-22", "account": "918010047742", "description": "UPI/DR/618822190/BESCOM", "channel": "UPI", "type": "debit", "amount": 3420.0, "balance_after": 46591.75, "status": "Success", "merchant": "BESCOM" },
+        { "id": "TXN20260720G8", "date": "2026-07-20", "account": "918010047742", "description": "POS/CROMA WHITEFIELD", "channel": "POS", "type": "debit", "amount": 68990.0, "balance_after": 50011.75, "status": "Success", "merchant": "Croma" },
+        { "id": "TXN20260719H1", "date": "2026-07-19", "account": "918010047742", "description": "EMI/AXIS HOME LOAN HL9920", "channel": "SI", "type": "debit", "amount": 68420.0, "balance_after": 119001.75, "status": "Success" },
+        { "id": "TXN20260718J5", "date": "2026-07-18", "account": "918010047742", "description": "UPI/CR/618612004/PRIYA MEHTA", "channel": "UPI", "type": "credit", "amount": 15000.0, "balance_after": 187421.75, "status": "Success" },
+        { "id": "TXN20260716K2", "date": "2026-07-16", "account": "918010047742", "description": "CHARGE/SMS ALERT FEE Q1 + GST", "channel": "Charge", "type": "debit", "amount": 29.5, "balance_after": 172421.75, "status": "Success" },
+
+        { "id": "TXN20260727CC1", "date": "2026-07-27", "account": "CC-7315", "description": "TATA CLIQ LUXURY", "channel": "ECOM", "type": "debit", "amount": 89400.0, "status": "Success", "merchant": "Tata Cliq" },
+        { "id": "TXN20260726CC2", "date": "2026-07-26", "account": "CC-7315", "description": "GLOBALPAY*DIGITALPRO LONDON GB", "channel": "ECOM-INTL", "type": "debit", "amount": 47320.0, "status": "Success", "merchant": "GlobalPay Digital", "note": "International, cardholder-not-present" },
+        { "id": "TXN20260724CC3", "date": "2026-07-24", "account": "CC-7315", "description": "INDIGO AIRLINES", "channel": "ECOM", "type": "debit", "amount": 34210.0, "status": "Success", "merchant": "IndiGo" },
+        { "id": "TXN20260721CC4", "date": "2026-07-21", "account": "CC-7315", "description": "BIG BASKET", "channel": "ECOM", "type": "debit", "amount": 4820.0, "status": "Success", "merchant": "BigBasket" },
+        { "id": "TXN20260705CC5", "date": "2026-07-05", "account": "CC-7315", "description": "PAYMENT RECEIVED - THANK YOU", "channel": "NEFT", "type": "credit", "amount": 195000.0, "status": "Success" }
+      ],
+
+      "loans": [
+        {
+          "loan_id": "HL9920",
+          "type": "Home Loan",
+          "sanctioned": 8500000.0,
+          "outstanding": 6142870.0,
+          "emi": 68420.0,
+          "rate": 8.6,
+          "rate_type": "Floating (Repo + 2.10%)",
+          "tenure_months": 240,
+          "emis_paid": 62,
+          "emis_remaining": 178,
+          "next_due": "2026-08-19",
+          "status": "Regular",
+          "emi_account": "918010047742",
+          "property": "Prestige Shantiniketan, Whitefield",
+          "overdue_amount": 0.0,
+          "foreclosure_charges_pct": 0.0
+        },
+        {
+          "loan_id": "PL4471",
+          "type": "Personal Loan",
+          "sanctioned": 900000.0,
+          "outstanding": 318400.0,
+          "emi": 21850.0,
+          "rate": 12.4,
+          "rate_type": "Fixed",
+          "tenure_months": 48,
+          "emis_paid": 32,
+          "emis_remaining": 16,
+          "next_due": "2026-08-05",
+          "status": "1 EMI overdue",
+          "emi_account": "918010099310",
+          "overdue_amount": 21850.0,
+          "bounce_reason": "Insufficient funds on 05 Jul 2026",
+          "bounce_charge": 590.0,
+          "foreclosure_charges_pct": 2.0
+        }
+      ],
+
+      "deposits": [
+        {
+          "deposit_id": "FD778201",
+          "type": "Fixed Deposit",
+          "principal": 500000.0,
+          "rate": 7.25,
+          "opened": "2025-01-15",
+          "maturity": "2027-01-15",
+          "maturity_amount": 577812.0,
+          "tenure": "24 months",
+          "status": "Active",
+          "payout": "On maturity",
+          "auto_renew": true,
+          "premature_penalty_pct": 1.0
+        },
+        {
+          "deposit_id": "RD330145",
+          "type": "Recurring Deposit",
+          "monthly_installment": 15000.0,
+          "rate": 7.0,
+          "opened": "2025-06-01",
+          "maturity": "2028-06-01",
+          "maturity_amount": 601240.0,
+          "tenure": "36 months",
+          "status": "Active",
+          "installments_paid": 14,
+          "premature_penalty_pct": 1.0
+        }
+      ],
+
+      "beneficiaries": [
+        { "id": "BEN01", "name": "Priya Mehta", "account_no": "918010055412", "ifsc": "UTIB0001234", "bank": "Axis Bank", "nickname": "Priya", "limit": 500000, "added": "2019-02-11", "status": "Active" },
+        { "id": "BEN02", "name": "Sunil Mehta", "account_no": "50100234567890", "ifsc": "HDFC0000123", "bank": "HDFC Bank", "nickname": "Dad", "limit": 200000, "added": "2020-07-30", "status": "Active" },
+        { "id": "BEN03", "name": "Shreya Interiors", "account_no": "004201501234", "ifsc": "ICIC0000042", "bank": "ICICI Bank", "nickname": "Interiors", "limit": 1000000, "added": "2026-07-26", "status": "Cooling period - active from 2026-07-27" }
+      ],
+
+      "standing_instructions": [
+        { "si_id": "SI0091", "description": "Home Loan EMI - HL9920", "amount": 68420.0, "frequency": "Monthly on 19th", "from_account": "918010047742", "status": "Active" },
+        { "si_id": "SI0114", "description": "HDFC Life Premium", "amount": 24000.0, "frequency": "Monthly on 24th", "from_account": "918010047742", "status": "Active" },
+        { "si_id": "SI0130", "description": "RD330145 Installment", "amount": 15000.0, "frequency": "Monthly on 1st", "from_account": "918010047742", "status": "Active" },
+        { "si_id": "SI0155", "description": "Netflix Premium (e-mandate)", "amount": 649.0, "frequency": "Monthly on 12th", "from_account": "CC-7315", "status": "Active" }
+      ],
+
+      "rewards": {
+        "program": "Axis EDGE Rewards",
+        "points_balance": 184320,
+        "points_value_inr": 36864.0,
+        "expiring_soon": { "points": 12000, "on": "2026-09-30" },
+        "tier": "Burgundy"
+      },
+
+      "fastag": {
+        "tag_id": "FT-3390021",
+        "vehicle": "KA-05-MJ-7788",
+        "balance": 412.0,
+        "status": "Active",
+        "low_balance_threshold": 500,
+        "linked_account": "918010047742"
+      },
+
+      "upi": {
+        "handles": ["rohan.mehta@axisbank", "9820011223@axl"],
+        "status": "Active",
+        "daily_limit": 100000,
+        "used_today": 742.0,
+        "linked_accounts": ["918010047742"]
+      },
+
+      "service_requests": [
+        { "sr_no": "SR20260715001", "category": "Statement request", "description": "Email statement Apr-Jun 2026", "raised": "2026-07-15", "status": "Closed", "tat_date": "2026-07-17", "closed_on": "2026-07-15", "channel": "Aha!" }
+      ],
+
+      "disputes": [],
+
+      "offers": [
+        { "type": "Pre-approved Personal Loan", "amount": 1500000.0, "rate": 10.75, "tenure_months": 60, "valid_till": "2026-09-30" },
+        { "type": "Credit Limit Increase", "card": "CC-7315", "new_limit": 1200000.0, "valid_till": "2026-08-31" },
+        { "type": "Balance Transfer on Credit Card", "rate": 0.99, "tenure_months": 6, "valid_till": "2026-08-15" }
+      ]
+    },
+
+    {
+      "id": "CUST002",
+      "name": "Meera Iyer",
+      "first_name": "Meera",
+      "cif": "9055512340",
+      "mobile": "+91-99404-55621",
+      "email": "meera.iyer@example.com",
+      "address": "42, Besant Nagar 2nd Avenue, Chennai, Tamil Nadu 600090",
+      "dob": "1995-06-21",
+      "pan": "BHZPI9034K",
+      "segment": "Prime",
+      "home_branch": "Adyar, Chennai",
+      "relationship_since": "2022-09-01",
+      "kyc_status": "Re-KYC due",
+      "kyc_expiry": "2026-08-31",
+      "risk_flag": "none",
+      "preferred_language": "English",
+
+      "accounts": [
+        {
+          "account_no": "922010033118",
+          "type": "Savings - Prime",
+          "ifsc": "UTIB0000456",
+          "branch": "Adyar, Chennai",
+          "balance": 8420.5,
+          "available_balance": 8420.5,
+          "lien_amount": 0,
+          "status": "Active",
+          "opened": "2022-09-01",
+          "nominee": "Not registered",
+          "avg_monthly_balance_required": 25000,
+          "cheque_books_issued_this_year": 0
+        }
+      ],
+
+      "cards": [
+        {
+          "card_id": "DC-2207",
+          "kind": "Debit",
+          "network": "RuPay",
+          "product": "Prime Debit Card",
+          "last4": "2207",
+          "linked_account": "922010033118",
+          "status": "Temporarily blocked",
+          "expiry": "05/2027",
+          "issued": "2022-09-05",
+          "international_enabled": false,
+          "contactless_enabled": true,
+          "ecom_enabled": false,
+          "atm_enabled": true,
+          "limits": { "atm_daily": 40000, "pos_daily": 100000, "ecom_daily": 50000 },
+          "delivery": null
+        }
+      ],
+
+      "transactions": [
+        { "id": "TXN20260728M1", "date": "2026-07-28", "account": "922010033118", "description": "CHARGE/NON-MAINTENANCE OF AMB JUN 2026 + GST", "channel": "Charge", "type": "debit", "amount": 649.0, "balance_after": 8420.5, "status": "Success" },
+        { "id": "TXN20260726M2", "date": "2026-07-26", "account": "922010033118", "description": "UPI/DR/618922001/ZOMATO", "channel": "UPI", "type": "debit", "amount": 389.0, "balance_after": 9069.5, "status": "Success", "merchant": "Zomato" },
+        { "id": "TXN20260720M3", "date": "2026-07-20", "account": "922010033118", "description": "NEFT/CR/SALARY/QUANTIVA LABS", "channel": "NEFT", "type": "credit", "amount": 92000.0, "balance_after": 9458.5, "status": "Success" }
+      ],
+
+      "loans": [],
+      "deposits": [],
+      "beneficiaries": [],
+      "standing_instructions": [],
+      "rewards": { "program": "Axis EDGE Rewards", "points_balance": 4210, "points_value_inr": 842.0, "expiring_soon": null, "tier": "Prime" },
+      "fastag": null,
+      "upi": { "handles": ["meera.iyer@axl"], "status": "Active", "daily_limit": 100000, "used_today": 389.0, "linked_accounts": ["922010033118"] },
+      "service_requests": [],
+      "disputes": [],
+      "offers": [
+        { "type": "AMB charge waiver", "note": "One-time goodwill waiver available for Prime customers once per financial year", "valid_till": "2027-03-31" }
+      ]
+    }
+  ]
+}

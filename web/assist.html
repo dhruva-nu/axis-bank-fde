@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Agent assist — live call</title>
+  <link rel="stylesheet" href="/static/styles.css" />
+  <link rel="stylesheet" href="/static/assist.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%2397144D'/><text y='72' x='50' text-anchor='middle' font-size='64' font-family='sans-serif' font-weight='700' fill='white'>A</text></svg>" />
+</head>
+<body class="assist-page">
+
+<header class="topbar">
+  <div class="brand">
+    <div class="mark" id="logo-mark">A</div>
+    <div>
+      <div class="brand-name" id="logo-text">AXIS BANK</div>
+      <div class="brand-sub">Agent assist</div>
+    </div>
+  </div>
+
+  <div class="topbar-controls">
+    <nav class="pagenav">
+      <a href="/">Assistant</a>
+      <a href="/assist" class="on">Agent assist</a>
+    </nav>
+    <label class="ctl">
+      <span>Customer</span>
+      <select id="customer-select"></select>
+    </label>
+    <div class="ctl static">
+      <span>Read tools</span>
+      <code id="tool-count">—</code>
+    </div>
+    <button id="btn-wrapup" class="btn ghost" title="End the call and generate the after-call record">End call &amp; wrap up</button>
+    <button id="btn-reset" class="btn ghost" title="Clear the transcript and start a new call">New call</button>
+  </div>
+</header>
+
+<main class="assist-layout">
+
+  <!-- ------------------------------------------------------- the live call -->
+  <section class="call">
+    <div class="call-head">
+      <div class="call-who">
+        <span class="live-dot" id="live-dot"></span>
+        <div>
+          <div class="call-name" id="call-name">—</div>
+          <div class="call-meta"><span id="call-status">Call not started</span> · <span id="call-timer">00:00</span></div>
+        </div>
+      </div>
+      <button id="btn-listen" class="btn listen">
+        <svg class="ico-mic" viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M12 15a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-2.08A7 7 0 0 0 19 12h-2z"/></svg>
+        <span id="listen-label">Start listening</span>
+      </button>
+    </div>
+
+    <div class="caveat" id="caveat">
+      One microphone, no speaker separation — who said what is the model's call.
+      Click a speaker chip to correct it.
+    </div>
+
+    <div class="transcript" id="transcript">
+      <div class="empty">Start listening, then talk. Both sides of the call land here.</div>
+    </div>
+
+    <div class="interim" id="interim"></div>
+
+    <form class="type-turn" id="type-turn" autocomplete="off">
+      <select id="type-speaker">
+        <option value="">auto</option>
+        <option value="customer">customer</option>
+        <option value="agent">agent</option>
+      </select>
+      <input id="type-text" placeholder="…or type a line, if the room is too loud to demo in" />
+      <button class="btn" type="submit">Add</button>
+    </form>
+  </section>
+
+  <!-- ------------------------------------------------------------- the HUD -->
+  <section class="assist-rail">
+    <div class="rail-head">
+      <h2>Agent assist</h2>
+      <span class="rail-sub" id="rail-sub">waiting for the customer</span>
+    </div>
+    <div class="cards" id="cards">
+      <div class="empty">Whatever the customer asks for shows up here — looked up, not guessed.</div>
+    </div>
+  </section>
+
+  <!-- ------------------------------------------------------- core banking -->
+  <section class="bank-rail">
+    <div class="rail-head">
+      <h2>Core banking</h2>
+      <span class="rail-sub">live</span>
+    </div>
+    <div class="bank-body" id="bank-body"><div class="empty">Loading…</div></div>
+  </section>
+
+</main>
+
+<div class="modal hidden" id="wrap-modal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h2>After-call record</h2>
+      <button class="btn ghost" id="btn-close-wrap">Close</button>
+    </div>
+    <div class="modal-body" id="wrap-body"></div>
+  </div>
+</div>
+
+<script src="/static/assist.js"></script>
+</body>
+</html>
