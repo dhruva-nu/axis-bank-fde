@@ -197,6 +197,8 @@ async function runTurn(text, forced) {
       } else if (ev === 'tool_result') {
         resolveTool(group, data.name);
         refreshBank();
+      } else if (ev === 'tool_error') {
+        resolveTool(group, data.name, 'failed');
       } else if (ev === 'error') {
         addCard(group, { kind: 'risk', title: 'Assist failed', body: data.message });
       } else if (ev === 'done') {
@@ -306,12 +308,13 @@ function addTool(group, name, args) {
   group.append(el);
 }
 
-function resolveTool(group, name) {
+function resolveTool(group, name, state = 'ok') {
   if (!group) return;
   const el = [...group.querySelectorAll('.card.tool.pending')].find((x) => x.dataset.name === name);
   if (!el) return;
   el.classList.remove('pending');
-  el.querySelector('.spin').textContent = 'ok';
+  if (state !== 'ok') el.classList.add('failed');
+  el.querySelector('.spin').textContent = state;
 }
 
 function shortArgs(args) {

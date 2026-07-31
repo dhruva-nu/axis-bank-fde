@@ -168,13 +168,23 @@ Emit only these. No greetings, no explanation, no markdown, no text outside a ta
 You cannot change anything yourself. To block a card, raise a dispute, send an
 OTP or book anything, emit a `[DO]` card and the agent clicks it:
 
-    [DO] block_card {"last4": "4291"} :: Block debit card ••4291
+    [DO] block_card {"card_ref": "4821", "reason": "lost"} :: Block debit card ••4821
+
+Pass **every** required argument, named exactly as the signature in the list at the
+bottom of this prompt spells it. A card with an argument missing renders as advice
+to go and ask the customer, which is wrong when they have already told you.
 
 The token straight after `[DO]` must be a **tool name copied exactly** from the
 list at the bottom of this prompt — lowercase, with underscores. Not a verb, not
 a description. Then valid JSON arguments matching that tool's signature, then
 `::`, then the label the human reads. Get the name wrong and the button is
 dropped, so copy it rather than remembering it.
+
+**The names in that list are not tools you can call.** They are not in your tool
+list and calling one does nothing — the only way to make a change happen is to
+write the `[DO]` line above and let the human click it. Your callable tools all
+read; every one of them begins with `get_`, `list_`, `check_`, `search_`, `find_`
+or `track_`. If you catch yourself reaching for anything else, that is a `[DO]`.
 
 Propose the action as soon as the customer's intent is clear — the click is the
 confirmation, so you are not being presumptuous by putting the button there.
@@ -207,7 +217,9 @@ def _assist_instruction(_ctx) -> str:
         [
             assist_hint(),
             customer_context(),
-            "## Actions you can propose with [DO]\n\n" + write_catalogue(),
+            "## Actions you can propose with [DO]\n\n"
+            "These are **not** callable tools — they are the names and arguments to\n"
+            "copy into a `[DO]` line for the human to click.\n\n" + write_catalogue(),
         ]
     )
 
@@ -232,6 +244,44 @@ def build_assist_agent() -> Agent:
 _CARD = re.compile(r"^\[(ANSWER|ACTION|DO|OFFER|RISK)\]\s*(.*)$", re.I)
 
 
+def _derived_label(name: str, args: dict) -> str:
+    """A button label for a proposal that arrived without one."""
+    words = name.replace("_", " ").capitalize()
+    detail = ", ".join(str(v) for v in (args or {}).values() if str(v).strip())
+    return f"{words} — {detail}" if detail else words
+
+
+def propose_card(name: str, args: dict | None, label: str = "") -> dict:
+    """A write tool + arguments -> the card the agent's screen should show.
+
+    Either a `do` card carrying a live button, or — when the tool name is prose or
+    an argument is still missing — an `action` card carrying the same advice
+    without one. Shared by `parse_card()` and by the recovery path in the server
+    for a model that *called* a write tool instead of proposing it.
+    """
+    args = args if isinstance(args, dict) else {}
+    label = label.strip() or _derived_label(name, args)
+
+    if name not in write_meta():
+        # The model wrote prose where the tool name goes. Keep the advice — it is
+        # usually still the right next step — but never render a button that
+        # cannot fire.
+        return {"kind": "action", "title": label, "body": ""}
+
+    # A button proposed before the customer has given you the reference would run
+    # and fail. Say what is still needed instead — that is the next thing for the
+    # agent to ask.
+    missing = sorted(a for a in write_meta()[name] if not str(args.get(a, "")).strip())
+    if missing:
+        return {
+            "kind": "action",
+            "title": label,
+            "body": f"needs {', '.join(missing)} — ask the customer first",
+        }
+
+    return {"kind": "do", "tool": name, "args": args, "title": label, "body": ""}
+
+
 def parse_card(line: str) -> dict | None:
     """One tagged line -> a card dict, or None if the line isn't one."""
     m = _CARD.match(line.strip())
@@ -242,37 +292,18 @@ def parse_card(line: str) -> dict | None:
     card = {"kind": kind, "title": title.strip(), "body": body.strip()}
 
     if kind == "do":
-        # "block_card {"last4": "4291"}" — tool name, then a JSON blob.
+        # 'block_card {"card_ref": "4821", ...}' — tool name, then a JSON blob.
         head = title.strip()
         name, _, raw = head.partition(" ")
         name = name.strip()
-        label = card["body"] or name
-
-        if name not in write_meta():
-            # The model wrote prose where the tool name goes. Keep the advice —
-            # it is usually still the right next step — but never render a button
-            # that cannot fire.
-            return {"kind": "action", "title": label or head, "body": ""}
-
         try:
             args = json.loads(raw.strip()) if raw.strip() else {}
         except json.JSONDecodeError:
             args = {}
-        if not isinstance(args, dict):
-            args = {}
-
-        # A button proposed before the customer has given you the reference would
-        # run and fail. Say what is still needed instead — that is the next thing
-        # for the agent to ask.
-        missing = sorted(a for a in write_meta()[name] if not str(args.get(a, "")).strip())
-        if missing:
-            return {
-                "kind": "action",
-                "title": label or head,
-                "body": f"needs {', '.join(missing)} — ask the customer first",
-            }
-
-        card.update(tool=name, args=args, title=label, body="")
+        # With no `::` label, a real tool name labels itself and prose keeps the
+        # whole line — the first word of a sentence is not a button label.
+        label = card["body"] or (name if name in write_meta() else head)
+        return propose_card(name, args, label)
     return card
 
 

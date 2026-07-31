@@ -347,51 +347,84 @@ async def _assist_stream(text: str, forced: str | None):
         seen = ""      # every character of this text turn we have already handled
         pending = ""   # the tail that is not yet a complete line
         fired: set[str] = set()
+        proposed: dict[str, dict] = {}  # write tools the model tried to run itself
+        awaiting: set[str] = set()      # lookups shown as pending, not yet resolved
 
-        async for event in LIVE.assist_runner.run_async(
-            user_id=BANK.active_id,
-            session_id=CALL.session_id,
-            new_message=content,
-            run_config=RunConfig(streaming_mode=StreamingMode.SSE),
-        ):
-            for call in event.get_function_calls() or []:
-                # The same call is reported on both a partial and the final event.
-                key = call.id or f"{call.name}:{json.dumps(dict(call.args or {}), sort_keys=True)}"
-                if key in fired:
+        try:
+            async for event in LIVE.assist_runner.run_async(
+                user_id=BANK.active_id,
+                session_id=CALL.session_id,
+                new_message=content,
+                run_config=RunConfig(streaming_mode=StreamingMode.SSE),
+            ):
+                for call in event.get_function_calls() or []:
+                    # The same call is reported on both a partial and the final event.
+                    key = call.id or f"{call.name}:{json.dumps(dict(call.args or {}), sort_keys=True)}"
+                    if key in fired:
+                        continue
+                    fired.add(key)
+
+                    if call.name in assist_module.write_meta():
+                        # The model called a write tool instead of proposing it.
+                        # The assist agent deliberately does not hold these, so ADK
+                        # is about to raise — capture the intent now and turn it
+                        # into the [DO] card the model should have emitted. Not a
+                        # tool_call: nothing was looked up, and showing one would
+                        # imply the block already happened.
+                        proposed[call.name] = dict(call.args or {})
+                        continue
+
+                    awaiting.add(call.name)
+                    yield _sse("tool_call", {"name": call.name, "args": dict(call.args or {})})
+
+                for resp in event.get_function_responses() or []:
+                    awaiting.discard(resp.name)
+                    yield _sse("tool_result", {"name": resp.name, "result": resp.response})
+
+                parts = (event.content.parts or []) if event.content else []
+                text = "".join(p.text for p in parts if getattr(p, "text", None))
+                if not text:
                     continue
-                fired.add(key)
-                yield _sse("tool_call", {"name": call.name, "args": dict(call.args or {})})
+                if not (getattr(event, "partial", False) or event.is_final_response()):
+                    continue
 
-            for resp in event.get_function_responses() or []:
-                yield _sse("tool_result", {"name": resp.name, "result": resp.response})
+                # ADK sends partials as increments on some versions and as the running
+                # accumulation on others, and the final event repeats the whole turn.
+                # Track what has been seen so a card is never emitted twice.
+                if text.startswith(seen):
+                    new, seen = text[len(seen):], text
+                else:
+                    new, seen = text, seen + text
+                if not new:
+                    continue
+                pending += new
 
-            parts = (event.content.parts or []) if event.content else []
-            text = "".join(p.text for p in parts if getattr(p, "text", None))
-            if not text:
-                continue
-            if not (getattr(event, "partial", False) or event.is_final_response()):
-                continue
+                while "\n" in pending:
+                    line, _, pending = pending.partition("\n")
+                    card = assist_module.parse_card(line)
+                    if card and not _already_done(card):
+                        yield _sse("card", card)
 
-            # ADK sends partials as increments on some versions and as the running
-            # accumulation on others, and the final event repeats the whole turn.
-            # Track what has been seen so a card is never emitted twice.
-            if text.startswith(seen):
-                new, seen = text[len(seen):], text
-            else:
-                new, seen = text, seen + text
-            if not new:
-                continue
-            pending += new
-
-            while "\n" in pending:
-                line, _, pending = pending.partition("\n")
-                card = assist_module.parse_card(line)
-                if card and not _already_done(card):
-                    yield _sse("card", card)
+        except ValueError as exc:
+            # ADK's "Tool 'x' not found" for a tool the assist agent does not hold.
+            # A hallucinated name must not blank the agent's screen mid-call, so
+            # log it and emit whatever this turn did produce.
+            if "not found" not in str(exc):
+                raise
+            print(f"  [assist] {exc.args[0].splitlines()[0]} — recovering")
+            # A lookup that will now never return, so its spinner never resolves.
+            for name in sorted(awaiting):
+                yield _sse("tool_error", {"name": name})
 
         card = assist_module.parse_card(pending)
         if card and not _already_done(card):
             yield _sse("card", card)
+
+        # Anything the model tried to execute itself, offered as a button instead.
+        for name, args in proposed.items():
+            card = assist_module.propose_card(name, args)
+            if not _already_done(card):
+                yield _sse("card", card)
 
     except asyncio.CancelledError:
         raise

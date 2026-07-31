@@ -130,6 +130,7 @@
 .card.tool code { font-size: 10.5px; color: var(--muted); word-break: break-all; }
 .card.tool .spin { font-size: 10px; color: var(--muted); flex-shrink: 0; }
 .card.tool.pending .spin { color: #B8860B; }
+.card.tool.failed .spin { color: #C5221F; }
 
 /* ------------------------------------------------------------ bank systems */
 
