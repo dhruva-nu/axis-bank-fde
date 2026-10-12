@@ -12,7 +12,7 @@ data, branding and capabilities are all editable at runtime — no restart, no r
 ## Run it
 
 ```bash
-cp .env.example .env          # then paste your key from https://aistudio.google.com/apikey
+cp .env.example .env          # then set VERTEX_AI_KEY (Vertex AI express) or GOOGLE_API_KEY (https://aistudio.google.com/apikey)
 ./run.sh                      # → http://localhost:8000
 ```
 
@@ -344,6 +344,33 @@ The only real AI is `assistant/agent.py` → `google.adk.agents.Agent` running G
 those 71 tools. Everything a tool returns is fabricated from `config/data/`; the *decision*
 about which tool to call, in what order, with what arguments, and what to say — all of that
 is the model.
+
+### The Jev engine (chat page default — `CHAT_ENGINE=jev`)
+
+The chat page can run with **no LLM tool calling at all**. [Jev](../jev-sdk) (TypeSafe System
+One) answers typed questions — pick one label, yes/no — so every decision becomes a choice:
+
+| Step | Who decides | How |
+|---|---|---|
+| Which tool | Jev | one `Choice` over the 66 routable tools' docstrings, plus `none` |
+| Which card / account / loan / transaction / payee | Jev | a `Choice` built per turn from the customer's own records |
+| Limit type, feature, reason, category, KB article, city… | Jev | a `Choice` over the fixed options |
+| On or off | Jev | a `Noul` |
+| Amount, tenure, OTP, IFSC, name | Jev | the message is cut into words (`jevchat/extract.py`); Jev picks which one it is, or none — and, for amounts and tenures, the unit (₹/lakh, months/years) |
+| Descriptions, reasons, summaries | the customer's own words, verbatim |
+| The reply text | Gemini, given the message + what ran + the tool output — and **no tools** |
+
+All of a tool's parameter questions go in one Jev request. When Jev is unsure (probability
+below 0.5, or confidence below 0.3) or a value was never said, nothing runs: the customer is asked, offering Jev's top
+two picks, and the next message is checked with "is this the answer to what we asked?".
+OTP is a small state machine: a tool's `otp_required` refusal sends the OTP and holds the
+call; next turn Jev picks the code out of the reply, and verify_otp runs it.
+
+Every Jev decision appears in the **Agent trace** as `jev · route` / `jev · params` with its
+probabilities. Parameter rules live in `assistant/jevchat/slots.py`, matched by parameter
+name, so a new tool with familiar parameter names is routable with no extra work. Out of
+scope for now: the date tools (`email_statement`, `request_callback`, `book_appointment`)
+and calling more than one tool per turn.
 
 Two deliberate design choices worth mentioning if asked:
 

@@ -1,0 +1,2934 @@
+{
+ "meta": {
+  "model": "gemini-2.5-flash",
+  "jev_model": "jev-latest",
+  "jev_price_per_m_input": 0.3,
+  "gemini_price_per_m": {
+   "input": 0.3,
+   "cached": 0.03,
+   "output": 2.5
+  },
+  "customer": "Rohan Mehta",
+  "time": "2026-10-10 19:07:03"
+ },
+ "rows": [
+  {
+   "n": 1,
+   "query": "What's my account balance?",
+   "llm": {
+    "reply": "You have two active accounts:\n*   Savings - Burgundy ending in XXXXXXXX7742 with a balance of ₹2,84,350.75.\n*   Savings - Easy Access ending in XXXXXXXX9310 with a balance of ₹18,240.00.",
+    "tools": [
+     {
+      "tool": "list_accounts",
+      "args": {},
+      "result": {
+       "ok": true,
+       "accounts": [
+        {
+         "account_no": "XXXXXXXX7742",
+         "full_account_no": "918010047742",
+         "type": "Savings - Burgundy",
+         "branch": "Whitefield, Bengaluru",
+         "ifsc": "UTIB0001234",
+         "balance": "₹2,84,350.75",
+         "available": "₹2,84,350.75",
+         "status": "Active",
+         "nominee": "Priya Mehta (Spouse)"
+        },
+        {
+         "account_no": "XXXXXXXX9310",
+         "full_account_no": "918010099310",
+         "type": "Savings - Easy Access",
+         "branch": "Whitefield, Bengaluru",
+         "ifsc": "UTIB0001234",
+         "balance": "₹18,240.00",
+         "available": "₹18,240.00",
+         "status": "Active",
+         "nominee": "Not registered"
+        }
+       ]
+      }
+     }
+    ],
+    "first_token_ms": 6247,
+    "total_ms": 6564,
+    "llm_calls": 2,
+    "gemini_usage": {
+     "prompt_token_count": 13080,
+     "cached_content_token_count": 5772,
+     "candidates_token_count": 79,
+     "thoughts_token_count": 49
+    },
+    "gemini_cost": 0.00268556,
+    "jev_calls": 0,
+    "jev_input_tokens": 0,
+    "error": null
+   },
+   "jev": {
+    "reply": "Your Burgundy Savings Account (XXXXXX7742) has a balance of ₹2,84,350.75.",
+    "tools": [
+     {
+      "tool": "get_account_balance",
+      "args": {
+       "account_no": ""
+      },
+      "result": {
+       "ok": true,
+       "account_no": "XXXXXXXX7742",
+       "type": "Savings - Burgundy",
+       "balance": "₹2,84,350.75",
+       "available_balance": "₹2,84,350.75",
+       "lien_amount": "₹0.00",
+       "status": "Active",
+       "amb_required": "₹2,00,000.00"
+      }
+     }
+    ],
+    "first_token_ms": 2386,
+    "total_ms": 2469,
+    "llm_calls": 1,
+    "gemini_usage": {
+     "prompt_token_count": 1955,
+     "cached_content_token_count": 0,
+     "candidates_token_count": 29,
+     "thoughts_token_count": 0
+    },
+    "gemini_cost": 0.000659,
+    "jev_calls": 2,
+    "jev_input_tokens": 3327,
+    "jev_ms": 1258,
+    "llm_ms": 1210,
+    "jev_route": {
+     "type": "choice",
+     "choice": "get_account_balance",
+     "confidence": 0.65,
+     "probabilities": {
+      "get_customer_profile": 0.0,
+      "list_accounts": 0.34,
+      "get_account_balance": 0.66,
+      "get_mini_statement": 0.0,
+      "search_transactions": 0.0,
+      "get_interest_certificate": 0.0,
+      "update_contact_details": 0.0,
+      "update_nominee": 0.0,
+      "request_cheque_book": 0.0,
+      "stop_cheque_payment": 0.0,
+      "get_branch_and_ifsc": 0.0,
+      "list_cards": 0.0,
+      "get_card_details": 0.0,
+      "block_card": 0.0,
+      "unblock_card": 0.0,
+      "reissue_card": 0.0,
+      "track_card_delivery": 0.0,
+      "set_card_limit": 0.0,
+      "toggle_card_feature": 0.0,
+      "reset_card_pin": 0.0,
+      "get_credit_card_bill": 0.0,
+      "pay_credit_card_bill": 0.0,
+      "convert_transaction_to_emi": 0.0,
+      "setup_autopay": 0.0,
+      "request_credit_limit_increase": 0.0,
+      "get_reward_points": 0.0,
+      "redeem_reward_points": 0.0,
+      "raise_dispute": 0.0,
+      "report_unauthorized_transaction": 0.0,
+      "report_failed_transaction": 0.0,
+      "check_dispute_status": 0.0,
+      "withdraw_dispute": 0.0,
+      "search_knowledge_base": 0.0,
+      "find_branch": 0.0,
+      "list_loans": 0.0,
+      "get_loan_details": 0.0,
+      "get_amortization_summary": 0.0,
+      "pay_overdue_emi": 0.0,
+      "get_foreclosure_quote": 0.0,
+      "request_loan_document": 0.0,
+      "change_emi_date": 0.0,
+      "get_preapproved_offers": 0.0,
+      "apply_for_loan": 0.0,
+      "list_deposits": 0.0,
+      "get_deposit_rates": 0.0,
+      "book_fixed_deposit": 0.0,
+      "get_premature_closure_quote": 0.0,
+      "close_deposit": 0.0,
+      "list_beneficiaries": 0.0,
+      "add_beneficiary": 0.0,
+      "transfer_funds": 0.0,
+      "check_transaction_status": 0.0,
+      "pay_bill": 0.0,
+      "get_fastag_status": 0.0,
+      "recharge_fastag": 0.0,
+      "list_standing_instructions": 0.0,
+      "cancel_standing_instruction": 0.0,
+      "get_upi_status": 0.0,
+      "deregister_upi": 0.0,
+      "list_complaint_categories": 0.0,
+      "raise_service_request": 0.0,
+      "check_service_request": 0.0,
+      "escalate_to_human": 0.0,
+      "waive_charge": 0.0,
+      "get_kyc_status": 0.0,
+      "start_video_kyc": 0.0,
+      "none": 0.0
+     }
+    },
+    "jev_steps": [
+     {
+      "title": "route",
+      "ms": 826,
+      "input_tokens": 2841,
+      "resolved": null,
+      "error": null
+     },
+     {
+      "title": "params · get_account_balance",
+      "ms": 432,
+      "input_tokens": 486,
+      "resolved": {
+       "account_no": {
+        "value": "",
+        "top": {
+         "unspecified": 0.99,
+         "acct_7742": 0.01,
+         "acct_9310": 0.0
+        },
+        "confidence": 0.98
+       }
+      },
+      "error": null
+     }
+    ],
+    "error": null,
+    "jev_cost": 0.0009980999999999998
+   }
+  },
+  {
+   "n": 2,
+   "query": "Show me the last few transactions on my Burgundy savings account",
+   "llm": {
+    "reply": "Here are the last 10 transactions on your Burgundy Savings Account XXXXXXXX7742:\n\n*   **28 Jul 2026:** Debit of ₹742.00 to SWIGGY (UPI)\n*   **27 Jul 2026:** Failed Debit of ₹12,499.00 to AMAZON PAY (UPI) - Amount debited, beneficiary not credited\n*   **26 Jul 2026:** Debit of ₹10,000.00 (ATM Withdrawal)\n*   **25 Jul 2026:** Credit of ₹2,85,000.00 from TECHNOVA SOLUTIONS (Salary NEFT)\n*   **24 Jul 2026:** Debit of ₹24,000.00 for HDFC LIFE PREMIUM (ACH)\n*   **22 Jul 2026:** Debit of ₹3,420.00 to BESCOM (UPI)\n*   **20 Jul 2026:** Debit of ₹68,990.00 to CROMA WHITEFIELD (POS)\n*   **19 Jul 2026:** Debit of ₹68,420.00 for AXIS HOME LOAN HL9920 (EMI)\n*   **18 Jul 2026:** Credit of ₹15,000.00 from PRIYA MEHTA (UPI)\n*   **16 Jul 2026:** Debit of ₹29.50 for SMS ALERT FEE Q1 + GST (Charge)\n\nYour current balance is ₹2,84,350.75.",
+    "tools": [
+     {
+      "tool": "get_mini_statement",
+      "args": {
+       "account_no": "XXXXXXXX7742",
+       "count": 0
+      },
+      "result": {
+       "ok": true,
+       "account_no": "XXXXXXXX7742",
+       "closing_balance": "₹2,84,350.75",
+       "transactions": [
+        {
+         "id": "TXN20260728A1",
+         "date": "2026-07-28",
+         "description": "UPI/DR/619204773/SWIGGY",
+         "channel": "UPI",
+         "direction": "debit",
+         "amount": "₹742.00",
+         "status": "Success",
+         "note": ""
+        },
+        {
+         "id": "TXN20260727B4",
+         "date": "2026-07-27",
+         "description": "UPI/DR/619104221/AMAZON PAY",
+         "channel": "UPI",
+         "direction": "debit",
+         "amount": "₹12,499.00",
+         "status": "Failed - Debited",
+         "note": "Amount debited, beneficiary not credited"
+        },
+        {
+         "id": "TXN20260726C2",
+         "date": "2026-07-26",
+         "description": "ATM WDL AXIS BANK WHITEFIELD",
+         "channel": "ATM",
+         "direction": "debit",
+         "amount": "₹10,000.00",
+         "status": "Success",
+         "note": ""
+        },
+        {
+         "id": "TXN20260725D9",
+         "date": "2026-07-25",
+         "description": "NEFT/CR/SALARY/TECHNOVA SOLUTIONS",
+         "channel": "NEFT",
+         "direction": "credit",
+         "amount": "₹2,85,000.00",
+         "status": "Success",
+         "note": ""
+        },
+        {
+         "id": "TXN20260724E7",
+         "date": "2026-07-24",
+         "description": "ACH/DR/HDFC LIFE PREMIUM",
+         "channel": "ACH",
+         "direction": "debit",
+         "amount": "₹24,000.00",
+         "status": "Success",
+         "note": ""
+        },
+        {
+         "id": "TXN20260722F3",
+         "date": "2026-07-22",
+         "description": "UPI/DR/618822190/BESCOM",
+         "channel": "UPI",
+         "direction": "debit",
+         "amount": "₹3,420.00",
+         "status": "Success",
+         "note": ""
+        },
+        {
+         "id": "TXN20260720G8",
+         "date": "2026-07-20",
+         "description": "POS/CROMA WHITEFIELD",
+         "channel": "POS",
+         "direction": "debit",
+         "amount": "₹68,990.00",
+         "status": "Success",
+         "note": ""
+        },
+        {
+         "id": "TXN20260719H1",
+         "date": "2026-07-19",
+         "description": "EMI/AXIS HOME LOAN HL9920",
+         "channel": "SI",
+         "direction": "debit",
+         "amount": "₹68,420.00",
+         "status": "Success",
+         "note": ""
+        },
+        {
+         "id": "TXN20260718J5",
+         "date": "2026-07-18",
+         "description": "UPI/CR/618612004/PRIYA MEHTA",
+         "channel": "UPI",
+         "direction": "credit",
+         "amount": "₹15,000.00",
+         "status": "Success",
+         "note": ""
+        },
+        {
+         "id": "TXN20260716K2",
+         "date": "2026-07-16",
+         "description": "CHARGE/SMS ALERT FEE Q1 + GST",
+         "channel": "Charge",
+         "direction": "debit",
+         "amount": "₹29.50",
+         "status": "Success",
+         "note": ""
+        }
+       ]
+      }
+     }
+    ],
+    "first_token_ms": 3604,
+    "total_ms": 4937,
+    "llm_calls": 2,
+    "gemini_usage": {
+     "prompt_token_count": 13835,
+     "cached_content_token_count": 5807,
+     "candidates_token_count": 401,
+     "thoughts_token_count": 92
+    },
+    "gemini_cost": 0.00381511,
+    "jev_calls": 0,
+    "jev_input_tokens": 0,
+    "error": null
+   },
+   "jev": {
+    "reply": "Here are the last 10 transactions on your Burgundy Savings Account XXXXXXXX7742:\n\n*   **28 Jul 2026**: UPI to SWIGGY - ₹742.00 (Debit)\n*   **27 Jul 2026**: UPI to AMAZON PAY - ₹12,499.00 (Debit) - Failed, amount debited but beneficiary not credited.\n*   **26 Jul 2026**: ATM Withdrawal Axis Bank Whitefield - ₹10,000.00 (Debit)\n*   **25 Jul 2026**: NEFT from TECHNOVA SOLUTIONS (Salary) - ₹2,85,000.00 (Credit)\n*   **24 Jul 2026**: ACH to HDFC LIFE PREMIUM - ₹24,000.00 (Debit)\n*   **22 Jul 2026**: UPI to BESCOM - ₹3,420.00 (Debit)\n*   **20 Jul 2026**: POS at CROMA WHITEFIELD - ₹68,990.00 (Debit)\n*   **19 Jul 2026**: EMI for Axis Home Loan HL9920 - ₹68,420.00 (Debit)\n*   **18 Jul 2026**: UPI from PRIYA MEHTA - ₹15,000.00 (Credit)\n*   **16 Jul 2026**: SMS Alert Fee Q1 + GST - ₹29.50 (Debit)\n\nYour current balance is ₹2,84,350.75.",
+    "tools": [
+     {
+      "tool": "get_mini_statement",
+      "args": {
+       "account_no": "918010047742",
+       "count": 0
+      },
+      "result": {
+       "ok": true,
+       "account_no": "XXXXXXXX7742",
+       "closing_balance": "₹2,84,350.75",
+       "transactions": [
+        {
+         "id": "TXN20260728A1",
+         "date": "2026-07-28",
+         "description": "UPI/DR/619204773/SWIGGY",
+         "channel": "UPI",
+         "direction": "debit",
+         "amount": "₹742.00",
+         "status": "Success",
+         "note": ""
+        },
+        {
+         "id": "TXN20260727B4",
+         "date": "2026-07-27",
+         "description": "UPI/DR/619104221/AMAZON PAY",
+         "channel": "UPI",
+         "direction": "debit",
+         "amount": "₹12,499.00",
+         "status": "Failed - Debited",
+         "note": "Amount debited, beneficiary not credited"
+        },
+        {
+         "id": "TXN20260726C2",
+         "date": "2026-07-26",
+         "description": "ATM WDL AXIS BANK WHITEFIELD",
+         "channel": "ATM",
+         "direction": "debit",
+         "amount": "₹10,000.00",
+         "status": "Success",
+         "note": ""
+        },
+        {
+         "id": "TXN20260725D9",
+         "date": "2026-07-25",
+         "description": "NEFT/CR/SALARY/TECHNOVA SOLUTIONS",
+         "channel": "NEFT",
+         "direction": "credit",
+         "amount": "₹2,85,000.00",
+         "status": "Success",
+         "note": ""
+        },
+        {
+         "id": "TXN20260724E7",
+         "date": "2026-07-24",
+         "description": "ACH/DR/HDFC LIFE PREMIUM",
+         "channel": "ACH",
+         "direction": "debit",
+         "amount": "₹24,000.00",
+         "status": "Success",
+         "note": ""
+        },
+        {
+         "id": "TXN20260722F3",
+         "date": "2026-07-22",
+         "description": "UPI/DR/618822190/BESCOM",
+         "channel": "UPI",
+         "direction": "debit",
+         "amount": "₹3,420.00",
+         "status": "Success",
+         "note": ""
+        },
+        {
+         "id": "TXN20260720G8",
+         "date": "2026-07-20",
+         "description": "POS/CROMA WHITEFIELD",
+         "channel": "POS",
+         "direction": "debit",
+         "amount": "₹68,990.00",
+         "status": "Success",
+         "note": ""
+        },
+        {
+         "id": "TXN20260719H1",
+         "date": "2026-07-19",
+         "description": "EMI/AXIS HOME LOAN HL9920",
+         "channel": "SI",
+         "direction": "debit",
+         "amount": "₹68,420.00",
+         "status": "Success",
+         "note": ""
+        },
+        {
+         "id": "TXN20260718J5",
+         "date": "2026-07-18",
+         "description": "UPI/CR/618612004/PRIYA MEHTA",
+         "channel": "UPI",
+         "direction": "credit",
+         "amount": "₹15,000.00",
+         "status": "Success",
+         "note": ""
+        },
+        {
+         "id": "TXN20260716K2",
+         "date": "2026-07-16",
+         "description": "CHARGE/SMS ALERT FEE Q1 + GST",
+         "channel": "Charge",
+         "direction": "debit",
+         "amount": "₹29.50",
+         "status": "Success",
+         "note": ""
+        }
+       ]
+      }
+     }
+    ],
+    "first_token_ms": 7311,
+    "total_ms": 8762,
+    "llm_calls": 1,
+    "gemini_usage": {
+     "prompt_token_count": 3044,
+     "cached_content_token_count": 1019,
+     "candidates_token_count": 377,
+     "thoughts_token_count": 0
+    },
+    "gemini_cost": 0.0015805700000000001,
+    "jev_calls": 2,
+    "jev_input_tokens": 3351,
+    "jev_ms": 4900,
+    "llm_ms": 3859,
+    "jev_route": {
+     "type": "choice",
+     "choice": "get_mini_statement",
+     "confidence": 1.0,
+     "probabilities": {
+      "get_customer_profile": 0.0,
+      "list_accounts": 0.0,
+      "get_account_balance": 0.0,
+      "get_mini_statement": 1.0,
+      "search_transactions": 0.0,
+      "get_interest_certificate": 0.0,
+      "update_contact_details": 0.0,
+      "update_nominee": 0.0,
+      "request_cheque_book": 0.0,
+      "stop_cheque_payment": 0.0,
+      "get_branch_and_ifsc": 0.0,
+      "list_cards": 0.0,
+      "get_card_details": 0.0,
+      "block_card": 0.0,
+      "unblock_card": 0.0,
+      "reissue_card": 0.0,
+      "track_card_delivery": 0.0,
+      "set_card_limit": 0.0,
+      "toggle_card_feature": 0.0,
+      "reset_card_pin": 0.0,
+      "get_credit_card_bill": 0.0,
+      "pay_credit_card_bill": 0.0,
+      "convert_transaction_to_emi": 0.0,
+      "setup_autopay": 0.0,
+      "request_credit_limit_increase": 0.0,
+      "get_reward_points": 0.0,
+      "redeem_reward_points": 0.0,
+      "raise_dispute": 0.0,
+      "report_unauthorized_transaction": 0.0,
+      "report_failed_transaction": 0.0,
+      "check_dispute_status": 0.0,
+      "withdraw_dispute": 0.0,
+      "search_knowledge_base": 0.0,
+      "find_branch": 0.0,
+      "list_loans": 0.0,
+      "get_loan_details": 0.0,
+      "get_amortization_summary": 0.0,
+      "pay_overdue_emi": 0.0,
+      "get_foreclosure_quote": 0.0,
+      "request_loan_document": 0.0,
+      "change_emi_date": 0.0,
+      "get_preapproved_offers": 0.0,
+      "apply_for_loan": 0.0,
+      "list_deposits": 0.0,
+      "get_deposit_rates": 0.0,
+      "book_fixed_deposit": 0.0,
+      "get_premature_closure_quote": 0.0,
+      "close_deposit": 0.0,
+      "list_beneficiaries": 0.0,
+      "add_beneficiary": 0.0,
+      "transfer_funds": 0.0,
+      "check_transaction_status": 0.0,
+      "pay_bill": 0.0,
+      "get_fastag_status": 0.0,
+      "recharge_fastag": 0.0,
+      "list_standing_instructions": 0.0,
+      "cancel_standing_instruction": 0.0,
+      "get_upi_status": 0.0,
+      "deregister_upi": 0.0,
+      "list_complaint_categories": 0.0,
+      "raise_service_request": 0.0,
+      "check_service_request": 0.0,
+      "escalate_to_human": 0.0,
+      "waive_charge": 0.0,
+      "get_kyc_status": 0.0,
+      "start_video_kyc": 0.0,
+      "none": 0.0
+     }
+    },
+    "jev_steps": [
+     {
+      "title": "route",
+      "ms": 4578,
+      "input_tokens": 2847,
+      "resolved": null,
+      "error": null
+     },
+     {
+      "title": "params · get_mini_statement",
+      "ms": 322,
+      "input_tokens": 504,
+      "resolved": {
+       "account_no": {
+        "value": "918010047742",
+        "top": {
+         "acct_7742": 0.99,
+         "unspecified": 0.01,
+         "acct_9310": 0.0
+        },
+        "confidence": 0.98
+       },
+       "count": {
+        "value": 0,
+        "via": "direct"
+       }
+      },
+      "error": null
+     }
+    ],
+    "error": null,
+    "jev_cost": 0.0010053
+   }
+  },
+  {
+   "n": 3,
+   "query": "I lost my Magnus credit card, please block it",
+   "llm": {
+    "reply": "Your Axis Magnus Credit Card (XXXX XXXX XXXX 7315) has been hotlisted immediately due to being lost. This block is permanent and cannot be reversed.\n\nA replacement card will be sent to your registered address (1204, Prestige Shantiniketan, Whitefield, Bengaluru, Karnataka 560048) and should arrive by 20 Oct 2026. There is no charge for the replacement card.\n\nYour reference number for this request is BLK202610100001.",
+    "tools": [
+     {
+      "tool": "block_card",
+      "args": {
+       "card_ref": "7315",
+       "reason": "lost"
+      },
+      "result": {
+       "ok": true,
+       "reference": "BLK202610100001",
+       "card": "XXXX XXXX XXXX 7315",
+       "product": "Axis Magnus Credit Card",
+       "status": "Hotlisted",
+       "reason": "lost",
+       "effective": "Immediately — the card cannot be used from now",
+       "reversible": false,
+       "replacement": {
+        "auto_issued": true,
+        "charge": "Free (lost/stolen/fraud)",
+        "expected_delivery": "2026-10-20",
+        "delivery_address": "1204, Prestige Shantiniketan, Whitefield, Bengaluru, Karnataka 560048"
+       },
+       "liability": "Reported within 3 working days of an unauthorised transaction, the customer's liability is zero under RBI rules."
+      }
+     }
+    ],
+    "first_token_ms": 3653,
+    "total_ms": 4039,
+    "llm_calls": 2,
+    "gemini_usage": {
+     "prompt_token_count": 13089,
+     "cached_content_token_count": 6731,
+     "candidates_token_count": 144,
+     "thoughts_token_count": 95
+    },
+    "gemini_cost": 0.00270683,
+    "jev_calls": 0,
+    "jev_input_tokens": 0,
+    "error": null
+   },
+   "jev": {
+    "reply": "Your Axis Magnus Credit Card (XXXX XXXX XXXX 7315) has been blocked immediately due to loss. A replacement card will be issued and delivered to your registered address by 20 Oct 2026. There is no charge for the replacement card.\n\nThe reference number for this request is BLK202610100001.",
+    "tools": [
+     {
+      "tool": "block_card",
+      "args": {
+       "card_ref": "CC-7315",
+       "reason": "lost"
+      },
+      "result": {
+       "ok": true,
+       "reference": "BLK202610100001",
+       "card": "XXXX XXXX XXXX 7315",
+       "product": "Axis Magnus Credit Card",
+       "status": "Hotlisted",
+       "reason": "lost",
+       "effective": "Immediately — the card cannot be used from now",
+       "reversible": false,
+       "replacement": {
+        "auto_issued": true,
+        "charge": "Free (lost/stolen/fraud)",
+        "expected_delivery": "2026-10-20",
+        "delivery_address": "1204, Prestige Shantiniketan, Whitefield, Bengaluru, Karnataka 560048"
+       },
+       "liability": "Reported within 3 working days of an unauthorised transaction, the customer's liability is zero under RBI rules."
+      }
+     }
+    ],
+    "first_token_ms": 2531,
+    "total_ms": 2970,
+    "llm_calls": 1,
+    "gemini_usage": {
+     "prompt_token_count": 2050,
+     "cached_content_token_count": 1018,
+     "candidates_token_count": 80,
+     "thoughts_token_count": 0
+    },
+    "gemini_cost": 0.0005401399999999999,
+    "jev_calls": 2,
+    "jev_input_tokens": 3528,
+    "jev_ms": 1092,
+    "llm_ms": 1876,
+    "jev_route": {
+     "type": "choice",
+     "choice": "block_card",
+     "confidence": 1.0,
+     "probabilities": {
+      "get_customer_profile": 0.0,
+      "list_accounts": 0.0,
+      "get_account_balance": 0.0,
+      "get_mini_statement": 0.0,
+      "search_transactions": 0.0,
+      "get_interest_certificate": 0.0,
+      "update_contact_details": 0.0,
+      "update_nominee": 0.0,
+      "request_cheque_book": 0.0,
+      "stop_cheque_payment": 0.0,
+      "get_branch_and_ifsc": 0.0,
+      "list_cards": 0.0,
+      "get_card_details": 0.0,
+      "block_card": 1.0,
+      "unblock_card": 0.0,
+      "reissue_card": 0.0,
+      "track_card_delivery": 0.0,
+      "set_card_limit": 0.0,
+      "toggle_card_feature": 0.0,
+      "reset_card_pin": 0.0,
+      "get_credit_card_bill": 0.0,
+      "pay_credit_card_bill": 0.0,
+      "convert_transaction_to_emi": 0.0,
+      "setup_autopay": 0.0,
+      "request_credit_limit_increase": 0.0,
+      "get_reward_points": 0.0,
+      "redeem_reward_points": 0.0,
+      "raise_dispute": 0.0,
+      "report_unauthorized_transaction": 0.0,
+      "report_failed_transaction": 0.0,
+      "check_dispute_status": 0.0,
+      "withdraw_dispute": 0.0,
+      "search_knowledge_base": 0.0,
+      "find_branch": 0.0,
+      "list_loans": 0.0,
+      "get_loan_details": 0.0,
+      "get_amortization_summary": 0.0,
+      "pay_overdue_emi": 0.0,
+      "get_foreclosure_quote": 0.0,
+      "request_loan_document": 0.0,
+      "change_emi_date": 0.0,
+      "get_preapproved_offers": 0.0,
+      "apply_for_loan": 0.0,
+      "list_deposits": 0.0,
+      "get_deposit_rates": 0.0,
+      "book_fixed_deposit": 0.0,
+      "get_premature_closure_quote": 0.0,
+      "close_deposit": 0.0,
+      "list_beneficiaries": 0.0,
+      "add_beneficiary": 0.0,
+      "transfer_funds": 0.0,
+      "check_transaction_status": 0.0,
+      "pay_bill": 0.0,
+      "get_fastag_status": 0.0,
+      "recharge_fastag": 0.0,
+      "list_standing_instructions": 0.0,
+      "cancel_standing_instruction": 0.0,
+      "get_upi_status": 0.0,
+      "deregister_upi": 0.0,
+      "list_complaint_categories": 0.0,
+      "raise_service_request": 0.0,
+      "check_service_request": 0.0,
+      "escalate_to_human": 0.0,
+      "waive_charge": 0.0,
+      "get_kyc_status": 0.0,
+      "start_video_kyc": 0.0,
+      "none": 0.0
+     }
+    },
+    "jev_steps": [
+     {
+      "title": "route",
+      "ms": 730,
+      "input_tokens": 2845,
+      "resolved": null,
+      "error": null
+     },
+     {
+      "title": "params · block_card",
+      "ms": 362,
+      "input_tokens": 683,
+      "resolved": {
+       "card_ref": {
+        "value": "CC-7315",
+        "top": {
+         "cc_7315": 1.0,
+         "dc_4821": 0.0,
+         "cc_9902": 0.0
+        },
+        "confidence": 1.0
+       },
+       "reason": {
+        "value": "lost",
+        "top": {
+         "lost": 1.0,
+         "stolen": 0.0,
+         "fraud": 0.0
+        },
+        "confidence": 1.0
+       }
+      },
+      "error": null
+     }
+    ],
+    "error": null,
+    "jev_cost": 0.0010584
+   }
+  },
+  {
+   "n": 4,
+   "query": "My Flipkart credit card still hasn't arrived, where is it?",
+   "llm": {
+    "reply": "Your Flipkart Credit Card (XXXX XXXX XXXX 9902) is currently out for delivery via Blue Dart, AWB number 77419230845. It was last scanned at Bengaluru Whitefield Hub on 28 Jul 2026 at 08:14, and is expected to be delivered by 29 Jul 2026.",
+    "tools": [
+     {
+      "tool": "track_card_delivery",
+      "args": {
+       "card_ref": "9902"
+      },
+      "result": {
+       "ok": true,
+       "card": "XXXX XXXX XXXX 9902",
+       "product": "Axis Flipkart Credit Card",
+       "courier": "Blue Dart",
+       "awb": "77419230845",
+       "status": "Out for delivery",
+       "expected": "2026-07-29",
+       "last_scan": "2026-07-28 08:14 — Bengaluru Whitefield Hub"
+      }
+     }
+    ],
+    "first_token_ms": 3872,
+    "total_ms": 4163,
+    "llm_calls": 2,
+    "gemini_usage": {
+     "prompt_token_count": 12994,
+     "cached_content_token_count": 5769,
+     "candidates_token_count": 108,
+     "thoughts_token_count": 66
+    },
+    "gemini_cost": 0.00277557,
+    "jev_calls": 0,
+    "jev_input_tokens": 0,
+    "error": null
+   },
+   "jev": {
+    "reply": "Your Flipkart credit card (XXXX XXXX XXXX 9902) is out for delivery with Blue Dart, AWB number 77419230845. It was last scanned on 28 Jul 2026 at the Bengaluru Whitefield Hub. You can expect it by 29 Jul 2026.",
+    "tools": [
+     {
+      "tool": "track_card_delivery",
+      "args": {
+       "card_ref": "CC-9902"
+      },
+      "result": {
+       "ok": true,
+       "card": "XXXX XXXX XXXX 9902",
+       "product": "Axis Flipkart Credit Card",
+       "courier": "Blue Dart",
+       "awb": "77419230845",
+       "status": "Out for delivery",
+       "expected": "2026-07-29",
+       "last_scan": "2026-07-28 08:14 — Bengaluru Whitefield Hub"
+      }
+     }
+    ],
+    "first_token_ms": 3138,
+    "total_ms": 3511,
+    "llm_calls": 1,
+    "gemini_usage": {
+     "prompt_token_count": 1964,
+     "cached_content_token_count": 0,
+     "candidates_token_count": 75,
+     "thoughts_token_count": 0
+    },
+    "gemini_cost": 0.0007767,
+    "jev_calls": 2,
+    "jev_input_tokens": 3326,
+    "jev_ms": 1407,
+    "llm_ms": 2104,
+    "jev_route": {
+     "type": "choice",
+     "choice": "track_card_delivery",
+     "confidence": 0.88,
+     "probabilities": {
+      "get_customer_profile": 0.0,
+      "list_accounts": 0.0,
+      "get_account_balance": 0.0,
+      "get_mini_statement": 0.0,
+      "search_transactions": 0.0,
+      "get_interest_certificate": 0.0,
+      "update_contact_details": 0.0,
+      "update_nominee": 0.0,
+      "request_cheque_book": 0.0,
+      "stop_cheque_payment": 0.0,
+      "get_branch_and_ifsc": 0.0,
+      "list_cards": 0.08,
+      "get_card_details": 0.03,
+      "block_card": 0.0,
+      "unblock_card": 0.0,
+      "reissue_card": 0.0,
+      "track_card_delivery": 0.88,
+      "set_card_limit": 0.0,
+      "toggle_card_feature": 0.0,
+      "reset_card_pin": 0.0,
+      "get_credit_card_bill": 0.0,
+      "pay_credit_card_bill": 0.0,
+      "convert_transaction_to_emi": 0.0,
+      "setup_autopay": 0.0,
+      "request_credit_limit_increase": 0.0,
+      "get_reward_points": 0.0,
+      "redeem_reward_points": 0.0,
+      "raise_dispute": 0.0,
+      "report_unauthorized_transaction": 0.0,
+      "report_failed_transaction": 0.0,
+      "check_dispute_status": 0.0,
+      "withdraw_dispute": 0.0,
+      "search_knowledge_base": 0.0,
+      "find_branch": 0.0,
+      "list_loans": 0.0,
+      "get_loan_details": 0.0,
+      "get_amortization_summary": 0.0,
+      "pay_overdue_emi": 0.0,
+      "get_foreclosure_quote": 0.0,
+      "request_loan_document": 0.0,
+      "change_emi_date": 0.0,
+      "get_preapproved_offers": 0.0,
+      "apply_for_loan": 0.0,
+      "list_deposits": 0.0,
+      "get_deposit_rates": 0.0,
+      "book_fixed_deposit": 0.0,
+      "get_premature_closure_quote": 0.0,
+      "close_deposit": 0.0,
+      "list_beneficiaries": 0.0,
+      "add_beneficiary": 0.0,
+      "transfer_funds": 0.0,
+      "check_transaction_status": 0.0,
+      "pay_bill": 0.0,
+      "get_fastag_status": 0.0,
+      "recharge_fastag": 0.0,
+      "list_standing_instructions": 0.0,
+      "cancel_standing_instruction": 0.0,
+      "get_upi_status": 0.0,
+      "deregister_upi": 0.0,
+      "list_complaint_categories": 0.0,
+      "raise_service_request": 0.01,
+      "check_service_request": 0.0,
+      "escalate_to_human": 0.0,
+      "waive_charge": 0.0,
+      "get_kyc_status": 0.0,
+      "start_video_kyc": 0.0,
+      "none": 0.0
+     }
+    },
+    "jev_steps": [
+     {
+      "title": "route",
+      "ms": 1021,
+      "input_tokens": 2850,
+      "resolved": null,
+      "error": null
+     },
+     {
+      "title": "params · track_card_delivery",
+      "ms": 386,
+      "input_tokens": 476,
+      "resolved": {
+       "card_ref": {
+        "value": "CC-9902",
+        "top": {
+         "cc_9902": 1.0,
+         "dc_4821": 0.0,
+         "cc_7315": 0.0
+        },
+        "confidence": 1.0
+       }
+      },
+      "error": null
+     }
+    ],
+    "error": null,
+    "jev_cost": 0.0009977999999999999
+   }
+  },
+  {
+   "n": 5,
+   "query": "How much do I owe on my Magnus card this month and when is it due?",
+   "llm": {
+    "reply": "",
+    "tools": [],
+    "first_token_ms": null,
+    "total_ms": 2062,
+    "llm_calls": 1,
+    "gemini_usage": {
+     "prompt_token_count": 6398,
+     "cached_content_token_count": 0,
+     "candidates_token_count": 0,
+     "thoughts_token_count": 0
+    },
+    "gemini_cost": 0.0019194,
+    "jev_calls": 0,
+    "jev_input_tokens": 0,
+    "error": "empty reply: the model returned no content"
+   },
+   "jev": {
+    "reply": "Your total outstanding on the Axis Magnus Credit Card (XXXX XXXX XXXX 7315) is ₹2,38,580.00, due on 07 Aug 2026. The minimum amount due is ₹11,929.00.",
+    "tools": [
+     {
+      "tool": "get_credit_card_bill",
+      "args": {
+       "card_ref": "CC-7315"
+      },
+      "result": {
+       "ok": true,
+       "card": "XXXX XXXX XXXX 7315",
+       "product": "Axis Magnus Credit Card",
+       "statement_date": "2026-07-18",
+       "due_date": "2026-08-07",
+       "total_outstanding": "₹2,38,580.00",
+       "minimum_due": "₹11,929.00",
+       "credit_limit": "₹8,50,000.00",
+       "available_credit": "₹6,11,420.00",
+       "last_payment": {
+        "amount": 195000.0,
+        "date": "2026-07-05"
+       },
+       "autopay": {
+        "enabled": false,
+        "type": null,
+        "account": null
+       },
+       "interest_warning": "Paying only the minimum due avoids the late fee but attracts 3.6% per month on the full outstanding from the transaction date."
+      }
+     }
+    ],
+    "first_token_ms": 2145,
+    "total_ms": 2905,
+    "llm_calls": 1,
+    "gemini_usage": {
+     "prompt_token_count": 2116,
+     "cached_content_token_count": 0,
+     "candidates_token_count": 63,
+     "thoughts_token_count": 0
+    },
+    "gemini_cost": 0.0007922999999999999,
+    "jev_calls": 2,
+    "jev_input_tokens": 3311,
+    "jev_ms": 861,
+    "llm_ms": 2042,
+    "jev_route": {
+     "type": "choice",
+     "choice": "get_credit_card_bill",
+     "confidence": 0.99,
+     "probabilities": {
+      "get_customer_profile": 0.0,
+      "list_accounts": 0.0,
+      "get_account_balance": 0.0,
+      "get_mini_statement": 0.0,
+      "search_transactions": 0.0,
+      "get_interest_certificate": 0.0,
+      "update_contact_details": 0.0,
+      "update_nominee": 0.0,
+      "request_cheque_book": 0.0,
+      "stop_cheque_payment": 0.0,
+      "get_branch_and_ifsc": 0.0,
+      "list_cards": 0.0,
+      "get_card_details": 0.01,
+      "block_card": 0.0,
+      "unblock_card": 0.0,
+      "reissue_card": 0.0,
+      "track_card_delivery": 0.0,
+      "set_card_limit": 0.0,
+      "toggle_card_feature": 0.0,
+      "reset_card_pin": 0.0,
+      "get_credit_card_bill": 0.99,
+      "pay_credit_card_bill": 0.0,
+      "convert_transaction_to_emi": 0.0,
+      "setup_autopay": 0.0,
+      "request_credit_limit_increase": 0.0,
+      "get_reward_points": 0.0,
+      "redeem_reward_points": 0.0,
+      "raise_dispute": 0.0,
+      "report_unauthorized_transaction": 0.0,
+      "report_failed_transaction": 0.0,
+      "check_dispute_status": 0.0,
+      "withdraw_dispute": 0.0,
+      "search_knowledge_base": 0.0,
+      "find_branch": 0.0,
+      "list_loans": 0.0,
+      "get_loan_details": 0.0,
+      "get_amortization_summary": 0.0,
+      "pay_overdue_emi": 0.0,
+      "get_foreclosure_quote": 0.0,
+      "request_loan_document": 0.0,
+      "change_emi_date": 0.0,
+      "get_preapproved_offers": 0.0,
+      "apply_for_loan": 0.0,
+      "list_deposits": 0.0,
+      "get_deposit_rates": 0.0,
+      "book_fixed_deposit": 0.0,
+      "get_premature_closure_quote": 0.0,
+      "close_deposit": 0.0,
+      "list_beneficiaries": 0.0,
+      "add_beneficiary": 0.0,
+      "transfer_funds": 0.0,
+      "check_transaction_status": 0.0,
+      "pay_bill": 0.0,
+      "get_fastag_status": 0.0,
+      "recharge_fastag": 0.0,
+      "list_standing_instructions": 0.0,
+      "cancel_standing_instruction": 0.0,
+      "get_upi_status": 0.0,
+      "deregister_upi": 0.0,
+      "list_complaint_categories": 0.0,
+      "raise_service_request": 0.0,
+      "check_service_request": 0.0,
+      "escalate_to_human": 0.0,
+      "waive_charge": 0.0,
+      "get_kyc_status": 0.0,
+      "start_video_kyc": 0.0,
+      "none": 0.0
+     }
+    },
+    "jev_steps": [
+     {
+      "title": "route",
+      "ms": 457,
+      "input_tokens": 2852,
+      "resolved": null,
+      "error": null
+     },
+     {
+      "title": "params · get_credit_card_bill",
+      "ms": 404,
+      "input_tokens": 459,
+      "resolved": {
+       "card_ref": {
+        "value": "CC-7315",
+        "top": {
+         "cc_7315": 1.0,
+         "cc_9902": 0.0
+        },
+        "confidence": 1.0
+       }
+      },
+      "error": null
+     }
+    ],
+    "error": null,
+    "jev_cost": 0.0009933
+   }
+  },
+  {
+   "n": 6,
+   "query": "There's a 47,320 charge from GlobalPay London on my card that I did not make",
+   "llm": {
+    "reply": "I'm sorry to hear about this unauthorized transaction. To protect your account, I need to block the card immediately. Could you please tell me the last 4 digits of the card on which this transaction occurred?",
+    "tools": [],
+    "first_token_ms": 3016,
+    "total_ms": 3107,
+    "llm_calls": 1,
+    "gemini_usage": {
+     "prompt_token_count": 6405,
+     "cached_content_token_count": 0,
+     "candidates_token_count": 43,
+     "thoughts_token_count": 202
+    },
+    "gemini_cost": 0.002534,
+    "jev_calls": 0,
+    "jev_input_tokens": 0,
+    "error": null
+   },
+   "jev": {
+    "reply": "I'm sorry to hear about this unauthorized transaction. Your Axis Magnus Credit Card (XXXX XXXX XXXX 7315) has been hotlisted immediately to prevent further misuse. A replacement card will be issued free of charge and should arrive by 20 Oct 2026.\n\nWe have opened a fraud investigation for the ₹47,320.00 transaction from GLOBALPAY*DIGITALPRO LONDON GB on 26 Jul 2026. Your liability for this transaction is zero.\n\nHere's what happens next:\n*   The fraud desk will call you on your registered mobile number within 24 hours.\n*   You will receive provisional credit by 20 Oct 2026.\n*   The final resolution is expected by 08 Jan 2027.\n*   The dispute reference number is FRD202610100001.\n\nPlease do not share your OTP or CVV with anyone, even if they claim to be from the bank. You may also file a cybercrime complaint at cybercrime.gov.in or call 1930 to strengthen your case.",
+    "tools": [
+     {
+      "tool": "report_unauthorized_transaction",
+      "args": {
+       "txn_ref": "TXN20260726CC2",
+       "description": "There's a 47,320 charge from GlobalPay London on my card that I did not make"
+      },
+      "result": {
+       "ok": true,
+       "case_id": "FRD202610100001",
+       "transaction": "GLOBALPAY*DIGITALPRO LONDON GB",
+       "amount": "₹47,320.00",
+       "date": "2026-07-26",
+       "status": "Fraud investigation opened — high priority",
+       "provisional_credit_by": "2026-10-20",
+       "final_resolution_by": "2027-01-08",
+       "liability": "Reported within 3 working days of the transaction, the customer's liability is zero under RBI's limited-liability framework.",
+       "next_steps": [
+        "The fraud desk will call on the registered mobile within 24 hours.",
+        "Do not share the OTP or CVV with anyone, including anyone claiming to be from the bank.",
+        "File a cybercrime complaint at cybercrime.gov.in or 1930 if the customer wants to — it strengthens the case."
+       ],
+       "card_blocked": {
+        "card": "XXXX XXXX XXXX 7315",
+        "product": "Axis Magnus Credit Card",
+        "status": "Hotlisted immediately",
+        "replacement": "Issued free of charge",
+        "expected_delivery": "2026-10-20"
+       }
+      }
+     }
+    ],
+    "first_token_ms": 6930,
+    "total_ms": 7904,
+    "llm_calls": 1,
+    "gemini_usage": {
+     "prompt_token_count": 2262,
+     "cached_content_token_count": 0,
+     "candidates_token_count": 247,
+     "thoughts_token_count": 0
+    },
+    "gemini_cost": 0.0012961,
+    "jev_calls": 2,
+    "jev_input_tokens": 4255,
+    "jev_ms": 5668,
+    "llm_ms": 2234,
+    "jev_route": {
+     "type": "choice",
+     "choice": "report_unauthorized_transaction",
+     "confidence": 1.0,
+     "probabilities": {
+      "get_customer_profile": 0.0,
+      "list_accounts": 0.0,
+      "get_account_balance": 0.0,
+      "get_mini_statement": 0.0,
+      "search_transactions": 0.0,
+      "get_interest_certificate": 0.0,
+      "update_contact_details": 0.0,
+      "update_nominee": 0.0,
+      "request_cheque_book": 0.0,
+      "stop_cheque_payment": 0.0,
+      "get_branch_and_ifsc": 0.0,
+      "list_cards": 0.0,
+      "get_card_details": 0.0,
+      "block_card": 0.0,
+      "unblock_card": 0.0,
+      "reissue_card": 0.0,
+      "track_card_delivery": 0.0,
+      "set_card_limit": 0.0,
+      "toggle_card_feature": 0.0,
+      "reset_card_pin": 0.0,
+      "get_credit_card_bill": 0.0,
+      "pay_credit_card_bill": 0.0,
+      "convert_transaction_to_emi": 0.0,
+      "setup_autopay": 0.0,
+      "request_credit_limit_increase": 0.0,
+      "get_reward_points": 0.0,
+      "redeem_reward_points": 0.0,
+      "raise_dispute": 0.0,
+      "report_unauthorized_transaction": 1.0,
+      "report_failed_transaction": 0.0,
+      "check_dispute_status": 0.0,
+      "withdraw_dispute": 0.0,
+      "search_knowledge_base": 0.0,
+      "find_branch": 0.0,
+      "list_loans": 0.0,
+      "get_loan_details": 0.0,
+      "get_amortization_summary": 0.0,
+      "pay_overdue_emi": 0.0,
+      "get_foreclosure_quote": 0.0,
+      "request_loan_document": 0.0,
+      "change_emi_date": 0.0,
+      "get_preapproved_offers": 0.0,
+      "apply_for_loan": 0.0,
+      "list_deposits": 0.0,
+      "get_deposit_rates": 0.0,
+      "book_fixed_deposit": 0.0,
+      "get_premature_closure_quote": 0.0,
+      "close_deposit": 0.0,
+      "list_beneficiaries": 0.0,
+      "add_beneficiary": 0.0,
+      "transfer_funds": 0.0,
+      "check_transaction_status": 0.0,
+      "pay_bill": 0.0,
+      "get_fastag_status": 0.0,
+      "recharge_fastag": 0.0,
+      "list_standing_instructions": 0.0,
+      "cancel_standing_instruction": 0.0,
+      "get_upi_status": 0.0,
+      "deregister_upi": 0.0,
+      "list_complaint_categories": 0.0,
+      "raise_service_request": 0.0,
+      "check_service_request": 0.0,
+      "escalate_to_human": 0.0,
+      "waive_charge": 0.0,
+      "get_kyc_status": 0.0,
+      "start_video_kyc": 0.0,
+      "none": 0.0
+     }
+    },
+    "jev_steps": [
+     {
+      "title": "route",
+      "ms": 5292,
+      "input_tokens": 2859,
+      "resolved": null,
+      "error": null
+     },
+     {
+      "title": "params · report_unauthorized_transaction",
+      "ms": 376,
+      "input_tokens": 1396,
+      "resolved": {
+       "txn_ref": {
+        "value": "TXN20260726CC2",
+        "top": {
+         "txn20260726cc2": 1.0,
+         "txn20260728a1": 0.0,
+         "txn20260727b4": 0.0
+        },
+        "confidence": 1.0
+       },
+       "description": {
+        "value": "There's a 47,320 charge from GlobalPay London on my card that I did not make",
+        "via": "direct"
+       }
+      },
+      "error": null
+     }
+    ],
+    "error": null,
+    "jev_cost": 0.0012765
+   }
+  },
+  {
+   "n": 7,
+   "query": "I paid 12,499 to Amazon Pay yesterday, money got debited but the order failed",
+   "llm": {
+    "reply": "I found a transaction to Amazon Pay for ₹12,499.00 on 27 Jul 2026. Is this the transaction you are referring to, or was it a different one from yesterday?",
+    "tools": [
+     {
+      "tool": "search_transactions",
+      "args": {
+       "query": "Amazon Pay 12499",
+       "account_no": "XXXXXXXX7742"
+      },
+      "result": {
+       "ok": true,
+       "query": "Amazon Pay 12499",
+       "count": 0,
+       "transactions": []
+      }
+     },
+     {
+      "tool": "search_transactions",
+      "args": {
+       "account_no": "XXXXXXXX7742",
+       "query": "Amazon Pay"
+      },
+      "result": {
+       "ok": true,
+       "query": "Amazon Pay",
+       "count": 1,
+       "transactions": [
+        {
+         "id": "TXN20260727B4",
+         "date": "2026-07-27",
+         "account": "918010047742",
+         "description": "UPI/DR/619104221/AMAZON PAY",
+         "channel": "UPI",
+         "direction": "debit",
+         "amount": "₹12,499.00",
+         "status": "Failed - Debited",
+         "note": "Amount debited, beneficiary not credited"
+        }
+       ]
+      }
+     }
+    ],
+    "first_token_ms": 8516,
+    "total_ms": 8653,
+    "llm_calls": 3,
+    "gemini_usage": {
+     "prompt_token_count": 20001,
+     "cached_content_token_count": 11539,
+     "candidates_token_count": 107,
+     "thoughts_token_count": 584
+    },
+    "gemini_cost": 0.004612270000000001,
+    "jev_calls": 0,
+    "jev_input_tokens": 0,
+    "error": null
+   },
+   "jev": {
+    "reply": "I've registered a complaint for the failed transaction to Amazon Pay of ₹12,499.00 on 27 Jul 2026. The reference number is SR202610100001.\n\nThe transaction (RRN 619104221773) should be auto-reversed by 11 Oct 2026 as per RBI guidelines. You'll receive ₹100 per day automatically if there's any delay beyond this. No action is needed from your side.",
+    "tools": [
+     {
+      "tool": "report_failed_transaction",
+      "args": {
+       "txn_ref": "TXN20260727B4"
+      },
+      "result": {
+       "ok": true,
+       "reference": "SR202610100001",
+       "transaction": "UPI/DR/619104221/AMAZON PAY",
+       "amount": "₹12,499.00",
+       "date": "2026-07-27",
+       "rrn": "619104221773",
+       "auto_reversal_by": "2026-10-11",
+       "rule": "RBI Harmonisation of TAT: UPI/IMPS reverse by T+1, ATM and card failures by T+5.",
+       "compensation": "If the reversal is late, ₹100 per day of delay is credited automatically — no claim needed.",
+       "action_needed_from_customer": "None. This tracks itself; the SR number is for reference."
+      }
+     }
+    ],
+    "first_token_ms": 2426,
+    "total_ms": 3057,
+    "llm_calls": 1,
+    "gemini_usage": {
+     "prompt_token_count": 2125,
+     "cached_content_token_count": 1018,
+     "candidates_token_count": 121,
+     "thoughts_token_count": 0
+    },
+    "gemini_cost": 0.0006651399999999999,
+    "jev_calls": 2,
+    "jev_input_tokens": 4217,
+    "jev_ms": 1084,
+    "llm_ms": 1972,
+    "jev_route": {
+     "type": "choice",
+     "choice": "report_failed_transaction",
+     "confidence": 0.55,
+     "probabilities": {
+      "get_customer_profile": 0.0,
+      "list_accounts": 0.0,
+      "get_account_balance": 0.0,
+      "get_mini_statement": 0.0,
+      "search_transactions": 0.31,
+      "get_interest_certificate": 0.0,
+      "update_contact_details": 0.0,
+      "update_nominee": 0.0,
+      "request_cheque_book": 0.0,
+      "stop_cheque_payment": 0.0,
+      "get_branch_and_ifsc": 0.0,
+      "list_cards": 0.0,
+      "get_card_details": 0.0,
+      "block_card": 0.0,
+      "unblock_card": 0.0,
+      "reissue_card": 0.0,
+      "track_card_delivery": 0.0,
+      "set_card_limit": 0.0,
+      "toggle_card_feature": 0.0,
+      "reset_card_pin": 0.0,
+      "get_credit_card_bill": 0.0,
+      "pay_credit_card_bill": 0.0,
+      "convert_transaction_to_emi": 0.0,
+      "setup_autopay": 0.0,
+      "request_credit_limit_increase": 0.0,
+      "get_reward_points": 0.0,
+      "redeem_reward_points": 0.0,
+      "raise_dispute": 0.02,
+      "report_unauthorized_transaction": 0.0,
+      "report_failed_transaction": 0.56,
+      "check_dispute_status": 0.0,
+      "withdraw_dispute": 0.0,
+      "search_knowledge_base": 0.0,
+      "find_branch": 0.0,
+      "list_loans": 0.0,
+      "get_loan_details": 0.0,
+      "get_amortization_summary": 0.0,
+      "pay_overdue_emi": 0.0,
+      "get_foreclosure_quote": 0.0,
+      "request_loan_document": 0.0,
+      "change_emi_date": 0.0,
+      "get_preapproved_offers": 0.0,
+      "apply_for_loan": 0.0,
+      "list_deposits": 0.0,
+      "get_deposit_rates": 0.0,
+      "book_fixed_deposit": 0.0,
+      "get_premature_closure_quote": 0.0,
+      "close_deposit": 0.0,
+      "list_beneficiaries": 0.0,
+      "add_beneficiary": 0.0,
+      "transfer_funds": 0.0,
+      "check_transaction_status": 0.1,
+      "pay_bill": 0.0,
+      "get_fastag_status": 0.0,
+      "recharge_fastag": 0.0,
+      "list_standing_instructions": 0.0,
+      "cancel_standing_instruction": 0.0,
+      "get_upi_status": 0.0,
+      "deregister_upi": 0.0,
+      "list_complaint_categories": 0.0,
+      "raise_service_request": 0.0,
+      "check_service_request": 0.0,
+      "escalate_to_human": 0.0,
+      "waive_charge": 0.0,
+      "get_kyc_status": 0.0,
+      "start_video_kyc": 0.0,
+      "none": 0.0
+     }
+    },
+    "jev_steps": [
+     {
+      "title": "route",
+      "ms": 614,
+      "input_tokens": 2857,
+      "resolved": null,
+      "error": null
+     },
+     {
+      "title": "params · report_failed_transaction",
+      "ms": 470,
+      "input_tokens": 1360,
+      "resolved": {
+       "txn_ref": {
+        "value": "TXN20260727B4",
+        "top": {
+         "txn20260727b4": 1.0,
+         "txn20260728a1": 0.0,
+         "txn20260726c2": 0.0
+        },
+        "confidence": 1.0
+       }
+      },
+      "error": null
+     }
+    ],
+    "error": null,
+    "jev_cost": 0.0012651
+   }
+  },
+  {
+   "n": 8,
+   "query": "Why was I charged extra on my personal loan?",
+   "llm": {
+    "reply": "Your Personal Loan (PL4471) has an overdue EMI of ₹21,850.00. This is because there were insufficient funds in your account on 05 Jul 2026, which resulted in a bounce charge of ₹590.00 and penal interest of 2% per month on the overdue amount.\n\nYou can clear the overdue EMI to avoid further charges and CIBIL impact. Would you like to do that now?",
+    "tools": [
+     {
+      "tool": "get_loan_details",
+      "args": {
+       "loan_ref": "PL4471"
+      },
+      "result": {
+       "ok": true,
+       "loan_id": "PL4471",
+       "type": "Personal Loan",
+       "sanctioned": "₹9,00,000.00",
+       "outstanding": "₹3,18,400.00",
+       "emi": "₹21,850.00",
+       "rate": "12.4% p.a.",
+       "rate_type": "Fixed",
+       "tenure_months": 48,
+       "emis_paid": 32,
+       "emis_remaining": 16,
+       "next_due_date": "2026-08-05",
+       "emi_debit_account": "XXXXXXXX9310",
+       "status": "1 EMI overdue",
+       "overdue": {
+        "amount": "₹21,850.00",
+        "bounce_reason": "Insufficient funds on 05 Jul 2026",
+        "bounce_charge": "₹590.00",
+        "penal_interest": "2% per month over the contracted rate on the overdue amount",
+        "cibil_impact": "Reported to CIBIL if unpaid past 30 days from the due date.",
+        "fix": "Use pay_overdue_emi to clear it now and stop further penal interest."
+       }
+      }
+     }
+    ],
+    "first_token_ms": 5927,
+    "total_ms": 6236,
+    "llm_calls": 2,
+    "gemini_usage": {
+     "prompt_token_count": 13413,
+     "cached_content_token_count": 5788,
+     "candidates_token_count": 123,
+     "thoughts_token_count": 473
+    },
+    "gemini_cost": 0.00395114,
+    "jev_calls": 0,
+    "jev_input_tokens": 0,
+    "error": null
+   },
+   "jev": {
+    "reply": "I see that your Personal Loan PL4471 has one EMI overdue, which is ₹21,850. This might be why you're seeing an extra charge.\n\nPersonal loans have a fixed interest rate between 10.49% and 21% per annum, and a processing fee of up to 2%. If an EMI is missed, additional charges may apply.\n\nWould you like me to check the specific charges applied to your loan?",
+    "tools": [
+     {
+      "tool": "search_knowledge_base",
+      "args": {
+       "query": "Loan interest rates and processing fees"
+      },
+      "result": {
+       "ok": true,
+       "found": true,
+       "query": "Loan interest rates and processing fees",
+       "articles": [
+        {
+         "id": "KB-LOAN-RATES",
+         "title": "Loan interest rates and processing fees",
+         "content": "Home Loan from 8.35% p.a. floating (Repo + spread), processing fee 0.50% of loan amount or ₹10,000 whichever is lower. Personal Loan 10.49%–21% p.a. fixed, processing fee up to 2%. Car Loan from 8.90%. Loan Against Property from 9.40%. Education Loan from 8.70%. Foreclosure: floating-rate home loans to individuals carry NIL foreclosure charges (RBI rule); personal loans 2%–4% of outstanding after 12 EMIs, nil before that is not permitted."
+        },
+        {
+         "id": "KB-FD-RATES",
+         "title": "Fixed and Recurring Deposit interest rates",
+         "content": "Fixed Deposit rates (general public, w.e.f. 01 Jul 2026): 7 days–45 days 3.50%; 46–90 days 4.25%; 3–6 months 5.75%; 6–9 months 6.25%; 9–12 months 6.75%; 1 year–15 months 7.10%; 15 months–2 years 7.25%; 2–3 years 7.25%; 3–5 years 7.10%; 5–10 years 7.00%. Senior citizens get +0.50%. Tax Saver FD (5-year lock-in) 7.10%. Recurring Deposit rates match the equivalent FD tenure. Premature closure: 1% penalty on the applicable rate for the period held; no penalty on Tax Saver (not permitted) or on deposits below ₹5 lakh closed after 6 months on Burgundy."
+        },
+        {
+         "id": "KB-CREDIT-CARD-BILL",
+         "title": "Credit card billing, minimum due and interest",
+         "content": "Statement is generated on a fixed date each month with a 20-day interest-free credit period. Minimum Amount Due is 5% of the total outstanding. Paying only the minimum due stops the late fee but interest of 3.6% per month (52.86% p.a.) applies on the full outstanding from the transaction date, and the interest-free period is lost until the balance is cleared. Late payment fee: ₹100 up to ₹500 outstanding, scaling to ₹1,300 above ₹50,000. Any transaction above ₹2,500 can be converted to EMI within 30 days of the transaction date."
+        }
+       ]
+      }
+     }
+    ],
+    "first_token_ms": 2672,
+    "total_ms": 3066,
+    "llm_calls": 1,
+    "gemini_usage": {
+     "prompt_token_count": 2585,
+     "cached_content_token_count": 1019,
+     "candidates_token_count": 98,
+     "thoughts_token_count": 0
+    },
+    "gemini_cost": 0.0007453699999999999,
+    "jev_calls": 2,
+    "jev_input_tokens": 4163,
+    "jev_ms": 1560,
+    "llm_ms": 1503,
+    "jev_route": {
+     "type": "choice",
+     "choice": "search_knowledge_base",
+     "confidence": 0.38,
+     "probabilities": {
+      "get_customer_profile": 0.0,
+      "list_accounts": 0.0,
+      "get_account_balance": 0.0,
+      "get_mini_statement": 0.0,
+      "search_transactions": 0.07,
+      "get_interest_certificate": 0.0,
+      "update_contact_details": 0.0,
+      "update_nominee": 0.0,
+      "request_cheque_book": 0.0,
+      "stop_cheque_payment": 0.0,
+      "get_branch_and_ifsc": 0.0,
+      "list_cards": 0.0,
+      "get_card_details": 0.0,
+      "block_card": 0.0,
+      "unblock_card": 0.0,
+      "reissue_card": 0.0,
+      "track_card_delivery": 0.0,
+      "set_card_limit": 0.0,
+      "toggle_card_feature": 0.0,
+      "reset_card_pin": 0.0,
+      "get_credit_card_bill": 0.0,
+      "pay_credit_card_bill": 0.0,
+      "convert_transaction_to_emi": 0.0,
+      "setup_autopay": 0.0,
+      "request_credit_limit_increase": 0.0,
+      "get_reward_points": 0.0,
+      "redeem_reward_points": 0.0,
+      "raise_dispute": 0.0,
+      "report_unauthorized_transaction": 0.0,
+      "report_failed_transaction": 0.0,
+      "check_dispute_status": 0.0,
+      "withdraw_dispute": 0.0,
+      "search_knowledge_base": 0.39,
+      "find_branch": 0.0,
+      "list_loans": 0.23,
+      "get_loan_details": 0.27,
+      "get_amortization_summary": 0.02,
+      "pay_overdue_emi": 0.0,
+      "get_foreclosure_quote": 0.0,
+      "request_loan_document": 0.01,
+      "change_emi_date": 0.0,
+      "get_preapproved_offers": 0.0,
+      "apply_for_loan": 0.0,
+      "list_deposits": 0.0,
+      "get_deposit_rates": 0.0,
+      "book_fixed_deposit": 0.0,
+      "get_premature_closure_quote": 0.0,
+      "close_deposit": 0.0,
+      "list_beneficiaries": 0.0,
+      "add_beneficiary": 0.0,
+      "transfer_funds": 0.0,
+      "check_transaction_status": 0.0,
+      "pay_bill": 0.0,
+      "get_fastag_status": 0.0,
+      "recharge_fastag": 0.0,
+      "list_standing_instructions": 0.0,
+      "cancel_standing_instruction": 0.0,
+      "get_upi_status": 0.0,
+      "deregister_upi": 0.0,
+      "list_complaint_categories": 0.0,
+      "raise_service_request": 0.0,
+      "check_service_request": 0.0,
+      "escalate_to_human": 0.0,
+      "waive_charge": 0.0,
+      "get_kyc_status": 0.0,
+      "start_video_kyc": 0.0,
+      "none": 0.0
+     }
+    },
+    "jev_steps": [
+     {
+      "title": "route",
+      "ms": 974,
+      "input_tokens": 2845,
+      "resolved": null,
+      "error": null
+     },
+     {
+      "title": "params · search_knowledge_base",
+      "ms": 586,
+      "input_tokens": 1318,
+      "resolved": {
+       "query": {
+        "value": "Loan interest rates and processing fees",
+        "top": {
+         "loan_interest_rates_and_processing_fees": 1.0,
+         "blocking_a_lost_or_stolen_card": 0.0,
+         "card_replacement_and_reissue_charges": 0.0
+        },
+        "confidence": 1.0
+       }
+      },
+      "error": null
+     }
+    ],
+    "error": null,
+    "jev_cost": 0.0012488999999999998
+   }
+  },
+  {
+   "n": 9,
+   "query": "What would it cost to foreclose my home loan today?",
+   "llm": {
+    "reply": "To foreclose your Home Loan (HL9920) today, the total payable amount would be ₹61,42,870.00. There are no foreclosure charges on your floating-rate home loan as per RBI rules.\n\nYou would save ₹60,35,890.00 in interest. If you proceed, the original property papers and NOC will be released within 15 working days of payment. This quote is valid until 17 Oct 2026.",
+    "tools": [
+     {
+      "tool": "get_foreclosure_quote",
+      "args": {
+       "loan_ref": "HL9920"
+      },
+      "result": {
+       "ok": true,
+       "loan_id": "HL9920",
+       "type": "Home Loan",
+       "outstanding_principal": "₹61,42,870.00",
+       "foreclosure_charge": "Nil",
+       "charge_note": "Floating-rate home loans to individuals carry nil foreclosure charges under RBI rules.",
+       "total_payable_today": "₹61,42,870.00",
+       "quote_valid_till": "2026-10-17",
+       "interest_saved": "₹60,35,890.00",
+       "documents_released": "Original property papers / NOC within 15 working days of payment.",
+       "next_step": "Confirm and the payment link plus a formal foreclosure letter go to the registered email."
+      }
+     }
+    ],
+    "first_token_ms": 9285,
+    "total_ms": 10338,
+    "llm_calls": 2,
+    "gemini_usage": {
+     "prompt_token_count": 13058,
+     "cached_content_token_count": 5770,
+     "candidates_token_count": 133,
+     "thoughts_token_count": 62
+    },
+    "gemini_cost": 0.002847,
+    "jev_calls": 0,
+    "jev_input_tokens": 0,
+    "error": null
+   },
+   "jev": {
+    "reply": "To foreclose your Home Loan HL9920 today, the outstanding amount payable is ₹61,42,870.00. There are no foreclosure charges as it's a floating-rate home loan.\n\nBy foreclosing, you would save ₹60,35,890.00 in interest. This quote is valid until 17 Oct 2026.\n\nIf you proceed, the original property papers and a No Objection Certificate (NOC) will be released within 15 working days of payment. A payment link and formal foreclosure letter will be sent to your registered email ID.",
+    "tools": [
+     {
+      "tool": "get_foreclosure_quote",
+      "args": {
+       "loan_ref": "HL9920"
+      },
+      "result": {
+       "ok": true,
+       "loan_id": "HL9920",
+       "type": "Home Loan",
+       "outstanding_principal": "₹61,42,870.00",
+       "foreclosure_charge": "Nil",
+       "charge_note": "Floating-rate home loans to individuals carry nil foreclosure charges under RBI rules.",
+       "total_payable_today": "₹61,42,870.00",
+       "quote_valid_till": "2026-10-17",
+       "interest_saved": "₹60,35,890.00",
+       "documents_released": "Original property papers / NOC within 15 working days of payment.",
+       "next_step": "Confirm and the payment link plus a formal foreclosure letter go to the registered email."
+      }
+     }
+    ],
+    "first_token_ms": 2383,
+    "total_ms": 3088,
+    "llm_calls": 1,
+    "gemini_usage": {
+     "prompt_token_count": 2043,
+     "cached_content_token_count": 0,
+     "candidates_token_count": 132,
+     "thoughts_token_count": 0
+    },
+    "gemini_cost": 0.0009429,
+    "jev_calls": 2,
+    "jev_input_tokens": 3348,
+    "jev_ms": 1175,
+    "llm_ms": 1912,
+    "jev_route": {
+     "type": "choice",
+     "choice": "get_foreclosure_quote",
+     "confidence": 0.93,
+     "probabilities": {
+      "get_customer_profile": 0.0,
+      "list_accounts": 0.0,
+      "get_account_balance": 0.0,
+      "get_mini_statement": 0.0,
+      "search_transactions": 0.0,
+      "get_interest_certificate": 0.0,
+      "update_contact_details": 0.0,
+      "update_nominee": 0.0,
+      "request_cheque_book": 0.0,
+      "stop_cheque_payment": 0.0,
+      "get_branch_and_ifsc": 0.0,
+      "list_cards": 0.0,
+      "get_card_details": 0.0,
+      "block_card": 0.0,
+      "unblock_card": 0.0,
+      "reissue_card": 0.0,
+      "track_card_delivery": 0.0,
+      "set_card_limit": 0.0,
+      "toggle_card_feature": 0.0,
+      "reset_card_pin": 0.0,
+      "get_credit_card_bill": 0.0,
+      "pay_credit_card_bill": 0.0,
+      "convert_transaction_to_emi": 0.0,
+      "setup_autopay": 0.0,
+      "request_credit_limit_increase": 0.0,
+      "get_reward_points": 0.0,
+      "redeem_reward_points": 0.0,
+      "raise_dispute": 0.0,
+      "report_unauthorized_transaction": 0.0,
+      "report_failed_transaction": 0.0,
+      "check_dispute_status": 0.0,
+      "withdraw_dispute": 0.0,
+      "search_knowledge_base": 0.06,
+      "find_branch": 0.0,
+      "list_loans": 0.01,
+      "get_loan_details": 0.0,
+      "get_amortization_summary": 0.0,
+      "pay_overdue_emi": 0.0,
+      "get_foreclosure_quote": 0.93,
+      "request_loan_document": 0.0,
+      "change_emi_date": 0.0,
+      "get_preapproved_offers": 0.0,
+      "apply_for_loan": 0.0,
+      "list_deposits": 0.0,
+      "get_deposit_rates": 0.0,
+      "book_fixed_deposit": 0.0,
+      "get_premature_closure_quote": 0.0,
+      "close_deposit": 0.0,
+      "list_beneficiaries": 0.0,
+      "add_beneficiary": 0.0,
+      "transfer_funds": 0.0,
+      "check_transaction_status": 0.0,
+      "pay_bill": 0.0,
+      "get_fastag_status": 0.0,
+      "recharge_fastag": 0.0,
+      "list_standing_instructions": 0.0,
+      "cancel_standing_instruction": 0.0,
+      "get_upi_status": 0.0,
+      "deregister_upi": 0.0,
+      "list_complaint_categories": 0.0,
+      "raise_service_request": 0.0,
+      "check_service_request": 0.0,
+      "escalate_to_human": 0.0,
+      "waive_charge": 0.0,
+      "get_kyc_status": 0.0,
+      "start_video_kyc": 0.0,
+      "none": 0.0
+     }
+    },
+    "jev_steps": [
+     {
+      "title": "route",
+      "ms": 796,
+      "input_tokens": 2847,
+      "resolved": null,
+      "error": null
+     },
+     {
+      "title": "params · get_foreclosure_quote",
+      "ms": 379,
+      "input_tokens": 501,
+      "resolved": {
+       "loan_ref": {
+        "value": "HL9920",
+        "top": {
+         "hl9920": 1.0,
+         "pl4471": 0.0
+        },
+        "confidence": 1.0
+       }
+      },
+      "error": null
+     }
+    ],
+    "error": null,
+    "jev_cost": 0.0010044
+   }
+  },
+  {
+   "n": 10,
+   "query": "What's the FD interest rate for 2 years?",
+   "llm": {
+    "reply": "For a 2-year Fixed Deposit, the interest rate is 7.25% p.a. for general citizens and 7.75% p.a. for senior citizens. We also have a Tax Saver FD at 7.10% p.a. with a 5-year lock-in, eligible for deduction under Section 80C.\n\nInterest is compounded quarterly. TDS applies if the interest earned is above ₹40,000 in a year (₹50,000 for senior citizens).",
+    "tools": [
+     {
+      "tool": "get_deposit_rates",
+      "args": {
+       "tenure_months": 24
+      },
+      "result": {
+       "ok": true,
+       "tenure_months": 24,
+       "general_rate": "7.25% p.a.",
+       "senior_citizen_rate": "7.75% p.a.",
+       "tax_saver_fd": "7.10% p.a. with a 5-year lock-in, deduction under Section 80C",
+       "note": "Interest is compounded quarterly. TDS applies above ₹40,000 interest a year (₹50,000 for seniors)."
+      }
+     }
+    ],
+    "first_token_ms": 4266,
+    "total_ms": 4675,
+    "llm_calls": 2,
+    "gemini_usage": {
+     "prompt_token_count": 13011,
+     "cached_content_token_count": 5768,
+     "candidates_token_count": 136,
+     "thoughts_token_count": 77
+    },
+    "gemini_cost": 0.00287844,
+    "jev_calls": 0,
+    "jev_input_tokens": 0,
+    "error": null
+   },
+   "jev": {
+    "reply": "For a 2-year Fixed Deposit:\n* **General Public:** 7.25% p.a.\n* **Senior Citizens:** 7.75% p.a.\n\nWe also have a Tax Saver FD at 7.10% p.a. with a 5-year lock-in, eligible for deduction under Section 80C.\n\nInterest is compounded quarterly. TDS applies if interest earned is above ₹40,000 annually (₹50,000 for senior citizens).",
+    "tools": [
+     {
+      "tool": "get_deposit_rates",
+      "args": {
+       "tenure_months": 24
+      },
+      "result": {
+       "ok": true,
+       "tenure_months": 24,
+       "general_rate": "7.25% p.a.",
+       "senior_citizen_rate": "7.75% p.a.",
+       "tax_saver_fd": "7.10% p.a. with a 5-year lock-in, deduction under Section 80C",
+       "note": "Interest is compounded quarterly. TDS applies above ₹40,000 interest a year (₹50,000 for seniors)."
+      }
+     }
+    ],
+    "first_token_ms": 2270,
+    "total_ms": 2791,
+    "llm_calls": 1,
+    "gemini_usage": {
+     "prompt_token_count": 1971,
+     "cached_content_token_count": 0,
+     "candidates_token_count": 113,
+     "thoughts_token_count": 0
+    },
+    "gemini_cost": 0.0008738,
+    "jev_calls": 2,
+    "jev_input_tokens": 3357,
+    "jev_ms": 1101,
+    "llm_ms": 1688,
+    "jev_route": {
+     "type": "choice",
+     "choice": "get_deposit_rates",
+     "confidence": 0.94,
+     "probabilities": {
+      "get_customer_profile": 0.0,
+      "list_accounts": 0.0,
+      "get_account_balance": 0.0,
+      "get_mini_statement": 0.0,
+      "search_transactions": 0.0,
+      "get_interest_certificate": 0.0,
+      "update_contact_details": 0.0,
+      "update_nominee": 0.0,
+      "request_cheque_book": 0.0,
+      "stop_cheque_payment": 0.0,
+      "get_branch_and_ifsc": 0.0,
+      "list_cards": 0.0,
+      "get_card_details": 0.0,
+      "block_card": 0.0,
+      "unblock_card": 0.0,
+      "reissue_card": 0.0,
+      "track_card_delivery": 0.0,
+      "set_card_limit": 0.0,
+      "toggle_card_feature": 0.0,
+      "reset_card_pin": 0.0,
+      "get_credit_card_bill": 0.0,
+      "pay_credit_card_bill": 0.0,
+      "convert_transaction_to_emi": 0.0,
+      "setup_autopay": 0.0,
+      "request_credit_limit_increase": 0.0,
+      "get_reward_points": 0.0,
+      "redeem_reward_points": 0.0,
+      "raise_dispute": 0.0,
+      "report_unauthorized_transaction": 0.0,
+      "report_failed_transaction": 0.0,
+      "check_dispute_status": 0.0,
+      "withdraw_dispute": 0.0,
+      "search_knowledge_base": 0.06,
+      "find_branch": 0.0,
+      "list_loans": 0.0,
+      "get_loan_details": 0.0,
+      "get_amortization_summary": 0.0,
+      "pay_overdue_emi": 0.0,
+      "get_foreclosure_quote": 0.0,
+      "request_loan_document": 0.0,
+      "change_emi_date": 0.0,
+      "get_preapproved_offers": 0.0,
+      "apply_for_loan": 0.0,
+      "list_deposits": 0.0,
+      "get_deposit_rates": 0.94,
+      "book_fixed_deposit": 0.0,
+      "get_premature_closure_quote": 0.0,
+      "close_deposit": 0.0,
+      "list_beneficiaries": 0.0,
+      "add_beneficiary": 0.0,
+      "transfer_funds": 0.0,
+      "check_transaction_status": 0.0,
+      "pay_bill": 0.0,
+      "get_fastag_status": 0.0,
+      "recharge_fastag": 0.0,
+      "list_standing_instructions": 0.0,
+      "cancel_standing_instruction": 0.0,
+      "get_upi_status": 0.0,
+      "deregister_upi": 0.0,
+      "list_complaint_categories": 0.0,
+      "raise_service_request": 0.0,
+      "check_service_request": 0.0,
+      "escalate_to_human": 0.0,
+      "waive_charge": 0.0,
+      "get_kyc_status": 0.0,
+      "start_video_kyc": 0.0,
+      "none": 0.0
+     }
+    },
+    "jev_steps": [
+     {
+      "title": "route",
+      "ms": 719,
+      "input_tokens": 2846,
+      "resolved": null,
+      "error": null
+     },
+     {
+      "title": "params · get_deposit_rates",
+      "ms": 382,
+      "input_tokens": 511,
+      "resolved": {
+       "tenure_months": {
+        "value": 24,
+        "top": {
+         "o_2": 0.99,
+         "not_given": 0.01
+        },
+        "confidence": 0.98,
+        "unit": "years"
+       }
+      },
+      "error": null
+     }
+    ],
+    "error": null,
+    "jev_cost": 0.0010071
+   }
+  },
+  {
+   "n": 11,
+   "query": "Enable international usage on my debit card, I'm travelling to Singapore",
+   "llm": {
+    "reply": "Please tell me the 6-digit OTP you have received on your registered mobile number ending 11223. The OTP is valid for 5 minutes.",
+    "tools": [
+     {
+      "tool": "send_otp",
+      "args": {
+       "purpose": "enabling international usage on your debit card"
+      },
+      "result": {
+       "ok": true,
+       "sent_to": "+91-98200-11223",
+       "purpose": "enabling international usage on your debit card",
+       "valid_for": "5 minutes",
+       "attempts_allowed": 3,
+       "instruction": "Ask the customer to read out the 6-digit code, then call verify_otp.",
+       "_demo_note": "DEMO ONLY — the OTP is 123456. Never state this in the chat; the customer 'receives' it on their phone."
+      }
+     }
+    ],
+    "first_token_ms": 2200,
+    "total_ms": 4227,
+    "llm_calls": 2,
+    "gemini_usage": {
+     "prompt_token_count": 12974,
+     "cached_content_token_count": 6730,
+     "candidates_token_count": 83,
+     "thoughts_token_count": 63
+    },
+    "gemini_cost": 0.0024400999999999997,
+    "jev_calls": 0,
+    "jev_input_tokens": 0,
+    "error": null
+   },
+   "jev": {
+    "reply": "To enable international usage on your Burgundy Debit Card (XXXX XXXX XXXX 4821), we need to verify with an OTP.\n\nI've sent a 6-digit OTP to your registered mobile number ending in **1223**. Please tell me the OTP to proceed.",
+    "tools": [
+     {
+      "tool": "toggle_card_feature",
+      "args": {
+       "card_ref": "DC-4821",
+       "feature": "international",
+       "enable": true
+      },
+      "result": {
+       "ok": false,
+       "error": "otp_required",
+       "message": "This action (international toggle) needs OTP verification. Call send_otp, ask the customer for the 6-digit code, then call verify_otp."
+      }
+     },
+     {
+      "tool": "send_otp",
+      "args": {
+       "purpose": "Switch a card feature on or off"
+      },
+      "result": {
+       "ok": true,
+       "sent_to": "+91-98200-11223",
+       "purpose": "Switch a card feature on or off",
+       "valid_for": "5 minutes",
+       "attempts_allowed": 3,
+       "instruction": "Ask the customer to read out the 6-digit code, then call verify_otp.",
+       "_demo_note": "DEMO ONLY — the OTP is 123456. Never state this in the chat; the customer 'receives' it on their phone."
+      }
+     }
+    ],
+    "first_token_ms": 2429,
+    "total_ms": 2916,
+    "llm_calls": 1,
+    "gemini_usage": {
+     "prompt_token_count": 2060,
+     "cached_content_token_count": 1018,
+     "candidates_token_count": 61,
+     "thoughts_token_count": 0
+    },
+    "gemini_cost": 0.00049564,
+    "jev_calls": 2,
+    "jev_input_tokens": 3546,
+    "jev_ms": 1128,
+    "llm_ms": 1787,
+    "jev_route": {
+     "type": "choice",
+     "choice": "toggle_card_feature",
+     "confidence": 0.98,
+     "probabilities": {
+      "get_customer_profile": 0.0,
+      "list_accounts": 0.0,
+      "get_account_balance": 0.0,
+      "get_mini_statement": 0.0,
+      "search_transactions": 0.0,
+      "get_interest_certificate": 0.0,
+      "update_contact_details": 0.0,
+      "update_nominee": 0.0,
+      "request_cheque_book": 0.0,
+      "stop_cheque_payment": 0.0,
+      "get_branch_and_ifsc": 0.0,
+      "list_cards": 0.02,
+      "get_card_details": 0.0,
+      "block_card": 0.0,
+      "unblock_card": 0.0,
+      "reissue_card": 0.0,
+      "track_card_delivery": 0.0,
+      "set_card_limit": 0.0,
+      "toggle_card_feature": 0.98,
+      "reset_card_pin": 0.0,
+      "get_credit_card_bill": 0.0,
+      "pay_credit_card_bill": 0.0,
+      "convert_transaction_to_emi": 0.0,
+      "setup_autopay": 0.0,
+      "request_credit_limit_increase": 0.0,
+      "get_reward_points": 0.0,
+      "redeem_reward_points": 0.0,
+      "raise_dispute": 0.0,
+      "report_unauthorized_transaction": 0.0,
+      "report_failed_transaction": 0.0,
+      "check_dispute_status": 0.0,
+      "withdraw_dispute": 0.0,
+      "search_knowledge_base": 0.0,
+      "find_branch": 0.0,
+      "list_loans": 0.0,
+      "get_loan_details": 0.0,
+      "get_amortization_summary": 0.0,
+      "pay_overdue_emi": 0.0,
+      "get_foreclosure_quote": 0.0,
+      "request_loan_document": 0.0,
+      "change_emi_date": 0.0,
+      "get_preapproved_offers": 0.0,
+      "apply_for_loan": 0.0,
+      "list_deposits": 0.0,
+      "get_deposit_rates": 0.0,
+      "book_fixed_deposit": 0.0,
+      "get_premature_closure_quote": 0.0,
+      "close_deposit": 0.0,
+      "list_beneficiaries": 0.0,
+      "add_beneficiary": 0.0,
+      "transfer_funds": 0.0,
+      "check_transaction_status": 0.0,
+      "pay_bill": 0.0,
+      "get_fastag_status": 0.0,
+      "recharge_fastag": 0.0,
+      "list_standing_instructions": 0.0,
+      "cancel_standing_instruction": 0.0,
+      "get_upi_status": 0.0,
+      "deregister_upi": 0.0,
+      "list_complaint_categories": 0.0,
+      "raise_service_request": 0.0,
+      "check_service_request": 0.0,
+      "escalate_to_human": 0.0,
+      "waive_charge": 0.0,
+      "get_kyc_status": 0.0,
+      "start_video_kyc": 0.0,
+      "none": 0.0
+     }
+    },
+    "jev_steps": [
+     {
+      "title": "route",
+      "ms": 628,
+      "input_tokens": 2848,
+      "resolved": null,
+      "error": null
+     },
+     {
+      "title": "params · toggle_card_feature",
+      "ms": 500,
+      "input_tokens": 698,
+      "resolved": {
+       "card_ref": {
+        "value": "DC-4821",
+        "top": {
+         "dc_4821": 1.0,
+         "cc_7315": 0.0,
+         "cc_9902": 0.0
+        },
+        "confidence": 1.0
+       },
+       "feature": {
+        "value": "international",
+        "top": {
+         "international": 1.0,
+         "contactless": 0.0,
+         "ecom": 0.0
+        },
+        "confidence": 1.0
+       },
+       "enable": {
+        "value": true,
+        "p_yes": 0.98
+       }
+      },
+      "error": null
+     }
+    ],
+    "error": null,
+    "jev_cost": 0.0010638
+   }
+  },
+  {
+   "n": 12,
+   "query": "Set the daily ATM withdrawal limit on my debit card to 50,000",
+   "llm": {
+    "reply": "I can help you with that. To change your ATM withdrawal limit, I need to send an OTP to your registered mobile number. Please confirm if you would like to proceed.",
+    "tools": [],
+    "first_token_ms": 2257,
+    "total_ms": 2363,
+    "llm_calls": 1,
+    "gemini_usage": {
+     "prompt_token_count": 6399,
+     "cached_content_token_count": 5769,
+     "candidates_token_count": 35,
+     "thoughts_token_count": 158
+    },
+    "gemini_cost": 0.0008445699999999999,
+    "jev_calls": 0,
+    "jev_input_tokens": 0,
+    "error": null
+   },
+   "jev": {
+    "reply": "To change your daily ATM withdrawal limit for your Debit Card (XXXX XXXX XXXX 4821) to ₹50,000, we need to verify with an OTP.\n\nI've sent a 6-digit OTP to your registered mobile number, +91-98200-11223. Please tell me the OTP to proceed.",
+    "tools": [
+     {
+      "tool": "set_card_limit",
+      "args": {
+       "card_ref": "DC-4821",
+       "limit_type": "atm_daily",
+       "amount": 50000
+      },
+      "result": {
+       "ok": false,
+       "error": "otp_required",
+       "message": "This action (card limit change) needs OTP verification. Call send_otp, ask the customer for the 6-digit code, then call verify_otp."
+      }
+     },
+     {
+      "tool": "send_otp",
+      "args": {
+       "purpose": "Change a card's transaction limit"
+      },
+      "result": {
+       "ok": true,
+       "sent_to": "+91-98200-11223",
+       "purpose": "Change a card's transaction limit",
+       "valid_for": "5 minutes",
+       "attempts_allowed": 3,
+       "instruction": "Ask the customer to read out the 6-digit code, then call verify_otp.",
+       "_demo_note": "DEMO ONLY — the OTP is 123456. Never state this in the chat; the customer 'receives' it on their phone."
+      }
+     }
+    ],
+    "first_token_ms": 2111,
+    "total_ms": 2485,
+    "llm_calls": 1,
+    "gemini_usage": {
+     "prompt_token_count": 2074,
+     "cached_content_token_count": 0,
+     "candidates_token_count": 80,
+     "thoughts_token_count": 0
+    },
+    "gemini_cost": 0.0008221999999999999,
+    "jev_calls": 2,
+    "jev_input_tokens": 3818,
+    "jev_ms": 996,
+    "llm_ms": 1486,
+    "jev_route": {
+     "type": "choice",
+     "choice": "set_card_limit",
+     "confidence": 0.99,
+     "probabilities": {
+      "get_customer_profile": 0.0,
+      "list_accounts": 0.0,
+      "get_account_balance": 0.0,
+      "get_mini_statement": 0.0,
+      "search_transactions": 0.0,
+      "get_interest_certificate": 0.0,
+      "update_contact_details": 0.0,
+      "update_nominee": 0.0,
+      "request_cheque_book": 0.0,
+      "stop_cheque_payment": 0.0,
+      "get_branch_and_ifsc": 0.0,
+      "list_cards": 0.01,
+      "get_card_details": 0.0,
+      "block_card": 0.0,
+      "unblock_card": 0.0,
+      "reissue_card": 0.0,
+      "track_card_delivery": 0.0,
+      "set_card_limit": 0.99,
+      "toggle_card_feature": 0.0,
+      "reset_card_pin": 0.0,
+      "get_credit_card_bill": 0.0,
+      "pay_credit_card_bill": 0.0,
+      "convert_transaction_to_emi": 0.0,
+      "setup_autopay": 0.0,
+      "request_credit_limit_increase": 0.0,
+      "get_reward_points": 0.0,
+      "redeem_reward_points": 0.0,
+      "raise_dispute": 0.0,
+      "report_unauthorized_transaction": 0.0,
+      "report_failed_transaction": 0.0,
+      "check_dispute_status": 0.0,
+      "withdraw_dispute": 0.0,
+      "search_knowledge_base": 0.0,
+      "find_branch": 0.0,
+      "list_loans": 0.0,
+      "get_loan_details": 0.0,
+      "get_amortization_summary": 0.0,
+      "pay_overdue_emi": 0.0,
+      "get_foreclosure_quote": 0.0,
+      "request_loan_document": 0.0,
+      "change_emi_date": 0.0,
+      "get_preapproved_offers": 0.0,
+      "apply_for_loan": 0.0,
+      "list_deposits": 0.0,
+      "get_deposit_rates": 0.0,
+      "book_fixed_deposit": 0.0,
+      "get_premature_closure_quote": 0.0,
+      "close_deposit": 0.0,
+      "list_beneficiaries": 0.0,
+      "add_beneficiary": 0.0,
+      "transfer_funds": 0.0,
+      "check_transaction_status": 0.0,
+      "pay_bill": 0.0,
+      "get_fastag_status": 0.0,
+      "recharge_fastag": 0.0,
+      "list_standing_instructions": 0.0,
+      "cancel_standing_instruction": 0.0,
+      "get_upi_status": 0.0,
+      "deregister_upi": 0.0,
+      "list_complaint_categories": 0.0,
+      "raise_service_request": 0.0,
+      "check_service_request": 0.0,
+      "escalate_to_human": 0.0,
+      "waive_charge": 0.0,
+      "get_kyc_status": 0.0,
+      "start_video_kyc": 0.0,
+      "none": 0.0
+     }
+    },
+    "jev_steps": [
+     {
+      "title": "route",
+      "ms": 507,
+      "input_tokens": 2853,
+      "resolved": null,
+      "error": null
+     },
+     {
+      "title": "params · set_card_limit",
+      "ms": 489,
+      "input_tokens": 965,
+      "resolved": {
+       "card_ref": {
+        "value": "DC-4821",
+        "top": {
+         "dc_4821": 1.0,
+         "cc_7315": 0.0,
+         "cc_9902": 0.0
+        },
+        "confidence": 1.0
+       },
+       "limit_type": {
+        "value": "atm_daily",
+        "top": {
+         "atm_daily": 1.0,
+         "pos_daily": 0.0,
+         "ecom_daily": 0.0
+        },
+        "confidence": 1.0
+       },
+       "amount": {
+        "value": 50000,
+        "top": {
+         "o_50_000": 0.99,
+         "not_given": 0.01
+        },
+        "confidence": 0.98,
+        "unit": "rupees"
+       }
+      },
+      "error": null
+     }
+    ],
+    "error": null,
+    "jev_cost": 0.0011453999999999998
+   }
+  },
+  {
+   "n": 13,
+   "query": "What are the charges if I don't maintain minimum balance?",
+   "llm": {
+    "reply": "For your Easy Access Savings Account (XXXXXXXX9310), if your Average Monthly Balance (AMB) falls short of ₹12,000, a non-maintenance charge of 6% of the shortfall, capped at ₹600 + GST per month, will be applied.\n\nFor your Burgundy Savings Account (XXXXXXXX7742), the AMB requirement is ₹2,00,000. The non-maintenance charge is 6% of the shortfall, capped at ₹600 + GST per month.\n\nThese charges are waived for salary accounts with recent credit, senior citizens, and Basic Savings Bank Deposit Accounts (BSBDA). A one-time goodwill waiver can be granted once per financial year.",
+    "tools": [
+     {
+      "tool": "search_knowledge_base",
+      "args": {
+       "query": "charges for not maintaining minimum balance"
+      },
+      "result": {
+       "ok": true,
+       "found": true,
+       "query": "charges for not maintaining minimum balance",
+       "articles": [
+        {
+         "id": "KB-AMB",
+         "title": "Average Monthly Balance (AMB) and non-maintenance charges",
+         "content": "AMB requirement: Easy Access ₹12,000 (metro/urban), Prime ₹25,000, Burgundy ₹2,00,000 or a total relationship value of ₹10 lakh. Non-maintenance charge is 6% of the shortfall, capped at ₹600 + GST per month. Waived for: salary accounts with credit in the last 3 months, senior citizens, Pension and basic savings (BSBDA) accounts. A one-time goodwill waiver may be granted once per financial year at the bank's discretion."
+        },
+        {
+         "id": "KB-CREDIT-CARD-BILL",
+         "title": "Credit card billing, minimum due and interest",
+         "content": "Statement is generated on a fixed date each month with a 20-day interest-free credit period. Minimum Amount Due is 5% of the total outstanding. Paying only the minimum due stops the late fee but interest of 3.6% per month (52.86% p.a.) applies on the full outstanding from the transaction date, and the interest-free period is lost until the balance is cleared. Late payment fee: ₹100 up to ₹500 outstanding, scaling to ₹1,300 above ₹50,000. Any transaction above ₹2,500 can be converted to EMI within 30 days of the transaction date."
+        },
+        {
+         "id": "KB-TRANSFER-LIMITS",
+         "title": "Fund transfer channels, limits and charges",
+         "content": "NEFT: no minimum, no maximum, settles in half-hourly batches 24x7, free on Internet and Mobile Banking. RTGS: minimum ₹2,00,000, no maximum, real-time 24x7, free online. IMPS: up to ₹5,00,000, instant 24x7, ₹5 + GST above ₹1,000. New beneficiary cooling period: 30 minutes, during which a maximum of ₹5,000 can be sent. Per-beneficiary limits are set by the customer and can be changed with OTP."
+        }
+       ]
+      }
+     }
+    ],
+    "first_token_ms": 7948,
+    "total_ms": 9043,
+    "llm_calls": 2,
+    "gemini_usage": {
+     "prompt_token_count": 13387,
+     "cached_content_token_count": 0,
+     "candidates_token_count": 174,
+     "thoughts_token_count": 57
+    },
+    "gemini_cost": 0.004593600000000001,
+    "jev_calls": 0,
+    "jev_input_tokens": 0,
+    "error": null
+   },
+   "jev": {
+    "reply": "For your Burgundy Savings Account, you need to maintain an Average Monthly Balance (AMB) of ₹2,00,000 or a total relationship value of ₹10 lakh.\n\nIf the AMB is not maintained, the charge is 6% of the shortfall, capped at ₹600 + GST per month. This charge is waived for salary accounts (with recent credit), senior citizens, Pension, and Basic Savings Accounts.",
+    "tools": [
+     {
+      "tool": "search_knowledge_base",
+      "args": {
+       "query": "Average Monthly Balance (AMB) and non-maintenance charges"
+      },
+      "result": {
+       "ok": true,
+       "found": true,
+       "query": "Average Monthly Balance (AMB) and non-maintenance charges",
+       "articles": [
+        {
+         "id": "KB-AMB",
+         "title": "Average Monthly Balance (AMB) and non-maintenance charges",
+         "content": "AMB requirement: Easy Access ₹12,000 (metro/urban), Prime ₹25,000, Burgundy ₹2,00,000 or a total relationship value of ₹10 lakh. Non-maintenance charge is 6% of the shortfall, capped at ₹600 + GST per month. Waived for: salary accounts with credit in the last 3 months, senior citizens, Pension and basic savings (BSBDA) accounts. A one-time goodwill waiver may be granted once per financial year at the bank's discretion."
+        },
+        {
+         "id": "KB-CARD-REPLACE",
+         "title": "Card replacement and reissue charges",
+         "content": "Debit card replacement: ₹200 + GST (waived for Burgundy and Priority customers, and waived in all lost/stolen/fraud cases). Credit card replacement: ₹100 + GST, waived for Magnus, Reserve and Burgundy Private. Delivery 5–7 working days by courier with tracking. Emergency card issuance abroad: ₹5,000 + GST."
+        },
+        {
+         "id": "KB-TRANSFER-LIMITS",
+         "title": "Fund transfer channels, limits and charges",
+         "content": "NEFT: no minimum, no maximum, settles in half-hourly batches 24x7, free on Internet and Mobile Banking. RTGS: minimum ₹2,00,000, no maximum, real-time 24x7, free online. IMPS: up to ₹5,00,000, instant 24x7, ₹5 + GST above ₹1,000. New beneficiary cooling period: 30 minutes, during which a maximum of ₹5,000 can be sent. Per-beneficiary limits are set by the customer and can be changed with OTP."
+        }
+       ]
+      }
+     }
+    ],
+    "first_token_ms": 2746,
+    "total_ms": 3169,
+    "llm_calls": 1,
+    "gemini_usage": {
+     "prompt_token_count": 2403,
+     "cached_content_token_count": 0,
+     "candidates_token_count": 92,
+     "thoughts_token_count": 0
+    },
+    "gemini_cost": 0.0009509,
+    "jev_calls": 2,
+    "jev_input_tokens": 4167,
+    "jev_ms": 1303,
+    "llm_ms": 1865,
+    "jev_route": {
+     "type": "choice",
+     "choice": "search_knowledge_base",
+     "confidence": 1.0,
+     "probabilities": {
+      "get_customer_profile": 0.0,
+      "list_accounts": 0.0,
+      "get_account_balance": 0.0,
+      "get_mini_statement": 0.0,
+      "search_transactions": 0.0,
+      "get_interest_certificate": 0.0,
+      "update_contact_details": 0.0,
+      "update_nominee": 0.0,
+      "request_cheque_book": 0.0,
+      "stop_cheque_payment": 0.0,
+      "get_branch_and_ifsc": 0.0,
+      "list_cards": 0.0,
+      "get_card_details": 0.0,
+      "block_card": 0.0,
+      "unblock_card": 0.0,
+      "reissue_card": 0.0,
+      "track_card_delivery": 0.0,
+      "set_card_limit": 0.0,
+      "toggle_card_feature": 0.0,
+      "reset_card_pin": 0.0,
+      "get_credit_card_bill": 0.0,
+      "pay_credit_card_bill": 0.0,
+      "convert_transaction_to_emi": 0.0,
+      "setup_autopay": 0.0,
+      "request_credit_limit_increase": 0.0,
+      "get_reward_points": 0.0,
+      "redeem_reward_points": 0.0,
+      "raise_dispute": 0.0,
+      "report_unauthorized_transaction": 0.0,
+      "report_failed_transaction": 0.0,
+      "check_dispute_status": 0.0,
+      "withdraw_dispute": 0.0,
+      "search_knowledge_base": 1.0,
+      "find_branch": 0.0,
+      "list_loans": 0.0,
+      "get_loan_details": 0.0,
+      "get_amortization_summary": 0.0,
+      "pay_overdue_emi": 0.0,
+      "get_foreclosure_quote": 0.0,
+      "request_loan_document": 0.0,
+      "change_emi_date": 0.0,
+      "get_preapproved_offers": 0.0,
+      "apply_for_loan": 0.0,
+      "list_deposits": 0.0,
+      "get_deposit_rates": 0.0,
+      "book_fixed_deposit": 0.0,
+      "get_premature_closure_quote": 0.0,
+      "close_deposit": 0.0,
+      "list_beneficiaries": 0.0,
+      "add_beneficiary": 0.0,
+      "transfer_funds": 0.0,
+      "check_transaction_status": 0.0,
+      "pay_bill": 0.0,
+      "get_fastag_status": 0.0,
+      "recharge_fastag": 0.0,
+      "list_standing_instructions": 0.0,
+      "cancel_standing_instruction": 0.0,
+      "get_upi_status": 0.0,
+      "deregister_upi": 0.0,
+      "list_complaint_categories": 0.0,
+      "raise_service_request": 0.0,
+      "check_service_request": 0.0,
+      "escalate_to_human": 0.0,
+      "waive_charge": 0.0,
+      "get_kyc_status": 0.0,
+      "start_video_kyc": 0.0,
+      "none": 0.0
+     }
+    },
+    "jev_steps": [
+     {
+      "title": "route",
+      "ms": 655,
+      "input_tokens": 2847,
+      "resolved": null,
+      "error": null
+     },
+     {
+      "title": "params · search_knowledge_base",
+      "ms": 648,
+      "input_tokens": 1320,
+      "resolved": {
+       "query": {
+        "value": "Average Monthly Balance (AMB) and non-maintenance charges",
+        "top": {
+         "average_monthly_balance_amb_and_non_main": 1.0,
+         "blocking_a_lost_or_stolen_card": 0.0,
+         "card_replacement_and_reissue_charges": 0.0
+        },
+        "confidence": 1.0
+       }
+      },
+      "error": null
+     }
+    ],
+    "error": null,
+    "jev_cost": 0.0012500999999999999
+   }
+  },
+  {
+   "n": 14,
+   "query": "What's the IFSC code of my home branch?",
+   "llm": {
+    "reply": "Your home branch is Whitefield, Bengaluru and its IFSC code is UTIB0001234.",
+    "tools": [
+     {
+      "tool": "get_branch_and_ifsc",
+      "args": {
+       "account_no": "XXXXXXXX7742"
+      },
+      "result": {
+       "ok": true,
+       "account_no": "918010047742",
+       "account_holder": "Rohan Mehta",
+       "type": "Savings - Burgundy",
+       "branch": "Whitefield, Bengaluru",
+       "ifsc": "UTIB0001234",
+       "bank": "Axis Bank"
+      }
+     }
+    ],
+    "first_token_ms": 4546,
+    "total_ms": 4559,
+    "llm_calls": 2,
+    "gemini_usage": {
+     "prompt_token_count": 13048,
+     "cached_content_token_count": 11539,
+     "candidates_token_count": 49,
+     "thoughts_token_count": 151
+    },
+    "gemini_cost": 0.00129887,
+    "jev_calls": 0,
+    "jev_input_tokens": 0,
+    "error": null
+   },
+   "jev": {
+    "reply": "Your home branch, Whitefield, Bengaluru, has the IFSC code UTIB0001234.",
+    "tools": [
+     {
+      "tool": "get_branch_and_ifsc",
+      "args": {
+       "account_no": ""
+      },
+      "result": {
+       "ok": true,
+       "account_no": "918010047742",
+       "account_holder": "Rohan Mehta",
+       "type": "Savings - Burgundy",
+       "branch": "Whitefield, Bengaluru",
+       "ifsc": "UTIB0001234",
+       "bank": "Axis Bank"
+      }
+     }
+    ],
+    "first_token_ms": 2855,
+    "total_ms": 2899,
+    "llm_calls": 1,
+    "gemini_usage": {
+     "prompt_token_count": 1920,
+     "cached_content_token_count": 1017,
+     "candidates_token_count": 23,
+     "thoughts_token_count": 0
+    },
+    "gemini_cost": 0.00035891,
+    "jev_calls": 2,
+    "jev_input_tokens": 3354,
+    "jev_ms": 1089,
+    "llm_ms": 1809,
+    "jev_route": {
+     "type": "choice",
+     "choice": "get_branch_and_ifsc",
+     "confidence": 1.0,
+     "probabilities": {
+      "get_customer_profile": 0.0,
+      "list_accounts": 0.0,
+      "get_account_balance": 0.0,
+      "get_mini_statement": 0.0,
+      "search_transactions": 0.0,
+      "get_interest_certificate": 0.0,
+      "update_contact_details": 0.0,
+      "update_nominee": 0.0,
+      "request_cheque_book": 0.0,
+      "stop_cheque_payment": 0.0,
+      "get_branch_and_ifsc": 1.0,
+      "list_cards": 0.0,
+      "get_card_details": 0.0,
+      "block_card": 0.0,
+      "unblock_card": 0.0,
+      "reissue_card": 0.0,
+      "track_card_delivery": 0.0,
+      "set_card_limit": 0.0,
+      "toggle_card_feature": 0.0,
+      "reset_card_pin": 0.0,
+      "get_credit_card_bill": 0.0,
+      "pay_credit_card_bill": 0.0,
+      "convert_transaction_to_emi": 0.0,
+      "setup_autopay": 0.0,
+      "request_credit_limit_increase": 0.0,
+      "get_reward_points": 0.0,
+      "redeem_reward_points": 0.0,
+      "raise_dispute": 0.0,
+      "report_unauthorized_transaction": 0.0,
+      "report_failed_transaction": 0.0,
+      "check_dispute_status": 0.0,
+      "withdraw_dispute": 0.0,
+      "search_knowledge_base": 0.0,
+      "find_branch": 0.0,
+      "list_loans": 0.0,
+      "get_loan_details": 0.0,
+      "get_amortization_summary": 0.0,
+      "pay_overdue_emi": 0.0,
+      "get_foreclosure_quote": 0.0,
+      "request_loan_document": 0.0,
+      "change_emi_date": 0.0,
+      "get_preapproved_offers": 0.0,
+      "apply_for_loan": 0.0,
+      "list_deposits": 0.0,
+      "get_deposit_rates": 0.0,
+      "book_fixed_deposit": 0.0,
+      "get_premature_closure_quote": 0.0,
+      "close_deposit": 0.0,
+      "list_beneficiaries": 0.0,
+      "add_beneficiary": 0.0,
+      "transfer_funds": 0.0,
+      "check_transaction_status": 0.0,
+      "pay_bill": 0.0,
+      "get_fastag_status": 0.0,
+      "recharge_fastag": 0.0,
+      "list_standing_instructions": 0.0,
+      "cancel_standing_instruction": 0.0,
+      "get_upi_status": 0.0,
+      "deregister_upi": 0.0,
+      "list_complaint_categories": 0.0,
+      "raise_service_request": 0.0,
+      "check_service_request": 0.0,
+      "escalate_to_human": 0.0,
+      "waive_charge": 0.0,
+      "get_kyc_status": 0.0,
+      "start_video_kyc": 0.0,
+      "none": 0.0
+     }
+    },
+    "jev_steps": [
+     {
+      "title": "route",
+      "ms": 614,
+      "input_tokens": 2846,
+      "resolved": null,
+      "error": null
+     },
+     {
+      "title": "params · get_branch_and_ifsc",
+      "ms": 475,
+      "input_tokens": 508,
+      "resolved": {
+       "account_no": {
+        "value": "",
+        "top": {
+         "unspecified": 0.99,
+         "acct_7742": 0.01,
+         "acct_9310": 0.0
+        },
+        "confidence": 0.98
+       }
+      },
+      "error": null
+     }
+    ],
+    "error": null,
+    "jev_cost": 0.0010061999999999998
+   }
+  },
+  {
+   "n": 15,
+   "query": "Thanks, that's all for today!",
+   "llm": {
+    "reply": "You're welcome, Rohan! Is there anything else I can help you with today?",
+    "tools": [],
+    "first_token_ms": 1548,
+    "total_ms": 1550,
+    "llm_calls": 1,
+    "gemini_usage": {
+     "prompt_token_count": 6390,
+     "cached_content_token_count": 5769,
+     "candidates_token_count": 18,
+     "thoughts_token_count": 0
+    },
+    "gemini_cost": 0.00040437,
+    "jev_calls": 0,
+    "jev_input_tokens": 0,
+    "error": null
+   },
+   "jev": {
+    "reply": "You're welcome, Rohan! Have a great day.",
+    "tools": [],
+    "first_token_ms": 1500,
+    "total_ms": 1559,
+    "llm_calls": 1,
+    "gemini_usage": {
+     "prompt_token_count": 1851,
+     "cached_content_token_count": 1017,
+     "candidates_token_count": 12,
+     "thoughts_token_count": 0
+    },
+    "gemini_cost": 0.00031070999999999996,
+    "jev_calls": 1,
+    "jev_input_tokens": 2843,
+    "jev_ms": 479,
+    "llm_ms": 1079,
+    "jev_route": {
+     "type": "choice",
+     "choice": "none",
+     "confidence": 1.0,
+     "probabilities": {
+      "get_customer_profile": 0.0,
+      "list_accounts": 0.0,
+      "get_account_balance": 0.0,
+      "get_mini_statement": 0.0,
+      "search_transactions": 0.0,
+      "get_interest_certificate": 0.0,
+      "update_contact_details": 0.0,
+      "update_nominee": 0.0,
+      "request_cheque_book": 0.0,
+      "stop_cheque_payment": 0.0,
+      "get_branch_and_ifsc": 0.0,
+      "list_cards": 0.0,
+      "get_card_details": 0.0,
+      "block_card": 0.0,
+      "unblock_card": 0.0,
+      "reissue_card": 0.0,
+      "track_card_delivery": 0.0,
+      "set_card_limit": 0.0,
+      "toggle_card_feature": 0.0,
+      "reset_card_pin": 0.0,
+      "get_credit_card_bill": 0.0,
+      "pay_credit_card_bill": 0.0,
+      "convert_transaction_to_emi": 0.0,
+      "setup_autopay": 0.0,
+      "request_credit_limit_increase": 0.0,
+      "get_reward_points": 0.0,
+      "redeem_reward_points": 0.0,
+      "raise_dispute": 0.0,
+      "report_unauthorized_transaction": 0.0,
+      "report_failed_transaction": 0.0,
+      "check_dispute_status": 0.0,
+      "withdraw_dispute": 0.0,
+      "search_knowledge_base": 0.0,
+      "find_branch": 0.0,
+      "list_loans": 0.0,
+      "get_loan_details": 0.0,
+      "get_amortization_summary": 0.0,
+      "pay_overdue_emi": 0.0,
+      "get_foreclosure_quote": 0.0,
+      "request_loan_document": 0.0,
+      "change_emi_date": 0.0,
+      "get_preapproved_offers": 0.0,
+      "apply_for_loan": 0.0,
+      "list_deposits": 0.0,
+      "get_deposit_rates": 0.0,
+      "book_fixed_deposit": 0.0,
+      "get_premature_closure_quote": 0.0,
+      "close_deposit": 0.0,
+      "list_beneficiaries": 0.0,
+      "add_beneficiary": 0.0,
+      "transfer_funds": 0.0,
+      "check_transaction_status": 0.0,
+      "pay_bill": 0.0,
+      "get_fastag_status": 0.0,
+      "recharge_fastag": 0.0,
+      "list_standing_instructions": 0.0,
+      "cancel_standing_instruction": 0.0,
+      "get_upi_status": 0.0,
+      "deregister_upi": 0.0,
+      "list_complaint_categories": 0.0,
+      "raise_service_request": 0.0,
+      "check_service_request": 0.0,
+      "escalate_to_human": 0.0,
+      "waive_charge": 0.0,
+      "get_kyc_status": 0.0,
+      "start_video_kyc": 0.0,
+      "none": 1.0
+     }
+    },
+    "jev_steps": [
+     {
+      "title": "route",
+      "ms": 479,
+      "input_tokens": 2843,
+      "resolved": null,
+      "error": null
+     }
+    ],
+    "error": null,
+    "jev_cost": 0.0008529
+   }
+  }
+ ]
+}

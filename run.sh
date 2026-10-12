@@ -10,7 +10,7 @@ if [ ! -d .venv ]; then
 fi
 
 if [ ! -f .env ]; then
-  echo "No .env found — copying .env.example. Add your GOOGLE_API_KEY to it."
+  echo "No .env found — copying .env.example. Add your VERTEX_AI_KEY (or GOOGLE_API_KEY) to it."
   cp .env.example .env
 fi
 

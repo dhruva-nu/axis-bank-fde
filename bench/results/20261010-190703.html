@@ -1,0 +1,781 @@
+<title>LLM vs Jev Benchmark</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;700;800&family=Public+Sans:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: a lab report. Summary tiles, one to-scale latency chart, then each query as an LLM | Jev pair. */
+:root {
+  --bg: #f4f6f8; --surface: #ffffff; --ink: #17212b; --muted: #5a6573; --line: #dce1e7;
+  --llm: #a85d14; --llm-soft: #f7ebdd; --jev: #0d7169; --jev-soft: #dcefec;
+  --ok: #2d7a33; --ok-soft: #e1f1e2; --warn: #9a6400; --warn-soft: #f8edd6; --bad: #b0281f; --bad-soft: #f9e2df;
+  --display: "Schibsted Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --body: "Public Sans", "Segoe UI", system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0e1318; --surface: #151c23; --ink: #e3e8ee; --muted: #94a0ae; --line: #28323d;
+  --llm: #e49b55; --llm-soft: #35261a; --jev: #4fc1b5; --jev-soft: #11312f;
+  --ok: #73c378; --ok-soft: #17301a; --warn: #e3ab45; --warn-soft: #362a12; --bad: #f2867d; --bad-soft: #3a1c1a;
+  color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #0e1318; --surface: #151c23; --ink: #e3e8ee; --muted: #94a0ae; --line: #28323d;
+  --llm: #e49b55; --llm-soft: #35261a; --jev: #4fc1b5; --jev-soft: #11312f;
+  --ok: #73c378; --ok-soft: #17301a; --warn: #e3ab45; --warn-soft: #362a12; --bad: #f2867d; --bad-soft: #3a1c1a;
+  color-scheme: dark; }
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font: 15px/1.55 var(--body); }
+.wrap { max-width: 1180px; margin: 0 auto; padding-inline: 20px; padding-block: 40px 72px; display: grid; gap: 44px; }
+.wrap > *, section { min-width: 0; }
+h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; }
+h1 { font-size: clamp(30px, 5vw, 44px); font-weight: 800; letter-spacing: -0.02em; }
+h2 { font-size: 21px; font-weight: 700; margin-bottom: 14px; }
+.eyebrow { font: 600 12px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 0 0 12px; }
+.lede { max-width: 68ch; color: var(--muted); margin: 10px 0 0; }
+.meta { font: 12.5px/1.5 var(--mono); color: var(--muted); margin-top: 14px; display: flex; flex-wrap: wrap; gap: 6px 18px; }
+code, .mono { font-family: var(--mono); }
+a { color: inherit; }
+
+.engines { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; margin-top: 22px; }
+.engines div { border-top: 3px solid var(--c); padding-top: 10px; }
+.engines .llm { --c: var(--llm); } .engines .jev { --c: var(--jev); }
+.engines b { font-family: var(--display); font-size: 16px; color: var(--c); }
+.engines p { margin: 4px 0 0; color: var(--muted); max-width: 60ch; }
+
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+.tile { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px; display: grid; gap: 9px; align-content: start; }
+.tile h3 { font-size: 13px; font-weight: 600; color: var(--muted); font-family: var(--body); }
+.bar-row { display: grid; grid-template-columns: 34px 1fr auto; gap: 10px; align-items: center; }
+.bar { height: 10px; background: var(--bg); border-radius: 5px; overflow: hidden; }
+.bar i { display: block; height: 100%; background: var(--c); border-radius: 5px; }
+.llm { --c: var(--llm); --soft: var(--llm-soft); } .jev { --c: var(--jev); --soft: var(--jev-soft); }
+.eng { font: 600 11.5px/1 var(--mono); letter-spacing: .05em; color: var(--c); text-transform: uppercase; }
+.val { font: 600 17px/1 var(--mono); font-variant-numeric: tabular-nums; }
+.delta { margin: 2px 0 0; font-family: var(--display); font-weight: 700; font-size: 17px; color: var(--jev); }
+.sub { margin: 0; font-size: 12.5px; color: var(--muted); }
+.score { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; font-family: var(--mono); color: var(--muted); }
+.score .eng { width: 34px; }
+.score b { font-size: 24px; color: var(--ink); font-variant-numeric: tabular-nums; }
+.split { font-size: 12px; }
+
+.chart { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px 18px 12px; }
+.legend { display: flex; gap: 18px; font-size: 13px; color: var(--muted); margin-bottom: 12px; flex-wrap: wrap; }
+.legend span::before { content: ""; display: inline-block; width: 12px; height: 10px; border-radius: 2px; background: var(--c); margin-right: 6px; vertical-align: -1px; }
+.crow { display: grid; grid-template-columns: 38px 1fr; gap: 8px; align-items: center; padding-block: 3px; }
+.cq { font: 600 12px var(--mono); color: var(--muted); text-decoration: none; }
+.cq:hover { color: var(--ink); }
+.ctrack { position: relative; display: grid; gap: 2px; }
+.ctrack > i { position: absolute; top: -3px; bottom: -3px; width: 1px; background: var(--line); }
+.cbar { position: relative; height: 11px; background: var(--c); border-radius: 0 3px 3px 0; min-width: 2px; }
+.cbar em { position: absolute; left: calc(100% + 6px); top: 50%; transform: translateY(-50%); font: 10.5px var(--mono); font-style: normal; color: var(--muted); white-space: nowrap; }
+.axis { position: relative; height: 18px; margin-left: 46px; margin-right: 0; }
+.axis span { position: absolute; transform: translateX(-50%); font: 11px var(--mono); color: var(--muted); top: 4px; }
+
+.table-wrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; }
+table { border-collapse: collapse; width: 100%; font-variant-numeric: tabular-nums; }
+th, td { text-align: left; padding: 8px 14px; border-bottom: 1px solid var(--line); font-size: 13.5px; }
+td { font-family: var(--mono); font-size: 12.5px; }
+thead th { font: 600 11.5px var(--mono); text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+th.ind { padding-left: 28px; font-weight: 400; color: var(--muted); }
+tr.total th, tr.total td { font-weight: 700; border-top: 2px solid var(--line); }
+tr:last-child th, tr:last-child td { border-bottom: 0; }
+.note { font-size: 13px; color: var(--muted); margin: 10px 0 0; max-width: 80ch; }
+
+.queries { display: grid; gap: 22px; }
+.q { display: grid; gap: 10px; scroll-margin-top: 16px; }
+.q > header { display: flex; gap: 12px; align-items: baseline; }
+.qn { font: 600 13px var(--mono); color: var(--muted); flex: none; }
+.q h3 { font-size: 18px; font-weight: 700; }
+.pair { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.side { background: var(--surface); border: 1px solid var(--line); border-top: 3px solid var(--c); border-radius: 8px; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.side-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.side-head .eng { font-size: 12.5px; }
+.pill { font: 600 11.5px/1 var(--mono); padding: 5px 8px; border-radius: 99px; background: var(--s); color: var(--t); }
+.pill.ok { --s: var(--ok-soft); --t: var(--ok); } .pill.warn { --s: var(--warn-soft); --t: var(--warn); } .pill.bad { --s: var(--bad-soft); --t: var(--bad); }
+.why { margin: -2px 0 0; font-size: 13px; color: var(--muted); font-style: italic; }
+.tools { list-style: none; margin: 0; padding: 0; display: grid; gap: 5px; }
+.tool { display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; background: var(--soft); border-radius: 5px; padding: 5px 8px; min-width: 0; }
+.tool code { font-size: 12px; overflow-wrap: anywhere; }
+.tool.err { background: var(--bad-soft); }
+.tool.none { background: var(--bg); color: var(--muted); }
+.tnote { font: 600 10.5px var(--mono); text-transform: uppercase; letter-spacing: .04em; color: var(--warn); }
+.tool.err .tnote { color: var(--bad); }
+.reply { font-size: 14px; flex: 1; }
+.reply p { margin: 0 0 8px; } .reply ul { margin: 0 0 8px; padding-left: 18px; } .reply li { margin-bottom: 2px; }
+.reply .empty { color: var(--bad); font-style: italic; }
+.err { margin: 0; font: 12px var(--mono); color: var(--bad); }
+.metrics { display: grid; grid-template-columns: repeat(4, auto); justify-content: start; gap: 4px 18px; margin: 0; padding-top: 10px; border-top: 1px dashed var(--line); }
+.metrics div { min-width: 0; }
+.metrics dt { font: 600 10.5px var(--mono); text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+.metrics dd { margin: 0; font: 600 13px var(--mono); font-variant-numeric: tabular-nums; }
+
+.consist td { white-space: nowrap; }
+.consist td.bad { color: var(--bad); font-weight: 600; }
+.consist td.eng { font-family: var(--mono); }
+.consist tr.llm td, .consist tr.llm th { border-bottom-color: transparent; }
+.method { display: grid; gap: 8px; max-width: 80ch; }
+.method p, .method li { margin: 0; color: var(--muted); }
+.method ul { margin: 0; padding-left: 18px; display: grid; gap: 6px; }
+.method strong { color: var(--ink); }
+
+@media (max-width: 760px) {
+  .pair { grid-template-columns: 1fr; }
+  .metrics { grid-template-columns: repeat(2, auto); }
+  .wrap { padding-inline: 16px; }
+}
+</style>
+
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Axis Bank FDE · chat engine benchmark</p>
+    <h1>LLM vs Jev</h1>
+    <p class="lede">15 customer queries, each run through both chat engines as a fresh single-turn conversation against a freshly reset bank. Same customer, same tools, same persona, same Gemini model.</p>
+    <div class="meta"><span>2026-10-10 19:07:03</span><span>Gemini gemini-2.5-flash</span><span>jev-latest</span><span>customer Rohan Mehta</span></div>
+    <div class="engines">
+      <div class="llm"><b>LLM</b><p>The ADK agent from <code>master</code>. Gemini holds all 71 tool schemas, decides which to call and with what arguments, loops until done, and writes the reply.</p></div>
+      <div class="jev"><b>Jev</b><p>Jev picks the tool and fills every argument as typed choices. The tool runs, then Gemini writes the reply from the result with no tools attached.</p></div>
+    </div>
+  </header>
+
+  <section>
+    <h2>Summary</h2>
+    <div class="tiles">
+      <div class="tile">
+        <h3>Average response time</h3>
+        <div class="bar-row llm"><span class="eng">LLM</span><span class="bar"><i style="width:100.0%"></i></span><span class="val">5.1s</span></div>
+        <div class="bar-row jev"><span class="eng">Jev</span><span class="bar"><i style="width:70.0%"></i></span><span class="val">3.6s</span></div>
+        <p class="delta">Jev 1.4× faster</p><p class="sub">Median 4.6s vs 3.0s</p>
+      </div>
+      <div class="tile">
+        <h3>Time to first token</h3>
+        <div class="bar-row llm"><span class="eng">LLM</span><span class="bar"><i style="width:100.0%"></i></span><span class="val">4.8s</span></div>
+        <div class="bar-row jev"><span class="eng">Jev</span><span class="bar"><i style="width:64.0%"></i></span><span class="val">3.1s</span></div>
+        <p class="delta">Jev 1.6× sooner</p><p class="sub">When the reply starts appearing</p>
+      </div>
+      <div class="tile">
+        <h3>Cost per query</h3>
+        <div class="bar-row llm"><span class="eng">LLM</span><span class="bar"><i style="width:100.0%"></i></span><span class="val">$0.0027</span></div>
+        <div class="bar-row jev"><span class="eng">Jev</span><span class="bar"><i style="width:69.4%"></i></span><span class="val">$0.0019</span></div>
+        <p class="delta">Jev 31% cheaper</p><p class="sub">$2.69 vs $1.87 per 1,000 queries</p>
+      </div>
+      <div class="tile">
+        <h3>Did the right thing</h3>
+        <div class="score llm"><span class="eng">LLM</span><b>11</b>/15<span class="split">3 partial · 1 failed</span></div>
+        <div class="score jev"><span class="eng">Jev</span><b>14</b>/15<span class="split">0 partial · 1 wrong</span></div>
+        <p class="sub">Judged by hand from the tool calls and reply</p>
+      </div></div>
+  </section>
+
+  <section>
+    <h2>Response time per query</h2>
+    <div class="chart">
+      <div class="legend"><span class="llm">LLM</span><span class="jev">Jev</span></div>
+      <div class="crow"><a class="cq" href="#q1" title="What&#x27;s my account balance?">Q1</a>
+          <div class="ctrack"><i style="left:0.00%"></i><i style="left:16.67%"></i><i style="left:33.33%"></i><i style="left:50.00%"></i><i style="left:66.67%"></i><i style="left:83.33%"></i><i style="left:100.00%"></i>
+            <span class="cbar llm" style="width:54.70%"><em>6.6s</em></span>
+            <span class="cbar jev" style="width:20.57%"><em>2.5s</em></span>
+          </div></div><div class="crow"><a class="cq" href="#q2" title="Show me the last few transactions on my Burgundy savings account">Q2</a>
+          <div class="ctrack"><i style="left:0.00%"></i><i style="left:16.67%"></i><i style="left:33.33%"></i><i style="left:50.00%"></i><i style="left:66.67%"></i><i style="left:83.33%"></i><i style="left:100.00%"></i>
+            <span class="cbar llm" style="width:41.14%"><em>4.9s</em></span>
+            <span class="cbar jev" style="width:73.02%"><em>8.8s</em></span>
+          </div></div><div class="crow"><a class="cq" href="#q3" title="I lost my Magnus credit card, please block it">Q3</a>
+          <div class="ctrack"><i style="left:0.00%"></i><i style="left:16.67%"></i><i style="left:33.33%"></i><i style="left:50.00%"></i><i style="left:66.67%"></i><i style="left:83.33%"></i><i style="left:100.00%"></i>
+            <span class="cbar llm" style="width:33.66%"><em>4.0s</em></span>
+            <span class="cbar jev" style="width:24.75%"><em>3.0s</em></span>
+          </div></div><div class="crow"><a class="cq" href="#q4" title="My Flipkart credit card still hasn&#x27;t arrived, where is it?">Q4</a>
+          <div class="ctrack"><i style="left:0.00%"></i><i style="left:16.67%"></i><i style="left:33.33%"></i><i style="left:50.00%"></i><i style="left:66.67%"></i><i style="left:83.33%"></i><i style="left:100.00%"></i>
+            <span class="cbar llm" style="width:34.69%"><em>4.2s</em></span>
+            <span class="cbar jev" style="width:29.26%"><em>3.5s</em></span>
+          </div></div><div class="crow"><a class="cq" href="#q5" title="How much do I owe on my Magnus card this month and when is it due?">Q5</a>
+          <div class="ctrack"><i style="left:0.00%"></i><i style="left:16.67%"></i><i style="left:33.33%"></i><i style="left:50.00%"></i><i style="left:66.67%"></i><i style="left:83.33%"></i><i style="left:100.00%"></i>
+            <span class="cbar llm" style="width:17.18%"><em>2.1s</em></span>
+            <span class="cbar jev" style="width:24.21%"><em>2.9s</em></span>
+          </div></div><div class="crow"><a class="cq" href="#q6" title="There&#x27;s a 47,320 charge from GlobalPay London on my card that I did not make">Q6</a>
+          <div class="ctrack"><i style="left:0.00%"></i><i style="left:16.67%"></i><i style="left:33.33%"></i><i style="left:50.00%"></i><i style="left:66.67%"></i><i style="left:83.33%"></i><i style="left:100.00%"></i>
+            <span class="cbar llm" style="width:25.89%"><em>3.1s</em></span>
+            <span class="cbar jev" style="width:65.87%"><em>7.9s</em></span>
+          </div></div><div class="crow"><a class="cq" href="#q7" title="I paid 12,499 to Amazon Pay yesterday, money got debited but the order failed">Q7</a>
+          <div class="ctrack"><i style="left:0.00%"></i><i style="left:16.67%"></i><i style="left:33.33%"></i><i style="left:50.00%"></i><i style="left:66.67%"></i><i style="left:83.33%"></i><i style="left:100.00%"></i>
+            <span class="cbar llm" style="width:72.11%"><em>8.7s</em></span>
+            <span class="cbar jev" style="width:25.47%"><em>3.1s</em></span>
+          </div></div><div class="crow"><a class="cq" href="#q8" title="Why was I charged extra on my personal loan?">Q8</a>
+          <div class="ctrack"><i style="left:0.00%"></i><i style="left:16.67%"></i><i style="left:33.33%"></i><i style="left:50.00%"></i><i style="left:66.67%"></i><i style="left:83.33%"></i><i style="left:100.00%"></i>
+            <span class="cbar llm" style="width:51.97%"><em>6.2s</em></span>
+            <span class="cbar jev" style="width:25.55%"><em>3.1s</em></span>
+          </div></div><div class="crow"><a class="cq" href="#q9" title="What would it cost to foreclose my home loan today?">Q9</a>
+          <div class="ctrack"><i style="left:0.00%"></i><i style="left:16.67%"></i><i style="left:33.33%"></i><i style="left:50.00%"></i><i style="left:66.67%"></i><i style="left:83.33%"></i><i style="left:100.00%"></i>
+            <span class="cbar llm" style="width:86.15%"><em>10.3s</em></span>
+            <span class="cbar jev" style="width:25.73%"><em>3.1s</em></span>
+          </div></div><div class="crow"><a class="cq" href="#q10" title="What&#x27;s the FD interest rate for 2 years?">Q10</a>
+          <div class="ctrack"><i style="left:0.00%"></i><i style="left:16.67%"></i><i style="left:33.33%"></i><i style="left:50.00%"></i><i style="left:66.67%"></i><i style="left:83.33%"></i><i style="left:100.00%"></i>
+            <span class="cbar llm" style="width:38.96%"><em>4.7s</em></span>
+            <span class="cbar jev" style="width:23.26%"><em>2.8s</em></span>
+          </div></div><div class="crow"><a class="cq" href="#q11" title="Enable international usage on my debit card, I&#x27;m travelling to Singapore">Q11</a>
+          <div class="ctrack"><i style="left:0.00%"></i><i style="left:16.67%"></i><i style="left:33.33%"></i><i style="left:50.00%"></i><i style="left:66.67%"></i><i style="left:83.33%"></i><i style="left:100.00%"></i>
+            <span class="cbar llm" style="width:35.23%"><em>4.2s</em></span>
+            <span class="cbar jev" style="width:24.30%"><em>2.9s</em></span>
+          </div></div><div class="crow"><a class="cq" href="#q12" title="Set the daily ATM withdrawal limit on my debit card to 50,000">Q12</a>
+          <div class="ctrack"><i style="left:0.00%"></i><i style="left:16.67%"></i><i style="left:33.33%"></i><i style="left:50.00%"></i><i style="left:66.67%"></i><i style="left:83.33%"></i><i style="left:100.00%"></i>
+            <span class="cbar llm" style="width:19.69%"><em>2.4s</em></span>
+            <span class="cbar jev" style="width:20.71%"><em>2.5s</em></span>
+          </div></div><div class="crow"><a class="cq" href="#q13" title="What are the charges if I don&#x27;t maintain minimum balance?">Q13</a>
+          <div class="ctrack"><i style="left:0.00%"></i><i style="left:16.67%"></i><i style="left:33.33%"></i><i style="left:50.00%"></i><i style="left:66.67%"></i><i style="left:83.33%"></i><i style="left:100.00%"></i>
+            <span class="cbar llm" style="width:75.36%"><em>9.0s</em></span>
+            <span class="cbar jev" style="width:26.41%"><em>3.2s</em></span>
+          </div></div><div class="crow"><a class="cq" href="#q14" title="What&#x27;s the IFSC code of my home branch?">Q14</a>
+          <div class="ctrack"><i style="left:0.00%"></i><i style="left:16.67%"></i><i style="left:33.33%"></i><i style="left:50.00%"></i><i style="left:66.67%"></i><i style="left:83.33%"></i><i style="left:100.00%"></i>
+            <span class="cbar llm" style="width:37.99%"><em>4.6s</em></span>
+            <span class="cbar jev" style="width:24.16%"><em>2.9s</em></span>
+          </div></div><div class="crow"><a class="cq" href="#q15" title="Thanks, that&#x27;s all for today!">Q15</a>
+          <div class="ctrack"><i style="left:0.00%"></i><i style="left:16.67%"></i><i style="left:33.33%"></i><i style="left:50.00%"></i><i style="left:66.67%"></i><i style="left:83.33%"></i><i style="left:100.00%"></i>
+            <span class="cbar llm" style="width:12.92%"><em>1.6s</em></span>
+            <span class="cbar jev" style="width:12.99%"><em>1.6s</em></span>
+          </div></div>
+      <div class="axis"><span style="left:0.00%">0s</span><span style="left:16.67%">2s</span><span style="left:33.33%">4s</span><span style="left:50.00%">6s</span><span style="left:66.67%">8s</span><span style="left:83.33%">10s</span><span style="left:100.00%">12s</span></div>
+    </div>
+    <p class="note">Jev's time splits into about 1.7s of Jev decisions and 1.9s of Gemini writing the reply per query.</p>
+  </section>
+
+  <section>
+    <h2>Where the cost goes</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th></th><th>LLM</th><th>Jev</th><th>Rate</th></tr></thead>
+      <tbody>
+      <tr><th>Gemini input tokens</th><td>177,482</td><td>32,423</td><td>$0.3/1M</td></tr>
+      <tr><th class="ind">of which cache hits</th><td>82,751</td><td>7,126</td><td>$0.03/1M</td></tr>
+      <tr><th>Gemini output tokens</th><td>1,633</td><td>1,603</td><td>$2.5/1M</td></tr>
+      <tr><th>Gemini thinking tokens</th><td>2,129</td><td>0</td><td>$2.5/1M</td></tr>
+      <tr><th>Jev input tokens</th><td>—</td><td>53,911</td><td>$0.3/1M*</td></tr>
+      <tr><th>Gemini calls</th><td>27</td><td>15</td><td></td></tr>
+      <tr><th>Jev calls</th><td>—</td><td>29</td><td></td></tr>
+      <tr class="total"><th>Total for 15 queries</th><td>$0.0403</td><td>$0.0280</td><td></td></tr>
+      <tr class="sub"><th class="ind">Jev part of that</th><td></td><td>$0.0162</td><td></td></tr></tbody>
+    </table></div>
+    <p class="note">The LLM engine sends all 71 tool schemas on every model call, and calls the model at least twice per query (pick the tool, then write the reply), so it reads about 6,500 input tokens per call. Jev's reply call carries only the tool result and the persona.<br>* Jev has no published price; its tokens are billed here at $0.3 per 1M, the same as Gemini Flash input. Rerun with <code>--jev-price</code> to change it.</p>
+  </section>
+
+  <section>
+    <h2>Side by side</h2>
+    <div class="queries">
+    <article class="q" id="q1">
+      <header><span class="qn">Q1</span><h3>What&#x27;s my account balance?</h3></header>
+      <div class="pair">
+        
+    <div class="side llm">
+      <div class="side-head"><span class="eng">LLM</span><span class="pill ok">Correct</span></div>
+      <p class="why">Both accounts&#x27; balances.</p>
+      <ul class="tools"><li class="tool ok"><code><b>list_accounts</b>()</code></li></ul>
+      <div class="reply"><p>You have two active accounts:</p><ul><li>Savings - Burgundy ending in XXXXXXXX7742 with a balance of ₹2,84,350.75.</li><li>Savings - Easy Access ending in XXXXXXXX9310 with a balance of ₹18,240.00.</li></ul></div>
+      
+      <dl class="metrics">
+        <div><dt>Total</dt><dd>6.6s</dd></div>
+        <div><dt>First token</dt><dd>6.2s</dd></div>
+        <div><dt>Cost</dt><dd>$0.0027</dd></div>
+        <div><dt>Calls</dt><dd>2 Gemini calls</dd></div>
+      </dl>
+    </div>
+        
+    <div class="side jev">
+      <div class="side-head"><span class="eng">Jev</span><span class="pill ok">Correct</span></div>
+      <p class="why">Default (Burgundy) account balance only.</p>
+      <ul class="tools"><li class="tool ok"><code><b>get_account_balance</b>(account_no=&quot;&quot;)</code></li></ul>
+      <div class="reply"><p>Your Burgundy Savings Account (XXXXXX7742) has a balance of ₹2,84,350.75.</p></div>
+      
+      <dl class="metrics">
+        <div><dt>Total</dt><dd>2.5s</dd></div>
+        <div><dt>First token</dt><dd>2.4s</dd></div>
+        <div><dt>Cost</dt><dd>$0.0017</dd></div>
+        <div><dt>Calls</dt><dd>2 Jev + 1 Gemini call</dd></div>
+      </dl>
+    </div>
+      </div>
+    </article>
+    <article class="q" id="q2">
+      <header><span class="qn">Q2</span><h3>Show me the last few transactions on my Burgundy savings account</h3></header>
+      <div class="pair">
+        
+    <div class="side llm">
+      <div class="side-head"><span class="eng">LLM</span><span class="pill ok">Correct</span></div>
+      
+      <ul class="tools"><li class="tool ok"><code><b>get_mini_statement</b>(account_no=&quot;XXXXXXXX7742&quot;, count=0)</code></li></ul>
+      <div class="reply"><p>Here are the last 10 transactions on your Burgundy Savings Account XXXXXXXX7742:</p><ul><li><strong>28 Jul 2026:</strong> Debit of ₹742.00 to SWIGGY (UPI)</li><li><strong>27 Jul 2026:</strong> Failed Debit of ₹12,499.00 to AMAZON PAY (UPI) - Amount debited, beneficiary not credited</li><li><strong>26 Jul 2026:</strong> Debit of ₹10,000.00 (ATM Withdrawal)</li><li><strong>25 Jul 2026:</strong> Credit of ₹2,85,000.00 from TECHNOVA SOLUTIONS (Salary NEFT)</li><li><strong>24 Jul 2026:</strong> Debit of ₹24,000.00 for HDFC LIFE PREMIUM (ACH)</li><li><strong>22 Jul 2026:</strong> Debit of ₹3,420.00 to BESCOM (UPI)</li><li><strong>20 Jul 2026:</strong> Debit of ₹68,990.00 to CROMA WHITEFIELD (POS)</li><li><strong>19 Jul 2026:</strong> Debit of ₹68,420.00 for AXIS HOME LOAN HL9920 (EMI)</li><li><strong>18 Jul 2026:</strong> Credit of ₹15,000.00 from PRIYA MEHTA (UPI)</li><li><strong>16 Jul 2026:</strong> Debit of ₹29.50 for SMS ALERT FEE Q1 + GST (Charge)</li></ul><p>Your current balance is ₹2,84,350.75.</p></div>
+      
+      <dl class="metrics">
+        <div><dt>Total</dt><dd>4.9s</dd></div>
+        <div><dt>First token</dt><dd>3.6s</dd></div>
+        <div><dt>Cost</dt><dd>$0.0038</dd></div>
+        <div><dt>Calls</dt><dd>2 Gemini calls</dd></div>
+      </dl>
+    </div>
+        
+    <div class="side jev">
+      <div class="side-head"><span class="eng">Jev</span><span class="pill ok">Correct</span></div>
+      
+      <ul class="tools"><li class="tool ok"><code><b>get_mini_statement</b>(account_no=&quot;918010047742&quot;, count=0)</code></li></ul>
+      <div class="reply"><p>Here are the last 10 transactions on your Burgundy Savings Account XXXXXXXX7742:</p><ul><li><strong>28 Jul 2026</strong>: UPI to SWIGGY - ₹742.00 (Debit)</li><li><strong>27 Jul 2026</strong>: UPI to AMAZON PAY - ₹12,499.00 (Debit) - Failed, amount debited but beneficiary not credited.</li><li><strong>26 Jul 2026</strong>: ATM Withdrawal Axis Bank Whitefield - ₹10,000.00 (Debit)</li><li><strong>25 Jul 2026</strong>: NEFT from TECHNOVA SOLUTIONS (Salary) - ₹2,85,000.00 (Credit)</li><li><strong>24 Jul 2026</strong>: ACH to HDFC LIFE PREMIUM - ₹24,000.00 (Debit)</li><li><strong>22 Jul 2026</strong>: UPI to BESCOM - ₹3,420.00 (Debit)</li><li><strong>20 Jul 2026</strong>: POS at CROMA WHITEFIELD - ₹68,990.00 (Debit)</li><li><strong>19 Jul 2026</strong>: EMI for Axis Home Loan HL9920 - ₹68,420.00 (Debit)</li><li><strong>18 Jul 2026</strong>: UPI from PRIYA MEHTA - ₹15,000.00 (Credit)</li><li><strong>16 Jul 2026</strong>: SMS Alert Fee Q1 + GST - ₹29.50 (Debit)</li></ul><p>Your current balance is ₹2,84,350.75.</p></div>
+      
+      <dl class="metrics">
+        <div><dt>Total</dt><dd>8.8s</dd></div>
+        <div><dt>First token</dt><dd>7.3s</dd></div>
+        <div><dt>Cost</dt><dd>$0.0026</dd></div>
+        <div><dt>Calls</dt><dd>2 Jev + 1 Gemini call</dd></div>
+      </dl>
+    </div>
+      </div>
+    </article>
+    <article class="q" id="q3">
+      <header><span class="qn">Q3</span><h3>I lost my Magnus credit card, please block it</h3></header>
+      <div class="pair">
+        
+    <div class="side llm">
+      <div class="side-head"><span class="eng">LLM</span><span class="pill ok">Correct</span></div>
+      <p class="why">Right card first time in this run. In 2 of 3 runs it sent a bad card reference and needed a retry.</p>
+      <ul class="tools"><li class="tool ok"><code><b>block_card</b>(card_ref=&quot;7315&quot;, reason=&quot;lost&quot;)</code></li></ul>
+      <div class="reply"><p>Your Axis Magnus Credit Card (XXXX XXXX XXXX 7315) has been hotlisted immediately due to being lost. This block is permanent and cannot be reversed.</p><p>A replacement card will be sent to your registered address (1204, Prestige Shantiniketan, Whitefield, Bengaluru, Karnataka 560048) and should arrive by 20 Oct 2026. There is no charge for the replacement card.</p><p>Your reference number for this request is BLK202610100001.</p></div>
+      
+      <dl class="metrics">
+        <div><dt>Total</dt><dd>4.0s</dd></div>
+        <div><dt>First token</dt><dd>3.7s</dd></div>
+        <div><dt>Cost</dt><dd>$0.0027</dd></div>
+        <div><dt>Calls</dt><dd>2 Gemini calls</dd></div>
+      </dl>
+    </div>
+        
+    <div class="side jev">
+      <div class="side-head"><span class="eng">Jev</span><span class="pill ok">Correct</span></div>
+      
+      <ul class="tools"><li class="tool ok"><code><b>block_card</b>(card_ref=&quot;CC-7315&quot;, reason=&quot;lost&quot;)</code></li></ul>
+      <div class="reply"><p>Your Axis Magnus Credit Card (XXXX XXXX XXXX 7315) has been blocked immediately due to loss. A replacement card will be issued and delivered to your registered address by 20 Oct 2026. There is no charge for the replacement card.</p><p>The reference number for this request is BLK202610100001.</p></div>
+      
+      <dl class="metrics">
+        <div><dt>Total</dt><dd>3.0s</dd></div>
+        <div><dt>First token</dt><dd>2.5s</dd></div>
+        <div><dt>Cost</dt><dd>$0.0016</dd></div>
+        <div><dt>Calls</dt><dd>2 Jev + 1 Gemini call</dd></div>
+      </dl>
+    </div>
+      </div>
+    </article>
+    <article class="q" id="q4">
+      <header><span class="qn">Q4</span><h3>My Flipkart credit card still hasn&#x27;t arrived, where is it?</h3></header>
+      <div class="pair">
+        
+    <div class="side llm">
+      <div class="side-head"><span class="eng">LLM</span><span class="pill ok">Correct</span></div>
+      
+      <ul class="tools"><li class="tool ok"><code><b>track_card_delivery</b>(card_ref=&quot;9902&quot;)</code></li></ul>
+      <div class="reply"><p>Your Flipkart Credit Card (XXXX XXXX XXXX 9902) is currently out for delivery via Blue Dart, AWB number 77419230845. It was last scanned at Bengaluru Whitefield Hub on 28 Jul 2026 at 08:14, and is expected to be delivered by 29 Jul 2026.</p></div>
+      
+      <dl class="metrics">
+        <div><dt>Total</dt><dd>4.2s</dd></div>
+        <div><dt>First token</dt><dd>3.9s</dd></div>
+        <div><dt>Cost</dt><dd>$0.0028</dd></div>
+        <div><dt>Calls</dt><dd>2 Gemini calls</dd></div>
+      </dl>
+    </div>
+        
+    <div class="side jev">
+      <div class="side-head"><span class="eng">Jev</span><span class="pill ok">Correct</span></div>
+      
+      <ul class="tools"><li class="tool ok"><code><b>track_card_delivery</b>(card_ref=&quot;CC-9902&quot;)</code></li></ul>
+      <div class="reply"><p>Your Flipkart credit card (XXXX XXXX XXXX 9902) is out for delivery with Blue Dart, AWB number 77419230845. It was last scanned on 28 Jul 2026 at the Bengaluru Whitefield Hub. You can expect it by 29 Jul 2026.</p></div>
+      
+      <dl class="metrics">
+        <div><dt>Total</dt><dd>3.5s</dd></div>
+        <div><dt>First token</dt><dd>3.1s</dd></div>
+        <div><dt>Cost</dt><dd>$0.0018</dd></div>
+        <div><dt>Calls</dt><dd>2 Jev + 1 Gemini call</dd></div>
+      </dl>
+    </div>
+      </div>
+    </article>
+    <article class="q" id="q5">
+      <header><span class="qn">Q5</span><h3>How much do I owe on my Magnus card this month and when is it due?</h3></header>
+      <div class="pair">
+        
+    <div class="side llm">
+      <div class="side-head"><span class="eng">LLM</span><span class="pill bad">Failed</span></div>
+      <p class="why">Empty reply: the model returned no content. Happened in all 3 runs.</p>
+      <ul class="tools"><li class="tool none"><code>no tool called</code></li></ul>
+      <div class="reply"><p class="empty">(no reply)</p></div>
+      <p class="err">empty reply: the model returned no content</p>
+      <dl class="metrics">
+        <div><dt>Total</dt><dd>2.1s</dd></div>
+        <div><dt>First token</dt><dd>—</dd></div>
+        <div><dt>Cost</dt><dd>$0.0019</dd></div>
+        <div><dt>Calls</dt><dd>1 Gemini call</dd></div>
+      </dl>
+    </div>
+        
+    <div class="side jev">
+      <div class="side-head"><span class="eng">Jev</span><span class="pill ok">Correct</span></div>
+      
+      <ul class="tools"><li class="tool ok"><code><b>get_credit_card_bill</b>(card_ref=&quot;CC-7315&quot;)</code></li></ul>
+      <div class="reply"><p>Your total outstanding on the Axis Magnus Credit Card (XXXX XXXX XXXX 7315) is ₹2,38,580.00, due on 07 Aug 2026. The minimum amount due is ₹11,929.00.</p></div>
+      
+      <dl class="metrics">
+        <div><dt>Total</dt><dd>2.9s</dd></div>
+        <div><dt>First token</dt><dd>2.1s</dd></div>
+        <div><dt>Cost</dt><dd>$0.0018</dd></div>
+        <div><dt>Calls</dt><dd>2 Jev + 1 Gemini call</dd></div>
+      </dl>
+    </div>
+      </div>
+    </article>
+    <article class="q" id="q6">
+      <header><span class="qn">Q6</span><h3>There&#x27;s a 47,320 charge from GlobalPay London on my card that I did not make</h3></header>
+      <div class="pair">
+        
+    <div class="side llm">
+      <div class="side-head"><span class="eng">LLM</span><span class="pill warn">Partial</span></div>
+      <p class="why">Asked for the card&#x27;s last 4 digits although the transaction was findable. No case opened.</p>
+      <ul class="tools"><li class="tool none"><code>no tool called</code></li></ul>
+      <div class="reply"><p>I&#x27;m sorry to hear about this unauthorized transaction. To protect your account, I need to block the card immediately. Could you please tell me the last 4 digits of the card on which this transaction occurred?</p></div>
+      
+      <dl class="metrics">
+        <div><dt>Total</dt><dd>3.1s</dd></div>
+        <div><dt>First token</dt><dd>3.0s</dd></div>
+        <div><dt>Cost</dt><dd>$0.0025</dd></div>
+        <div><dt>Calls</dt><dd>1 Gemini call</dd></div>
+      </dl>
+    </div>
+        
+    <div class="side jev">
+      <div class="side-head"><span class="eng">Jev</span><span class="pill ok">Correct</span></div>
+      <p class="why">Opened the fraud case and hotlisted the card. Hotlisting is irreversible and was done without asking first.</p>
+      <ul class="tools"><li class="tool ok"><code><b>report_unauthorized_transaction</b>(txn_ref=&quot;TXN20260726CC2&quot;, description=&quot;There&#x27;s a 47,320 charge from GlobalPay London on my card that I did not make&quot;)</code></li></ul>
+      <div class="reply"><p>I&#x27;m sorry to hear about this unauthorized transaction. Your Axis Magnus Credit Card (XXXX XXXX XXXX 7315) has been hotlisted immediately to prevent further misuse. A replacement card will be issued free of charge and should arrive by 20 Oct 2026.</p><p>We have opened a fraud investigation for the ₹47,320.00 transaction from GLOBALPAY*DIGITALPRO LONDON GB on 26 Jul 2026. Your liability for this transaction is zero.</p><p>Here&#x27;s what happens next:</p><ul><li>The fraud desk will call you on your registered mobile number within 24 hours.</li><li>You will receive provisional credit by 20 Oct 2026.</li><li>The final resolution is expected by 08 Jan 2027.</li><li>The dispute reference number is FRD202610100001.</li></ul><p>Please do not share your OTP or CVV with anyone, even if they claim to be from the bank. You may also file a cybercrime complaint at cybercrime.gov.in or call 1930 to strengthen your case.</p></div>
+      
+      <dl class="metrics">
+        <div><dt>Total</dt><dd>7.9s</dd></div>
+        <div><dt>First token</dt><dd>6.9s</dd></div>
+        <div><dt>Cost</dt><dd>$0.0026</dd></div>
+        <div><dt>Calls</dt><dd>2 Jev + 1 Gemini call</dd></div>
+      </dl>
+    </div>
+      </div>
+    </article>
+    <article class="q" id="q7">
+      <header><span class="qn">Q7</span><h3>I paid 12,499 to Amazon Pay yesterday, money got debited but the order failed</h3></header>
+      <div class="pair">
+        
+    <div class="side llm">
+      <div class="side-head"><span class="eng">LLM</span><span class="pill warn">Partial</span></div>
+      <p class="why">Found the transaction, then stopped to confirm it. No request raised.</p>
+      <ul class="tools"><li class="tool ok"><code><b>search_transactions</b>(query=&quot;Amazon Pay 12499&quot;, account_no=&quot;XXXXXXXX7742&quot;)</code></li><li class="tool ok"><code><b>search_transactions</b>(account_no=&quot;XXXXXXXX7742&quot;, query=&quot;Amazon Pay&quot;)</code></li></ul>
+      <div class="reply"><p>I found a transaction to Amazon Pay for ₹12,499.00 on 27 Jul 2026. Is this the transaction you are referring to, or was it a different one from yesterday?</p></div>
+      
+      <dl class="metrics">
+        <div><dt>Total</dt><dd>8.7s</dd></div>
+        <div><dt>First token</dt><dd>8.5s</dd></div>
+        <div><dt>Cost</dt><dd>$0.0046</dd></div>
+        <div><dt>Calls</dt><dd>3 Gemini calls</dd></div>
+      </dl>
+    </div>
+        
+    <div class="side jev">
+      <div class="side-head"><span class="eng">Jev</span><span class="pill ok">Correct</span></div>
+      
+      <ul class="tools"><li class="tool ok"><code><b>report_failed_transaction</b>(txn_ref=&quot;TXN20260727B4&quot;)</code></li></ul>
+      <div class="reply"><p>I&#x27;ve registered a complaint for the failed transaction to Amazon Pay of ₹12,499.00 on 27 Jul 2026. The reference number is SR202610100001.</p><p>The transaction (RRN 619104221773) should be auto-reversed by 11 Oct 2026 as per RBI guidelines. You&#x27;ll receive ₹100 per day automatically if there&#x27;s any delay beyond this. No action is needed from your side.</p></div>
+      
+      <dl class="metrics">
+        <div><dt>Total</dt><dd>3.1s</dd></div>
+        <div><dt>First token</dt><dd>2.4s</dd></div>
+        <div><dt>Cost</dt><dd>$0.0019</dd></div>
+        <div><dt>Calls</dt><dd>2 Jev + 1 Gemini call</dd></div>
+      </dl>
+    </div>
+      </div>
+    </article>
+    <article class="q" id="q8">
+      <header><span class="qn">Q8</span><h3>Why was I charged extra on my personal loan?</h3></header>
+      <div class="pair">
+        
+    <div class="side llm">
+      <div class="side-head"><span class="eng">LLM</span><span class="pill ok">Correct</span></div>
+      <p class="why">Named the real cause: a bounced EMI, the ₹590 charge and penal interest.</p>
+      <ul class="tools"><li class="tool ok"><code><b>get_loan_details</b>(loan_ref=&quot;PL4471&quot;)</code></li></ul>
+      <div class="reply"><p>Your Personal Loan (PL4471) has an overdue EMI of ₹21,850.00. This is because there were insufficient funds in your account on 05 Jul 2026, which resulted in a bounce charge of ₹590.00 and penal interest of 2% per month on the overdue amount.</p><p>You can clear the overdue EMI to avoid further charges and CIBIL impact. Would you like to do that now?</p></div>
+      
+      <dl class="metrics">
+        <div><dt>Total</dt><dd>6.2s</dd></div>
+        <div><dt>First token</dt><dd>5.9s</dd></div>
+        <div><dt>Cost</dt><dd>$0.0040</dd></div>
+        <div><dt>Calls</dt><dd>2 Gemini calls</dd></div>
+      </dl>
+    </div>
+        
+    <div class="side jev">
+      <div class="side-head"><span class="eng">Jev</span><span class="pill bad">Wrong</span></div>
+      <p class="why">Wrong tool: the loan-rates KB article. The reply guesses at the cause and asks a follow-up.</p>
+      <ul class="tools"><li class="tool ok"><code><b>search_knowledge_base</b>(query=&quot;Loan interest rates and processing fees&quot;)</code></li></ul>
+      <div class="reply"><p>I see that your Personal Loan PL4471 has one EMI overdue, which is ₹21,850. This might be why you&#x27;re seeing an extra charge.</p><p>Personal loans have a fixed interest rate between 10.49% and 21% per annum, and a processing fee of up to 2%. If an EMI is missed, additional charges may apply.</p><p>Would you like me to check the specific charges applied to your loan?</p></div>
+      
+      <dl class="metrics">
+        <div><dt>Total</dt><dd>3.1s</dd></div>
+        <div><dt>First token</dt><dd>2.7s</dd></div>
+        <div><dt>Cost</dt><dd>$0.0020</dd></div>
+        <div><dt>Calls</dt><dd>2 Jev + 1 Gemini call</dd></div>
+      </dl>
+    </div>
+      </div>
+    </article>
+    <article class="q" id="q9">
+      <header><span class="qn">Q9</span><h3>What would it cost to foreclose my home loan today?</h3></header>
+      <div class="pair">
+        
+    <div class="side llm">
+      <div class="side-head"><span class="eng">LLM</span><span class="pill ok">Correct</span></div>
+      
+      <ul class="tools"><li class="tool ok"><code><b>get_foreclosure_quote</b>(loan_ref=&quot;HL9920&quot;)</code></li></ul>
+      <div class="reply"><p>To foreclose your Home Loan (HL9920) today, the total payable amount would be ₹61,42,870.00. There are no foreclosure charges on your floating-rate home loan as per RBI rules.</p><p>You would save ₹60,35,890.00 in interest. If you proceed, the original property papers and NOC will be released within 15 working days of payment. This quote is valid until 17 Oct 2026.</p></div>
+      
+      <dl class="metrics">
+        <div><dt>Total</dt><dd>10.3s</dd></div>
+        <div><dt>First token</dt><dd>9.3s</dd></div>
+        <div><dt>Cost</dt><dd>$0.0028</dd></div>
+        <div><dt>Calls</dt><dd>2 Gemini calls</dd></div>
+      </dl>
+    </div>
+        
+    <div class="side jev">
+      <div class="side-head"><span class="eng">Jev</span><span class="pill ok">Correct</span></div>
+      
+      <ul class="tools"><li class="tool ok"><code><b>get_foreclosure_quote</b>(loan_ref=&quot;HL9920&quot;)</code></li></ul>
+      <div class="reply"><p>To foreclose your Home Loan HL9920 today, the outstanding amount payable is ₹61,42,870.00. There are no foreclosure charges as it&#x27;s a floating-rate home loan.</p><p>By foreclosing, you would save ₹60,35,890.00 in interest. This quote is valid until 17 Oct 2026.</p><p>If you proceed, the original property papers and a No Objection Certificate (NOC) will be released within 15 working days of payment. A payment link and formal foreclosure letter will be sent to your registered email ID.</p></div>
+      
+      <dl class="metrics">
+        <div><dt>Total</dt><dd>3.1s</dd></div>
+        <div><dt>First token</dt><dd>2.4s</dd></div>
+        <div><dt>Cost</dt><dd>$0.0019</dd></div>
+        <div><dt>Calls</dt><dd>2 Jev + 1 Gemini call</dd></div>
+      </dl>
+    </div>
+      </div>
+    </article>
+    <article class="q" id="q10">
+      <header><span class="qn">Q10</span><h3>What&#x27;s the FD interest rate for 2 years?</h3></header>
+      <div class="pair">
+        
+    <div class="side llm">
+      <div class="side-head"><span class="eng">LLM</span><span class="pill ok">Correct</span></div>
+      
+      <ul class="tools"><li class="tool ok"><code><b>get_deposit_rates</b>(tenure_months=24)</code></li></ul>
+      <div class="reply"><p>For a 2-year Fixed Deposit, the interest rate is 7.25% p.a. for general citizens and 7.75% p.a. for senior citizens. We also have a Tax Saver FD at 7.10% p.a. with a 5-year lock-in, eligible for deduction under Section 80C.</p><p>Interest is compounded quarterly. TDS applies if the interest earned is above ₹40,000 in a year (₹50,000 for senior citizens).</p></div>
+      
+      <dl class="metrics">
+        <div><dt>Total</dt><dd>4.7s</dd></div>
+        <div><dt>First token</dt><dd>4.3s</dd></div>
+        <div><dt>Cost</dt><dd>$0.0029</dd></div>
+        <div><dt>Calls</dt><dd>2 Gemini calls</dd></div>
+      </dl>
+    </div>
+        
+    <div class="side jev">
+      <div class="side-head"><span class="eng">Jev</span><span class="pill ok">Correct</span></div>
+      
+      <ul class="tools"><li class="tool ok"><code><b>get_deposit_rates</b>(tenure_months=24)</code></li></ul>
+      <div class="reply"><p>For a 2-year Fixed Deposit:</p><ul><li><strong>General Public:</strong> 7.25% p.a.</li><li><strong>Senior Citizens:</strong> 7.75% p.a.</li></ul><p>We also have a Tax Saver FD at 7.10% p.a. with a 5-year lock-in, eligible for deduction under Section 80C.</p><p>Interest is compounded quarterly. TDS applies if interest earned is above ₹40,000 annually (₹50,000 for senior citizens).</p></div>
+      
+      <dl class="metrics">
+        <div><dt>Total</dt><dd>2.8s</dd></div>
+        <div><dt>First token</dt><dd>2.3s</dd></div>
+        <div><dt>Cost</dt><dd>$0.0019</dd></div>
+        <div><dt>Calls</dt><dd>2 Jev + 1 Gemini call</dd></div>
+      </dl>
+    </div>
+      </div>
+    </article>
+    <article class="q" id="q11">
+      <header><span class="qn">Q11</span><h3>Enable international usage on my debit card, I&#x27;m travelling to Singapore</h3></header>
+      <div class="pair">
+        
+    <div class="side llm">
+      <div class="side-head"><span class="eng">LLM</span><span class="pill ok">Correct</span></div>
+      <p class="why">Sent the OTP first, as the persona prompt instructs.</p>
+      <ul class="tools"><li class="tool ok"><code><b>send_otp</b>(purpose=&quot;enabling international usage on your debit card&quot;)</code></li></ul>
+      <div class="reply"><p>Please tell me the 6-digit OTP you have received on your registered mobile number ending 11223. The OTP is valid for 5 minutes.</p></div>
+      
+      <dl class="metrics">
+        <div><dt>Total</dt><dd>4.2s</dd></div>
+        <div><dt>First token</dt><dd>2.2s</dd></div>
+        <div><dt>Cost</dt><dd>$0.0024</dd></div>
+        <div><dt>Calls</dt><dd>2 Gemini calls</dd></div>
+      </dl>
+    </div>
+        
+    <div class="side jev">
+      <div class="side-head"><span class="eng">Jev</span><span class="pill ok">Correct</span></div>
+      <p class="why">Tried the toggle, got otp_required, sent the OTP and held the call.</p>
+      <ul class="tools"><li class="tool hold"><code><b>toggle_card_feature</b>(card_ref=&quot;DC-4821&quot;, feature=&quot;international&quot;, enable=true)</code><span class="tnote">needs OTP</span></li><li class="tool ok"><code><b>send_otp</b>(purpose=&quot;Switch a card feature on or off&quot;)</code></li></ul>
+      <div class="reply"><p>To enable international usage on your Burgundy Debit Card (XXXX XXXX XXXX 4821), we need to verify with an OTP.</p><p>I&#x27;ve sent a 6-digit OTP to your registered mobile number ending in <strong>1223</strong>. Please tell me the OTP to proceed.</p></div>
+      
+      <dl class="metrics">
+        <div><dt>Total</dt><dd>2.9s</dd></div>
+        <div><dt>First token</dt><dd>2.4s</dd></div>
+        <div><dt>Cost</dt><dd>$0.0016</dd></div>
+        <div><dt>Calls</dt><dd>2 Jev + 1 Gemini call</dd></div>
+      </dl>
+    </div>
+      </div>
+    </article>
+    <article class="q" id="q12">
+      <header><span class="qn">Q12</span><h3>Set the daily ATM withdrawal limit on my debit card to 50,000</h3></header>
+      <div class="pair">
+        
+    <div class="side llm">
+      <div class="side-head"><span class="eng">LLM</span><span class="pill warn">Partial</span></div>
+      <p class="why">Asked permission to send the OTP instead of sending it.</p>
+      <ul class="tools"><li class="tool none"><code>no tool called</code></li></ul>
+      <div class="reply"><p>I can help you with that. To change your ATM withdrawal limit, I need to send an OTP to your registered mobile number. Please confirm if you would like to proceed.</p></div>
+      
+      <dl class="metrics">
+        <div><dt>Total</dt><dd>2.4s</dd></div>
+        <div><dt>First token</dt><dd>2.3s</dd></div>
+        <div><dt>Cost</dt><dd>$0.0008</dd></div>
+        <div><dt>Calls</dt><dd>1 Gemini call</dd></div>
+      </dl>
+    </div>
+        
+    <div class="side jev">
+      <div class="side-head"><span class="eng">Jev</span><span class="pill ok">Correct</span></div>
+      
+      <ul class="tools"><li class="tool hold"><code><b>set_card_limit</b>(card_ref=&quot;DC-4821&quot;, limit_type=&quot;atm_daily&quot;, amount=50000)</code><span class="tnote">needs OTP</span></li><li class="tool ok"><code><b>send_otp</b>(purpose=&quot;Change a card&#x27;s transaction limit&quot;)</code></li></ul>
+      <div class="reply"><p>To change your daily ATM withdrawal limit for your Debit Card (XXXX XXXX XXXX 4821) to ₹50,000, we need to verify with an OTP.</p><p>I&#x27;ve sent a 6-digit OTP to your registered mobile number, +91-98200-11223. Please tell me the OTP to proceed.</p></div>
+      
+      <dl class="metrics">
+        <div><dt>Total</dt><dd>2.5s</dd></div>
+        <div><dt>First token</dt><dd>2.1s</dd></div>
+        <div><dt>Cost</dt><dd>$0.0020</dd></div>
+        <div><dt>Calls</dt><dd>2 Jev + 1 Gemini call</dd></div>
+      </dl>
+    </div>
+      </div>
+    </article>
+    <article class="q" id="q13">
+      <header><span class="qn">Q13</span><h3>What are the charges if I don&#x27;t maintain minimum balance?</h3></header>
+      <div class="pair">
+        
+    <div class="side llm">
+      <div class="side-head"><span class="eng">LLM</span><span class="pill ok">Correct</span></div>
+      <p class="why">Returned an empty reply in 1 of 3 runs.</p>
+      <ul class="tools"><li class="tool ok"><code><b>search_knowledge_base</b>(query=&quot;charges for not maintaining minimum balance&quot;)</code></li></ul>
+      <div class="reply"><p>For your Easy Access Savings Account (XXXXXXXX9310), if your Average Monthly Balance (AMB) falls short of ₹12,000, a non-maintenance charge of 6% of the shortfall, capped at ₹600 + GST per month, will be applied.</p><p>For your Burgundy Savings Account (XXXXXXXX7742), the AMB requirement is ₹2,00,000. The non-maintenance charge is 6% of the shortfall, capped at ₹600 + GST per month.</p><p>These charges are waived for salary accounts with recent credit, senior citizens, and Basic Savings Bank Deposit Accounts (BSBDA). A one-time goodwill waiver can be granted once per financial year.</p></div>
+      
+      <dl class="metrics">
+        <div><dt>Total</dt><dd>9.0s</dd></div>
+        <div><dt>First token</dt><dd>7.9s</dd></div>
+        <div><dt>Cost</dt><dd>$0.0046</dd></div>
+        <div><dt>Calls</dt><dd>2 Gemini calls</dd></div>
+      </dl>
+    </div>
+        
+    <div class="side jev">
+      <div class="side-head"><span class="eng">Jev</span><span class="pill ok">Correct</span></div>
+      <p class="why">In 1 of 3 runs the reply invented a Burgundy waiver that is not in the KB article.</p>
+      <ul class="tools"><li class="tool ok"><code><b>search_knowledge_base</b>(query=&quot;Average Monthly Balance (AMB) and non-maintenance charges&quot;)</code></li></ul>
+      <div class="reply"><p>For your Burgundy Savings Account, you need to maintain an Average Monthly Balance (AMB) of ₹2,00,000 or a total relationship value of ₹10 lakh.</p><p>If the AMB is not maintained, the charge is 6% of the shortfall, capped at ₹600 + GST per month. This charge is waived for salary accounts (with recent credit), senior citizens, Pension, and Basic Savings Accounts.</p></div>
+      
+      <dl class="metrics">
+        <div><dt>Total</dt><dd>3.2s</dd></div>
+        <div><dt>First token</dt><dd>2.7s</dd></div>
+        <div><dt>Cost</dt><dd>$0.0022</dd></div>
+        <div><dt>Calls</dt><dd>2 Jev + 1 Gemini call</dd></div>
+      </dl>
+    </div>
+      </div>
+    </article>
+    <article class="q" id="q14">
+      <header><span class="qn">Q14</span><h3>What&#x27;s the IFSC code of my home branch?</h3></header>
+      <div class="pair">
+        
+    <div class="side llm">
+      <div class="side-head"><span class="eng">LLM</span><span class="pill ok">Correct</span></div>
+      
+      <ul class="tools"><li class="tool ok"><code><b>get_branch_and_ifsc</b>(account_no=&quot;XXXXXXXX7742&quot;)</code></li></ul>
+      <div class="reply"><p>Your home branch is Whitefield, Bengaluru and its IFSC code is UTIB0001234.</p></div>
+      
+      <dl class="metrics">
+        <div><dt>Total</dt><dd>4.6s</dd></div>
+        <div><dt>First token</dt><dd>4.5s</dd></div>
+        <div><dt>Cost</dt><dd>$0.0013</dd></div>
+        <div><dt>Calls</dt><dd>2 Gemini calls</dd></div>
+      </dl>
+    </div>
+        
+    <div class="side jev">
+      <div class="side-head"><span class="eng">Jev</span><span class="pill ok">Correct</span></div>
+      
+      <ul class="tools"><li class="tool ok"><code><b>get_branch_and_ifsc</b>(account_no=&quot;&quot;)</code></li></ul>
+      <div class="reply"><p>Your home branch, Whitefield, Bengaluru, has the IFSC code UTIB0001234.</p></div>
+      
+      <dl class="metrics">
+        <div><dt>Total</dt><dd>2.9s</dd></div>
+        <div><dt>First token</dt><dd>2.9s</dd></div>
+        <div><dt>Cost</dt><dd>$0.0014</dd></div>
+        <div><dt>Calls</dt><dd>2 Jev + 1 Gemini call</dd></div>
+      </dl>
+    </div>
+      </div>
+    </article>
+    <article class="q" id="q15">
+      <header><span class="qn">Q15</span><h3>Thanks, that&#x27;s all for today!</h3></header>
+      <div class="pair">
+        
+    <div class="side llm">
+      <div class="side-head"><span class="eng">LLM</span><span class="pill ok">Correct</span></div>
+      
+      <ul class="tools"><li class="tool none"><code>no tool called</code></li></ul>
+      <div class="reply"><p>You&#x27;re welcome, Rohan! Is there anything else I can help you with today?</p></div>
+      
+      <dl class="metrics">
+        <div><dt>Total</dt><dd>1.6s</dd></div>
+        <div><dt>First token</dt><dd>1.5s</dd></div>
+        <div><dt>Cost</dt><dd>$0.0004</dd></div>
+        <div><dt>Calls</dt><dd>1 Gemini call</dd></div>
+      </dl>
+    </div>
+        
+    <div class="side jev">
+      <div class="side-head"><span class="eng">Jev</span><span class="pill ok">Correct</span></div>
+      
+      <ul class="tools"><li class="tool none"><code>no tool called</code></li></ul>
+      <div class="reply"><p>You&#x27;re welcome, Rohan! Have a great day.</p></div>
+      
+      <dl class="metrics">
+        <div><dt>Total</dt><dd>1.6s</dd></div>
+        <div><dt>First token</dt><dd>1.5s</dd></div>
+        <div><dt>Cost</dt><dd>$0.0012</dd></div>
+        <div><dt>Calls</dt><dd>1 Jev + 1 Gemini call</dd></div>
+      </dl>
+    </div>
+      </div>
+    </article></div>
+  </section>
+
+  <section>
+    <h2>Run to run</h2>
+    <p class="note" style="margin:0 0 12px">The same 15 queries were run 3 times. Tools called in each run:</p>
+    <div class="table-wrap"><table class="consist">
+      <thead><tr><th></th><th></th><th>19:00</th><th>19:04</th><th>19:07</th></tr></thead>
+      <tbody><tr class="llm"><th rowspan="2"><a href="#q1">Q1</a></th><td class="eng">LLM</td><td class="" title="">list_accounts</td><td class="" title="">list_accounts</td><td class="" title="">list_accounts</td></tr><tr class="jev"><td class="eng">Jev</td><td class="" title="">get_account_balance</td><td class="" title="">get_account_balance</td><td class="" title="">get_account_balance</td></tr><tr class="llm"><th rowspan="2"><a href="#q2">Q2</a></th><td class="eng">LLM</td><td class="" title="">get_mini_statement</td><td class="" title="">get_mini_statement</td><td class="" title="">get_mini_statement</td></tr><tr class="jev"><td class="eng">Jev</td><td class="" title="">get_mini_statement</td><td class="" title="">get_mini_statement</td><td class="" title="">get_mini_statement</td></tr><tr class="llm"><th rowspan="2"><a href="#q3">Q3</a></th><td class="eng">LLM</td><td class="" title="">block_card → list_cards → block_card</td><td class="" title="">block_card → list_cards → block_card</td><td class="" title="">block_card</td></tr><tr class="jev"><td class="eng">Jev</td><td class="" title="">block_card</td><td class="" title="">block_card</td><td class="" title="">block_card</td></tr><tr class="llm"><th rowspan="2"><a href="#q4">Q4</a></th><td class="eng">LLM</td><td class="" title="">track_card_delivery</td><td class="" title="">track_card_delivery</td><td class="" title="">track_card_delivery</td></tr><tr class="jev"><td class="eng">Jev</td><td class="" title="">track_card_delivery</td><td class="" title="">track_card_delivery</td><td class="" title="">track_card_delivery</td></tr><tr class="llm"><th rowspan="2"><a href="#q5">Q5</a></th><td class="eng">LLM</td><td class="" title="">no tool</td><td class="bad" title="empty reply: the model returned no content">empty reply</td><td class="bad" title="empty reply: the model returned no content">empty reply</td></tr><tr class="jev"><td class="eng">Jev</td><td class="" title="">get_credit_card_bill</td><td class="" title="">get_credit_card_bill</td><td class="" title="">get_credit_card_bill</td></tr><tr class="llm"><th rowspan="2"><a href="#q6">Q6</a></th><td class="eng">LLM</td><td class="" title="">no tool</td><td class="" title="">no tool</td><td class="" title="">no tool</td></tr><tr class="jev"><td class="eng">Jev</td><td class="" title="">report_unauthorized_transaction</td><td class="" title="">report_unauthorized_transaction</td><td class="" title="">report_unauthorized_transaction</td></tr><tr class="llm"><th rowspan="2"><a href="#q7">Q7</a></th><td class="eng">LLM</td><td class="" title="">search_transactions → get_mini_statement → report_failed_transaction</td><td class="bad" title="ConnectError: ">network error</td><td class="" title="">search_transactions → search_transactions</td></tr><tr class="jev"><td class="eng">Jev</td><td class="" title="">report_failed_transaction</td><td class="" title="">report_failed_transaction</td><td class="" title="">report_failed_transaction</td></tr><tr class="llm"><th rowspan="2"><a href="#q8">Q8</a></th><td class="eng">LLM</td><td class="" title="">get_loan_details</td><td class="" title="">get_loan_details</td><td class="" title="">get_loan_details</td></tr><tr class="jev"><td class="eng">Jev</td><td class="" title="">search_knowledge_base</td><td class="" title="">search_knowledge_base</td><td class="" title="">search_knowledge_base</td></tr><tr class="llm"><th rowspan="2"><a href="#q9">Q9</a></th><td class="eng">LLM</td><td class="" title="">get_foreclosure_quote</td><td class="" title="">get_foreclosure_quote</td><td class="" title="">get_foreclosure_quote</td></tr><tr class="jev"><td class="eng">Jev</td><td class="" title="">get_foreclosure_quote</td><td class="" title="">get_foreclosure_quote</td><td class="" title="">get_foreclosure_quote</td></tr><tr class="llm"><th rowspan="2"><a href="#q10">Q10</a></th><td class="eng">LLM</td><td class="" title="">get_deposit_rates</td><td class="" title="">get_deposit_rates</td><td class="" title="">get_deposit_rates</td></tr><tr class="jev"><td class="eng">Jev</td><td class="" title="">get_deposit_rates</td><td class="" title="">get_deposit_rates</td><td class="" title="">get_deposit_rates</td></tr><tr class="llm"><th rowspan="2"><a href="#q11">Q11</a></th><td class="eng">LLM</td><td class="" title="">send_otp</td><td class="" title="">send_otp</td><td class="" title="">send_otp</td></tr><tr class="jev"><td class="eng">Jev</td><td class="" title="">toggle_card_feature → send_otp</td><td class="" title="">toggle_card_feature → send_otp</td><td class="" title="">toggle_card_feature → send_otp</td></tr><tr class="llm"><th rowspan="2"><a href="#q12">Q12</a></th><td class="eng">LLM</td><td class="" title="">no tool</td><td class="" title="">send_otp</td><td class="" title="">no tool</td></tr><tr class="jev"><td class="eng">Jev</td><td class="" title="">set_card_limit → send_otp</td><td class="" title="">set_card_limit → send_otp</td><td class="" title="">set_card_limit → send_otp</td></tr><tr class="llm"><th rowspan="2"><a href="#q13">Q13</a></th><td class="eng">LLM</td><td class="" title="">search_knowledge_base</td><td class="bad" title="empty reply: the model returned no content">empty reply</td><td class="" title="">search_knowledge_base</td></tr><tr class="jev"><td class="eng">Jev</td><td class="" title="">search_knowledge_base</td><td class="" title="">search_knowledge_base</td><td class="" title="">search_knowledge_base</td></tr><tr class="llm"><th rowspan="2"><a href="#q14">Q14</a></th><td class="eng">LLM</td><td class="" title="">get_branch_and_ifsc</td><td class="" title="">get_branch_and_ifsc</td><td class="" title="">get_branch_and_ifsc</td></tr><tr class="jev"><td class="eng">Jev</td><td class="" title="">get_branch_and_ifsc</td><td class="" title="">get_branch_and_ifsc</td><td class="" title="">get_branch_and_ifsc</td></tr><tr class="llm"><th rowspan="2"><a href="#q15">Q15</a></th><td class="eng">LLM</td><td class="" title="">no tool</td><td class="" title="">no tool</td><td class="" title="">no tool</td></tr><tr class="jev"><td class="eng">Jev</td><td class="" title="">no tool</td><td class="" title="">no tool</td><td class="" title="">no tool</td></tr></tbody>
+    </table></div>
+    <div class="table-wrap" style="margin-top:14px"><table>
+      <thead><tr><th>Run</th><th>LLM avg time</th><th>Jev avg time</th><th>LLM $/query</th><th>Jev $/query</th></tr></thead>
+      <tbody><tr><th>19:00</th><td>6.3s</td><td>4.4s</td><td>$0.0029</td><td>$0.0019</td></tr><tr><th>19:04</th><td>8.9s</td><td>3.9s</td><td>$0.0031</td><td>$0.0019</td></tr><tr><th>19:07</th><td>5.1s</td><td>3.6s</td><td>$0.0027</td><td>$0.0019</td></tr></tbody>
+    </table></div>
+    <p class="note">The first run counted the LLM's empty-reply call on Q5 as $0. The second run hit a network error on LLM Q7, and its LLM times are inflated by retries.</p>
+  </section>
+
+  <section class="method">
+    <h2>Method</h2>
+    <ul>
+      <li><strong>Fresh state.</strong> Before every run the bank is reset and the conversation is new, so a card blocked by one engine is never already blocked for the other.</li>
+      <li><strong>Interleaved.</strong> Each query runs on the LLM engine, then on Jev, before the next query, so API latency drift affects both alike.</li>
+      <li><strong>Driven like production.</strong> The LLM engine runs through ADK with SSE streaming, as <code>server.py</code> does. Jev runs <code>JevChat.turn()</code>, as the chat page does.</li>
+      <li><strong>Time</strong> is wall-clock from sending the message to the last reply token. <strong>First token</strong> is when reply text starts. A query with no reply is left out of the first-token average.</li>
+      <li><strong>Cost</strong> uses Gemini 2.5 Flash paid-tier rates, with token counts from each response's usage metadata. Thinking tokens bill as output. Implicit cache hits bill at the cached rate.</li>
+      <li><strong>Correctness</strong> is a hand judgement per query: did the engine take the right action, or give the right answer, without needing another turn it did not need.</li>
+      <li>Single-turn only. A query that needs an OTP ends with the OTP sent, for both engines.</li>
+    </ul>
+  </section>
+</div>

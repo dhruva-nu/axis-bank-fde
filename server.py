@@ -1,4 +1,9 @@
-"""FastAPI server: serves the chat UI and streams the ADK agent over SSE.
+"""FastAPI server: serves the chat UI and streams the assistant over SSE.
+
+The chat page runs on one of two engines, picked by CHAT_ENGINE in .env:
+    jev (default)  Jev picks the tool and every argument; Gemini only writes the reply
+                   from the tool output (assistant/jevchat/)
+    adk            the original ADK agent: Gemini does the tool calling itself
 
 Endpoints
     GET  /                 the chat UI
@@ -13,6 +18,9 @@ Endpoints
     POST /api/customer     switch the logged-in customer
     POST /api/reload       re-read config/ + re-scan tools + rebuild the agent
     POST /api/new-chat     clear the conversation, keep the banking state
+
+With CHAT_ENGINE=jev, `python server.py` also serves the Jev log viewer on JEV_LOG_PORT
+(default 8001): every query as its own group of Jev calls (see jev_log.py).
 
 Agent assist (the second page — a human agent on a live call, not a chatbot)
     POST /api/assist/turn     one heard utterance -> SSE: who said it, then cards
@@ -55,10 +63,12 @@ from assistant import assist as assist_module  # noqa: E402
 from assistant import config as cfg  # noqa: E402
 from assistant import tts as tts_engine  # noqa: E402
 from assistant.bank import BANK, inr, mask_account  # noqa: E402
+from assistant.jevchat import JevChat  # noqa: E402
 from assistant.tools import tool_manifest  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent
 APP_NAME = "axis_support"
+CHAT_ENGINE = os.getenv("CHAT_ENGINE", "jev").strip().lower()
 ASSIST_APP = "axis_assist"
 
 app = FastAPI(title="Axis Bank Assistant — POC")
@@ -71,11 +81,13 @@ class Live:
     """Mutable holder so /api/reload can swap the agent without a restart."""
 
     def __init__(self) -> None:
+        self.jev_chat = JevChat()
         self.rebuild()
         self.session_id = uuid.uuid4().hex
 
     def rebuild(self) -> None:
         cfg.reload_all()
+        self.jev_chat.rebuild()
         self.agent = agent_module.build_agent()
         self.runner = Runner(
             app_name=APP_NAME,
@@ -94,6 +106,17 @@ class Live:
 
     def new_session(self) -> None:
         self.session_id = uuid.uuid4().hex
+        self.jev_chat.reset()
+
+    @property
+    def model_label(self) -> str:
+        if CHAT_ENGINE == "jev":
+            return f"jev + {agent_module.DEFAULT_MODEL}"
+        return agent_module.DEFAULT_MODEL
+
+    @property
+    def tool_count(self) -> int:
+        return len(self.jev_chat.routable) if CHAT_ENGINE == "jev" else len(self.agent.tools)
 
 
 class Call:
@@ -158,8 +181,8 @@ async def get_config() -> JSONResponse:
                 "mobile": c["mobile"],
             },
             "roster": BANK.roster(),
-            "model": agent_module.DEFAULT_MODEL,
-            "tool_count": len(LIVE.agent.tools),
+            "model": LIVE.model_label,
+            "tool_count": LIVE.tool_count,
         }
     )
 
@@ -232,6 +255,20 @@ async def _stream(message: str):
     yield _sse("done", {"audit": BANK.audit[-12:]})
 
 
+async def _jev_stream(message: str):
+    """Same SSE contract as _stream, plus `jev` events: each Jev decision, for the trace panel."""
+    yield _sse("start", {"session": LIVE.session_id, "engine": "jev"})
+    try:
+        async for event, data in LIVE.jev_chat.turn(message):
+            yield _sse(event, data)
+    except asyncio.CancelledError:
+        raise
+    except Exception as exc:
+        traceback.print_exc()
+        yield _sse("error", {"message": f"{type(exc).__name__}: {exc}"})
+    yield _sse("done", {"audit": BANK.audit[-12:]})
+
+
 @app.post("/api/chat")
 async def chat(request: Request) -> StreamingResponse:
     body = await request.json()
@@ -241,7 +278,7 @@ async def chat(request: Request) -> StreamingResponse:
     # up by agent._instruction(), which ADK re-evaluates on every turn.
     agent_module.VOICE_MODE["on"] = bool(body.get("voice"))
     return StreamingResponse(
-        _stream(message),
+        _jev_stream(message) if CHAT_ENGINE == "jev" else _stream(message),
         media_type="text/event-stream",
         headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
     )
@@ -548,8 +585,8 @@ async def reload_everything() -> JSONResponse:
     return JSONResponse(
         {
             "ok": True,
-            "tool_count": len(LIVE.agent.tools),
-            "model": agent_module.DEFAULT_MODEL,
+            "tool_count": LIVE.tool_count,
+            "model": LIVE.model_label,
             "greeting": cfg.branding().get("greeting", "").replace("{first_name}", c["first_name"]),
             "customer": {"id": c["id"], "name": c["name"], "first_name": c["first_name"], "segment": c["segment"]},
             "roster": BANK.roster(),
@@ -569,10 +606,29 @@ async def new_chat() -> JSONResponse:
 if __name__ == "__main__":
     import uvicorn
 
-    if not (os.getenv("GOOGLE_API_KEY") or os.getenv("GOOGLE_GENAI_USE_VERTEXAI")):
-        print("\n  !! GOOGLE_API_KEY is not set. Copy .env.example to .env and add your key.")
-        print("     Get one at https://aistudio.google.com/apikey\n")
+    if not (os.getenv("VERTEX_AI_KEY") or os.getenv("GOOGLE_API_KEY") or os.getenv("GOOGLE_GENAI_USE_VERTEXAI")):
+        print("\n  !! No Gemini key is set. Copy .env.example to .env and add VERTEX_AI_KEY")
+        print("     (Vertex AI express mode) or GOOGLE_API_KEY (AI Studio).\n")
+
+    if CHAT_ENGINE == "jev" and not os.getenv("JEV_API_KEY"):
+        print("\n  !! JEV_API_KEY is not set — the chat page routes every turn through Jev.")
+        print("     Add it to .env, or set CHAT_ENGINE=adk for the Gemini-only agent.\n")
 
     port = int(os.getenv("PORT", "8000"))
-    print(f"\n  Axis Bank Assistant POC  →  http://localhost:{port}\n")
-    uvicorn.run("server:app", host="0.0.0.0", port=port, reload=False)
+    print(f"\n  Axis Bank Assistant POC  →  http://localhost:{port}")
+    if CHAT_ENGINE != "jev":
+        print()
+        uvicorn.run("server:app", host="0.0.0.0", port=port, reload=False)
+    else:
+        # The Jev log viewer (jev_log.py) runs beside the chat on its own port, one process.
+        log_port = int(os.getenv("JEV_LOG_PORT", "8001"))
+        print(f"  Jev log                   →  http://localhost:{log_port}\n")
+
+        async def _serve_both() -> None:
+            servers = [
+                uvicorn.Server(uvicorn.Config("server:app", host="0.0.0.0", port=port)),
+                uvicorn.Server(uvicorn.Config("jev_log:app", host="0.0.0.0", port=log_port, log_level="warning")),
+            ]
+            await asyncio.gather(*(s.serve() for s in servers))
+
+        asyncio.run(_serve_both())

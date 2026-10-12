@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jev log</title>
+<style>
+  :root {
+    --bg: #f6f5f3; --surface: #ffffff; --ink: #1c1b1f; --muted: #6c6a72; --line: #e4e1e6;
+    --accent: #97144d; --accent-soft: #f6e5ec;
+    --jev: #4c3fb8; --jev-soft: #ecebfa;
+    --tool: #0b7a55; --tool-soft: #e3f4ec;
+    --llm: #a35a00; --llm-soft: #fbf0e0;
+    --note: #5b6470; --note-soft: #eef0f3;
+    --bad: #b42318; --bad-soft: #fde8e6;
+    --bar: #c9c4f2; --bar-pick: #4c3fb8;
+    --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #141317; --surface: #1d1c21; --ink: #ecebef; --muted: #9a98a3; --line: #2f2d35;
+      --accent: #e0558f; --accent-soft: #3a1d2a;
+      --jev: #a59cff; --jev-soft: #26233f;
+      --tool: #4fd1a1; --tool-soft: #17302a;
+      --llm: #f0b35e; --llm-soft: #33281a;
+      --note: #a7b0bb; --note-soft: #24272c;
+      --bad: #ff8a80; --bad-soft: #3a1f1d;
+      --bar: #3b366b; --bar-pick: #a59cff;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+         font: 14px/1.45 Inter, "Segoe UI", system-ui, -apple-system, sans-serif; }
+  header { position: sticky; top: 0; z-index: 5; display: flex; align-items: center; gap: 12px;
+           flex-wrap: wrap; padding: 12px 20px; background: var(--surface); border-bottom: 1px solid var(--line); }
+  header h1 { margin: 0; font-size: 16px; letter-spacing: .02em; }
+  .live { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); }
+  .live i { width: 8px; height: 8px; border-radius: 50%; background: var(--tool); }
+  .live.off i { background: var(--bad); }
+  header .grow { flex: 1; }
+  input[type=search] { font: inherit; padding: 6px 10px; border: 1px solid var(--line); border-radius: 8px;
+                       background: var(--bg); color: var(--ink); width: 240px; max-width: 100%; }
+  button { font: inherit; font-size: 12px; padding: 6px 10px; border: 1px solid var(--line); border-radius: 8px;
+           background: var(--surface); color: var(--ink); cursor: pointer; }
+  button:hover { border-color: var(--muted); }
+  main { max-width: 1100px; margin: 0 auto; padding: 16px; }
+  .empty { color: var(--muted); text-align: center; padding: 60px 16px; }
+  .empty code { font-family: var(--mono); }
+
+  details.turn { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; margin-bottom: 10px; }
+  details.turn > summary { list-style: none; cursor: pointer; padding: 12px 14px; display: grid;
+                           grid-template-columns: auto 1fr auto; gap: 4px 12px; align-items: start; }
+  details.turn > summary::-webkit-details-marker { display: none; }
+  .num { font: 600 12px var(--mono); color: var(--muted); padding-top: 2px; }
+  .msg { font-weight: 600; overflow-wrap: anywhere; }
+  .meta { font-size: 12px; color: var(--muted); text-align: right; white-space: nowrap; }
+  .chain { grid-column: 2 / 4; display: flex; flex-wrap: wrap; gap: 4px; align-items: center; }
+  .chain .arrow { color: var(--muted); font-size: 11px; }
+  .chip { font: 500 11px var(--mono); padding: 2px 7px; border-radius: 999px; white-space: nowrap; }
+  .chip.jev { background: var(--jev-soft); color: var(--jev); }
+  .chip.tool { background: var(--tool-soft); color: var(--tool); }
+  .chip.tool.bad { background: var(--bad-soft); color: var(--bad); }
+  .chip.llm { background: var(--llm-soft); color: var(--llm); }
+  .chip.note { background: var(--note-soft); color: var(--note); }
+  .chip.err { background: var(--bad-soft); color: var(--bad); }
+
+  .body { border-top: 1px solid var(--line); padding: 12px 14px 14px; }
+  .pend { display: flex; flex-wrap: wrap; gap: 8px; font-size: 12px; color: var(--muted); margin-bottom: 10px; }
+  .pend code { font-family: var(--mono); color: var(--ink); background: var(--bg); padding: 1px 6px; border-radius: 6px; }
+
+  .step { display: grid; grid-template-columns: 74px 1fr; gap: 12px; position: relative; padding-bottom: 12px; }
+  .step::before { content: ""; position: absolute; left: 36px; top: 26px; bottom: 0; width: 1px; background: var(--line); }
+  .step:last-child::before { display: none; }
+  .kind { font: 700 10px var(--mono); letter-spacing: .06em; text-align: center; padding: 4px 0; border-radius: 6px; height: fit-content; }
+  .kind.jev { background: var(--jev-soft); color: var(--jev); }
+  .kind.resolve { background: var(--jev-soft); color: var(--jev); opacity: .75; }
+  .kind.tool { background: var(--tool-soft); color: var(--tool); }
+  .kind.llm { background: var(--llm-soft); color: var(--llm); }
+  .kind.note { background: var(--note-soft); color: var(--note); }
+  .card { min-width: 0; }
+  .card h3 { margin: 2px 0 6px; font-size: 13px; display: flex; flex-wrap: wrap; gap: 8px; align-items: baseline; }
+  .card h3 small { font: 400 11px var(--mono); color: var(--muted); }
+  .sub { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; margin: 10px 0 4px; }
+  pre { margin: 0; font: 12px/1.45 var(--mono); background: var(--bg); border: 1px solid var(--line); border-radius: 8px;
+        padding: 8px 10px; overflow: auto; max-height: 320px; white-space: pre-wrap; overflow-wrap: anywhere; }
+  .note-text { font-size: 13px; color: var(--note); }
+  .err-text { color: var(--bad); font: 12px var(--mono); }
+
+  .q { border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; margin-top: 6px; }
+  .q-head { font: 600 12px var(--mono); }
+  .q-instr { font-size: 12px; color: var(--muted); margin: 2px 0 6px; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  td { padding: 3px 6px 3px 0; vertical-align: top; }
+  td.lbl { font-family: var(--mono); white-space: nowrap; width: 1%; }
+  td.pct { font-family: var(--mono); text-align: right; width: 1%; white-space: nowrap; }
+  td.barcell { width: 26%; min-width: 70px; }
+  .bar { height: 8px; border-radius: 4px; background: var(--bar); margin-top: 4px; }
+  tr.pick .bar { background: var(--bar-pick); }
+  tr.pick td.lbl { font-weight: 700; color: var(--jev); }
+  td.desc { color: var(--muted); overflow-wrap: anywhere; }
+  .more { margin-top: 4px; font-size: 11px; padding: 2px 8px; }
+  .resolved td.v { font-family: var(--mono); overflow-wrap: anywhere; }
+  .tag { font: 10px var(--mono); padding: 1px 5px; border-radius: 4px; background: var(--note-soft); color: var(--note); }
+  .tag.unsure { background: var(--bad-soft); color: var(--bad); }
+  .foot { font: 11px var(--mono); color: var(--muted); margin-top: 6px; overflow-wrap: anywhere; }
+  .reply { white-space: pre-wrap; font-size: 13px; background: var(--llm-soft); border-radius: 8px; padding: 8px 10px; }
+  details.fold > summary { cursor: pointer; font-size: 12px; color: var(--muted); margin-top: 8px; }
+  details.fold[open] > summary { margin-bottom: 4px; }
+
+  @media (max-width: 640px) {
+    header { padding: 10px 16px; }
+    main { padding: 12px 16px; }
+    .step { grid-template-columns: 1fr; gap: 4px; }
+    .step::before { display: none; }
+    .kind { width: fit-content; padding: 3px 8px; }
+    details.turn > summary { grid-template-columns: auto 1fr; }
+    .meta { grid-column: 2; text-align: left; }
+    .chain { grid-column: 1 / 3; }
+    td.desc { display: none; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>Jev log</h1>
+  <span class="live" id="live"><i></i><span id="live-text">live</span></span>
+  <span class="grow"></span>
+  <input type="search" id="filter" placeholder="Filter by message or tool…">
+  <button id="expand">Expand all</button>
+  <button id="collapse">Collapse all</button>
+  <button id="clear">Clear log</button>
+</header>
+<main>
+  <div id="turns"></div>
+  <div class="empty" id="empty">No queries yet. Send a message on the chat page (<code>:8000</code>) and it appears here.</div>
+</main>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const json = (v) => esc(JSON.stringify(v, null, 2));
+const pct = (p) => `${(p * 100).toFixed(1)}%`;
+const SHOW = 6;  // options shown per question before "show all"
+
+let next = 0, count = 0;
+
+/* ------------------------------------------------------------- summary chain */
+
+function chain(t) {
+  const out = [];
+  for (const s of t.steps) {
+    if (s.kind === 'jev') {
+      let label = s.title;
+      if (s.title === 'route' && s.answers?.tool) label = `route → ${s.answers.tool.choice} ${pct(s.answers.tool.choice ? s.answers.tool.probabilities[s.answers.tool.choice] : 0)}`;
+      if (s.title === 'slot answer' && s.answers?.answering) label = `answering? ${pct(s.answers.answering.noul)}`;
+      out.push(`<span class="chip ${s.error ? 'err' : 'jev'}">jev · ${esc(label)}</span>`);
+    } else if (s.kind === 'resolve') {
+      out.push(`<span class="chip jev">${esc(s.title)} (no jev call)</span>`);
+    } else if (s.kind === 'tool') {
+      const bad = s.result && s.result.ok === false;
+      out.push(`<span class="chip tool ${bad ? 'bad' : ''}">${esc(s.title)}${bad ? ' ✗ ' + esc(s.result.error || '') : ''}</span>`);
+    } else if (s.kind === 'llm') {
+      out.push(`<span class="chip llm">reply</span>`);
+    } else if (s.kind === 'note' && s.title !== 'note') {
+      out.push(`<span class="chip note">${esc(s.title)}</span>`);
+    }
+  }
+  return out.join('<span class="arrow">→</span>');
+}
+
+/* ------------------------------------------------------------- step cards */
+
+function choiceTable(q, a) {
+  const crit = q.criteria || {};
+  const rows = Object.entries(a.probabilities).sort((x, y) => y[1] - x[1]);
+  const id = 'q' + Math.random().toString(36).slice(2);
+  const body = rows.map(([label, p], i) => `
+    <tr class="${label === a.choice ? 'pick' : ''}" ${i >= SHOW ? `data-more="${id}" hidden` : ''}>
+      <td class="lbl">${esc(label)}</td>
+      <td class="barcell"><div class="bar" style="width:${Math.max(p * 100, 0.5)}%"></div></td>
+      <td class="pct">${pct(p)}</td>
+      <td class="desc" title="${esc(crit[label] ?? '')}">${esc(String(crit[label] ?? '').split('\n')[0])}</td>
+    </tr>`).join('');
+  const more = rows.length > SHOW
+    ? `<button class="more" data-toggle="${id}">show all ${rows.length} options</button>` : '';
+  return `<table>${body}</table>${more}<div class="foot">confidence ${pct(a.confidence ?? 0)}</div>`;
+}
+
+function noulBar(a) {
+  return `<table><tr class="pick"><td class="lbl">P(yes)</td>
+    <td class="barcell"><div class="bar" style="width:${Math.max(a.noul * 100, 0.5)}%"></div></td>
+    <td class="pct">${pct(a.noul)}</td><td></td></tr></table>`;
+}
+
+function resolvedTable(resolved) {
+  if (!resolved || !Object.keys(resolved).length) return '';
+  const rows = Object.entries(resolved).map(([param, r]) => {
+    let how = r.via === 'direct' ? '<span class="tag">direct — verbatim / only option / nothing typed</span>'
+      : r.p_yes !== undefined ? `<span class="tag">jev P(yes) ${pct(r.p_yes)}</span>`
+      : `<span class="tag">jev pick${r.confidence !== undefined ? ` · confidence ${pct(r.confidence)}` : ''}</span>`;
+    if (r.unit) how += ` <span class="tag">unit: ${esc(r.unit)}</span>`;
+    if (r.unsure) how += ' <span class="tag unsure">unsure → fallback / ask</span>';
+    return `<tr><td class="lbl">${esc(param)}</td><td class="v">${esc(JSON.stringify(r.value))}</td><td>${how}</td></tr>`;
+  }).join('');
+  return `<div class="sub">Resolved arguments</div><table class="resolved">${rows}</table>`;
+}
+
+function jevCard(s) {
+  const qs = Object.entries(s.questions || {}).map(([name, q]) => {
+    const a = s.answers?.[name];
+    const answer = !a ? '' : a.type === 'noul' ? noulBar(a) : choiceTable(q, a);
+    const n = q.criteria && typeof q.criteria === 'object' ? Object.keys(q.criteria).length : 0;
+    return `<div class="q">
+      <div class="q-head">${esc(name)} · ${esc(q.type)}${n ? ` · ${n} options` : ''}</div>
+      <div class="q-instr">${esc(q.instructions)}</div>${answer}</div>`;
+  }).join('');
+  const foot = [s.model && `model ${s.model}`, s.input_tokens != null && `${s.input_tokens} input tokens`,
+                s.request_id && `request ${s.request_id}`].filter(Boolean).join(' · ');
+  return `
+    <div class="sub">State sent</div><pre>${json(s.state)}</pre>
+    <div class="sub">Questions → answers</div>${qs}
+    ${s.error ? `<div class="err-text">${esc(s.error)}</div>` : ''}
+    ${resolvedTable(s.resolved)}
+    ${foot ? `<div class="foot">${esc(foot)}</div>` : ''}`;
+}
+
+function toolCard(s) {
+  return `<div class="sub">Arguments</div><pre>${json(s.args)}</pre>
+    <div class="sub">Output</div><pre>${json(s.result)}</pre>`;
+}
+
+function llmCard(s) {
+  return `<div class="sub">Instruction from the engine</div><div class="note-text">${esc(s.instruction)}</div>
+    <div class="sub">Reply${s.first_token_ms != null ? ` · first token ${s.first_token_ms} ms` : ''}</div>
+    ${s.reply ? `<div class="reply">${esc(s.reply)}</div>` : '<div class="note-text">(no reply text)</div>'}
+    ${s.error ? `<div class="err-text">${esc(s.error)}</div>` : ''}
+    <details class="fold"><summary>Prompt sent to the LLM</summary><pre>${esc(s.prompt)}</pre></details>
+    <details class="fold"><summary>System instruction</summary><pre>${esc(s.system)}</pre></details>`;
+}
+
+function stepHtml(s) {
+  const kinds = { jev: 'JEV', resolve: 'RESOLVE', tool: 'TOOL', llm: 'LLM', note: 'NOTE' };
+  const timing = [`+${s.at_ms} ms`, s.ms != null && `took ${s.ms} ms`].filter(Boolean).join(' · ');
+  const body = s.kind === 'jev' ? jevCard(s)
+    : s.kind === 'resolve' ? `<div class="note-text">Every argument settled without asking Jev.</div>${resolvedTable(s.resolved)}`
+    : s.kind === 'tool' ? toolCard(s)
+    : s.kind === 'llm' ? llmCard(s)
+    : `<div class="note-text">${esc(s.text)}</div>`;
+  const title = s.kind === 'jev' ? `jev · ${s.title}` : s.title;
+  return `<div class="step"><div class="kind ${s.kind}">${kinds[s.kind] || s.kind}</div>
+    <div class="card"><h3>${esc(title)} <small>${esc(timing)}</small></h3>${body}</div></div>`;
+}
+
+function pendingText(p) {
+  if (!p) return '<code>none</code>';
+  return `<code>${esc(p.kind)}: ${esc(p.tool)}</code>` + (p.missing?.length ? ` missing <code>${esc(p.missing.join(', '))}</code>` : '');
+}
+
+function turnEl(t) {
+  const el = document.createElement('details');
+  el.className = 'turn';
+  el.dataset.search = (t.message + ' ' + t.steps.map((s) => s.title + ' ' + (s.answers?.tool?.choice || '')).join(' ')).toLowerCase();
+  el.innerHTML = `
+    <summary>
+      <span class="num">#${++count}</span>
+      <span class="msg">${esc(t.message)}</span>
+      <span class="meta">${esc(t.time.slice(11))} · ${t.jev_calls} jev call${t.jev_calls === 1 ? '' : 's'} · ${t.total_ms} ms</span>
+      <span class="chain">${chain(t)}${t.error ? `<span class="chip err">error</span>` : ''}</span>
+    </summary>`;
+  // The body is built on first open: the router step alone carries every tool's docstring.
+  el.addEventListener('toggle', () => {
+    if (!el.open || el.querySelector('.body')) return;
+    const body = document.createElement('div');
+    body.className = 'body';
+    body.innerHTML = `
+      <div class="pend"><span>customer <code>${esc(t.customer)}</code></span>
+        <span>pending before ${pendingText(t.pending_before)}</span>
+        <span>pending after ${pendingText(t.pending_after)}</span></div>
+      ${t.error ? `<div class="err-text">${esc(t.error)}</div>` : ''}
+      ${t.steps.map(stepHtml).join('')}`;
+    el.append(body);
+  });
+  return el;
+}
+
+/* ------------------------------------------------------------- live polling */
+
+function applyFilter() {
+  const q = $('filter').value.trim().toLowerCase();
+  for (const el of $('turns').children) el.hidden = q && !el.dataset.search.includes(q);
+}
+
+async function poll() {
+  try {
+    const res = await fetch(`/api/turns?after=${next}`);
+    const data = await res.json();
+    if (data.reset) { $('turns').innerHTML = ''; count = 0; }
+    next = data.next;
+    const list = $('turns');
+    for (const t of data.turns) {
+      for (const open of list.querySelectorAll('details.turn[data-auto]')) { open.open = false; open.removeAttribute('data-auto'); }
+      const el = turnEl(t);
+      list.prepend(el);
+      el.dataset.auto = '1';  // newest opens itself; collapses again when a newer one lands
+      el.open = true;
+    }
+    $('empty').hidden = list.children.length > 0;
+    $('live').classList.remove('off');
+    $('live-text').textContent = 'live';
+    applyFilter();
+  } catch {
+    $('live').classList.add('off');
+    $('live-text').textContent = 'disconnected';
+  }
+}
+
+document.addEventListener('click', (e) => {
+  const id = e.target.dataset?.toggle;
+  if (id) {
+    const rows = document.querySelectorAll(`[data-more="${id}"]`);
+    const show = rows[0]?.hidden;
+    rows.forEach((r) => (r.hidden = !show));
+    e.target.textContent = show ? 'show fewer' : `show all ${rows.length + SHOW} options`;
+  }
+  if (e.target.closest('details.turn > summary')) e.target.closest('details.turn').removeAttribute('data-auto');
+});
+$('filter').addEventListener('input', applyFilter);
+$('expand').onclick = () => document.querySelectorAll('details.turn').forEach((d) => { if (!d.hidden) d.open = true; });
+$('collapse').onclick = () => document.querySelectorAll('details.turn').forEach((d) => { d.open = false; d.removeAttribute('data-auto'); });
+$('clear').onclick = async () => {
+  if (!confirm('Delete every logged query?')) return;
+  await fetch('/api/clear', { method: 'POST' });
+  $('turns').innerHTML = ''; count = 0; next = 0; $('empty').hidden = false;
+};
+
+// localhost:8001/#all opens every query on load — handy for reviewing a whole session.
+poll().then(() => { if (location.hash === '#all') $('expand').click(); });
+setInterval(poll, 1500);
+</script>
+</body>
+</html>

@@ -236,6 +236,10 @@ async function send(text, fromVoice) {
           if (typing.parentElement && !target) typing.parentElement.remove();
           addToolLine(data.name, data.args);
           traceAdd(data.name, data.args, null);
+        } else if (ev === 'jev') {
+          // A Jev decision (route / params / slot answer): trace panel only, not the chat.
+          traceAdd(data.name, data.args);
+          traceResult(data.name, data.result);
         } else if (ev === 'tool_result') {
           traceResult(data.name, data.result);
           refreshState();

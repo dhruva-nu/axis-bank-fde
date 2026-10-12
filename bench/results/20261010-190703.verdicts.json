@@ -1,0 +1,17 @@
+{
+ "1":  {"llm": ["ok", "Both accounts' balances."], "jev": ["ok", "Default (Burgundy) account balance only."]},
+ "2":  {"llm": ["ok", ""], "jev": ["ok", ""]},
+ "3":  {"llm": ["ok", "Right card first time in this run. In 2 of 3 runs it sent a bad card reference and needed a retry."], "jev": ["ok", ""]},
+ "4":  {"llm": ["ok", ""], "jev": ["ok", ""]},
+ "5":  {"llm": ["fail", "Empty reply: the model returned no content. Happened in all 3 runs."], "jev": ["ok", ""]},
+ "6":  {"llm": ["partial", "Asked for the card's last 4 digits although the transaction was findable. No case opened."], "jev": ["ok", "Opened the fraud case and hotlisted the card. Hotlisting is irreversible and was done without asking first."]},
+ "7":  {"llm": ["partial", "Found the transaction, then stopped to confirm it. No request raised."], "jev": ["ok", ""]},
+ "8":  {"llm": ["ok", "Named the real cause: a bounced EMI, the ₹590 charge and penal interest."], "jev": ["wrong", "Wrong tool: the loan-rates KB article. The reply guesses at the cause and asks a follow-up."]},
+ "9":  {"llm": ["ok", ""], "jev": ["ok", ""]},
+ "10": {"llm": ["ok", ""], "jev": ["ok", ""]},
+ "11": {"llm": ["ok", "Sent the OTP first, as the persona prompt instructs."], "jev": ["ok", "Tried the toggle, got otp_required, sent the OTP and held the call."]},
+ "12": {"llm": ["partial", "Asked permission to send the OTP instead of sending it."], "jev": ["ok", ""]},
+ "13": {"llm": ["ok", "Returned an empty reply in 1 of 3 runs."], "jev": ["ok", "In 1 of 3 runs the reply invented a Burgundy waiver that is not in the KB article."]},
+ "14": {"llm": ["ok", ""], "jev": ["ok", ""]},
+ "15": {"llm": ["ok", ""], "jev": ["ok", ""]}
+}

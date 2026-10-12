@@ -7,11 +7,15 @@
 
 Handy for checking a prompt tweak or a new tool quickly, and for testing that
 your API key works before the meeting starts.
+
+Runs whichever engine CHAT_ENGINE selects (jev by default, or adk) — same as the server.
 """
 
 from __future__ import annotations
 
 import asyncio
+import json
+import os
 import sys
 import uuid
 import warnings
@@ -27,6 +31,7 @@ from google.genai import types  # noqa: E402
 
 from assistant.agent import build_agent  # noqa: E402
 from assistant.bank import BANK  # noqa: E402
+from assistant.jevchat import JevChat  # noqa: E402
 
 DIM, BOLD, MAGENTA, CYAN, GREY, RESET = "\033[2m", "\033[1m", "\033[35m", "\033[36m", "\033[90m", "\033[0m"
 
@@ -61,7 +66,52 @@ SCENARIOS = {
 }
 
 
+async def run_jev(turns: list[str] | None) -> None:
+    bot = JevChat()
+    print(f"{DIM}jev engine · {len(bot.routable)} routable tools · customer: {BANK.customer['name']}{RESET}")
+    print(f"{DIM}Ctrl-C to quit. OTP in this demo is always 123456.{RESET}\n")
+
+    async def turn(text: str) -> None:
+        print(f"{BOLD}You:{RESET} {text}")
+        reply = ""
+        async for event, data in bot.turn(text):
+            if event == "jev":
+                print(f"  {DIM}{data['name']}: {json.dumps(data['result'], default=str)[:220]}{RESET}")
+            elif event == "tool_call":
+                args = ", ".join(f"{k}={v!r}" for k, v in data["args"].items())
+                print(f"  {CYAN}→ {data['name']}({args}){RESET}")
+            elif event == "tool_result":
+                print(f"  {GREY}  {str(data['result'])[:150]}{RESET}")
+            elif event == "error":
+                print(f"  {MAGENTA}!! {data['message']}{RESET}")
+            elif event == "delta":
+                reply += data["text"]
+        print(f"\n{MAGENTA}Assistant:{RESET} {reply.strip()}\n")
+
+    await _drive(turn, turns)
+
+
+async def _drive(turn, turns: list[str] | None) -> None:
+    if turns:
+        for t in turns:
+            await turn(t)
+        return
+    while True:
+        try:
+            text = input(f"{BOLD}You:{RESET} ").strip()
+        except (EOFError, KeyboardInterrupt):
+            print()
+            return
+        if text.lower() in ("exit", "quit", ":q"):
+            return
+        if text:
+            await turn(text)
+
+
 async def run(turns: list[str] | None) -> None:
+    if os.getenv("CHAT_ENGINE", "jev").strip().lower() == "jev":
+        await run_jev(turns)
+        return
     agent = build_agent()
     runner = Runner(
         app_name="cli",
@@ -90,21 +140,7 @@ async def run(turns: list[str] | None) -> None:
                 if text_out:
                     print(f"\n{MAGENTA}Assistant:{RESET} {text_out.strip()}\n")
 
-    if turns:
-        for t in turns:
-            await turn(t)
-        return
-
-    while True:
-        try:
-            text = input(f"{BOLD}You:{RESET} ").strip()
-        except (EOFError, KeyboardInterrupt):
-            print()
-            return
-        if text.lower() in ("exit", "quit", ":q"):
-            return
-        if text:
-            await turn(text)
+    await _drive(turn, turns)
 
 
 def main() -> None:
